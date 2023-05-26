@@ -10,8 +10,14 @@
 digit [0-9]
 integer {digit}+
 float [-+]?[0-9]?*\.?[0-9]+
+special [-!*/%+<>{}()=,;]
 
-char [a-zA-Z]
+tk_identificador [A-Za-z_]+
+
+comment [\/\/(.*)]
+comment_block [\/\*(\s\S)*?\*\/]
+
+lero [$$$]
 
 %%
 
@@ -22,6 +28,10 @@ char [a-zA-Z]
 "else"          return TK_PR_ELSE;
 "while"         return TK_PR_WHILE;
 "return"        return TK_PR_RETURN;
+"false"         return TK_LIT_FALSE;
+"true"          return TK_LIT_TRUE;
+
+{tk_identificador} return TK_IDENTIFICADOR;
 
 "<="			      return TK_OC_LE;
 ">="			      return TK_OC_GE;
@@ -33,8 +43,8 @@ char [a-zA-Z]
 
 {integer}       return TK_LIT_INT;
 {float}         return TK_LIT_FLOAT;
-"false"         return TK_LIT_FALSE;
-"true"          return TK_LIT_TRUE;
+
+{special}       return yytext[0];
 
 .               return TK_ERRO;
 
@@ -43,3 +53,4 @@ char [a-zA-Z]
 int get_line_number() {
 	return yylineno;
 }
+
