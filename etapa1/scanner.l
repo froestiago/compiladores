@@ -6,51 +6,62 @@
 %option noyywrap
 %option yylineno
 
-digit [0-9]
+%x COMMENT_BLOCK
+%x COMMENT_LINE
 
-float [0-9]?*\.?[0-9]+
-integer {digit}+
+digit           [0-9]
 
-identificador [A-Za-z_]+
+float           [0-9]?*\.?[0-9]+
+integer         {digit}+
 
-comment (\/\/.*$|\/\*[\s\S]*?\*\/)
+identificador   [A-Za-z_]+
 
-special [-!*/%+<>{}()=,;]
+special         [-!*/%+<>{}()=,;]
 
-space [ \t]+
-
-new_line [\n]
+space           [ \t]+
+new_line        [\n]
 
 %%
 
-"int"           return TK_PR_INT;
-"float"         return TK_PR_FLOAT;
-"bool"          return TK_PR_BOOL;
-"if"            return TK_PR_IF;
-"else"          return TK_PR_ELSE;
-"while"         return TK_PR_WHILE;
-"return"        return TK_PR_RETURN;
+{new_line}          {}; /* tem que ter */
+{space}             {};
 
-"false"         return TK_LIT_FALSE;
-"true"          return TK_LIT_TRUE;
-{integer}       return TK_LIT_INT;
-{float}         return TK_LIT_FLOAT;
+"int"               return TK_PR_INT;
+"float"             return TK_PR_FLOAT;
+"bool"              return TK_PR_BOOL;
+"if"                return TK_PR_IF;
+"else"              return TK_PR_ELSE;
+"while"             return TK_PR_WHILE;
+"return"            return TK_PR_RETURN;
 
-{identificador} return TK_IDENTIFICADOR;
+"false"             return TK_LIT_FALSE;
+"true"              return TK_LIT_TRUE;
+{integer}           return TK_LIT_INT;
+{float}             return TK_LIT_FLOAT;
 
-"<="			          return TK_OC_LE;
-">="			          return TK_OC_GE;
-"=="			          return TK_OC_EQ;
-"!="			          return TK_OC_NE;
+{identificador}     return TK_IDENTIFICADOR;
+
+"<="			    return TK_OC_LE;
+">="			    return TK_OC_GE;
+"=="			    return TK_OC_EQ;
+"!="			    return TK_OC_NE;
 "&"                 return TK_OC_AND;
 "|"                 return TK_OC_OR;
 "->"                return TK_OC_MAP;
 
 
-{space}              {};
-{comment}            {yylineno++;}
-{special}       return yytext[0];
-.               return TK_ERRO;
+"//"                        BEGIN(COMMENT_LINE);
+<COMMENT_LINE>{new_line}    BEGIN(INITIAL);
+
+"/*"                        BEGIN(COMMENT_BLOCK);
+<COMMENT_BLOCK>[^*\n]*
+<COMMENT_BLOCK>"*"+[^*/\n]*
+<COMMENT_BLOCK>{new_line}   {}
+<COMMENT_BLOCK>"*"+"/"      BEGIN(INITIAL);
+
+
+{special}           return yytext[0];
+.                   return TK_ERRO;
 
 %%
 
