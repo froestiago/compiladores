@@ -1,9 +1,8 @@
 %{
+#include <stdio.h>
 int yylex(void);
 void yyerror (char const *s);
 %}
-
-%define parse.error detailed
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -35,4 +34,10 @@ elemento: funcao | declaracao_variavel_global;
 funcao: 'a';
 declaracao_variavel_global: 'b';
 
+tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL;
+
 %%
+
+void yyerror (char const *s){
+    printf("%s\n", s);
+}
