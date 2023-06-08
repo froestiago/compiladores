@@ -4,6 +4,8 @@ int yylex(void);
 void yyerror (char const *s);
 %}
 
+%define parse.error detailed
+
 %token TK_PR_INT
 %token TK_PR_FLOAT
 %token TK_PR_BOOL
@@ -25,6 +27,8 @@ void yyerror (char const *s);
 %token TK_LIT_TRUE
 %token TK_ERRO
 
+%start programa
+
 %%
 
 programa:;
@@ -34,7 +38,9 @@ elemento: funcao | declaracao_variavel_global;
 funcao: 'a';
 declaracao_variavel_global: 'b';
 
-tipo: TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL;
+/* S, exp, termo, fator */
+/* programa:; */
+
 
 %%
 
