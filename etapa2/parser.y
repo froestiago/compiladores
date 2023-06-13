@@ -38,6 +38,20 @@ program: global_variables functions
        | /* empty */
        ;
 
+global_variables: type ID_list ';'
+                ;
+
+type: TK_PR_INT
+    | TK_PR_FLOAT
+    | TK_PR_BOOL
+    ;
+
+ID_list: ID_list ',' TK_IDENTIFICADOR
+       | TK_IDENTIFICADOR
+       ;
+
+functions: ;
+
 %%
 
 void yyerror (char const *s){
