@@ -5,7 +5,7 @@ void yyerror (char const *s);
 extern int yylineno;
 %}
 
-%define parse.error detailed
+%define parse.error verbose
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -32,77 +32,65 @@ extern int yylineno;
 
 %%
 
-program: list
-        | ;
+program: %empty
+        |list;
 
 list: list statement
-        | statement
-        | ;
+        | statement;
 
 statement: function
-        | global_var
-        | ;
+        | global_var;
 
 /* Global variables */
 
 global_var: type list_global_var ';';
                 
 list_global_var: list_global_var ',' TK_IDENTIFICADOR
-        | TK_IDENTIFICADOR
-        | ;
+        | TK_IDENTIFICADOR;
 
 /* Function */
 
-functions: functions function
-        | function
-        | ;
+function: head command_block;
 
-function: head body
-        | ;
-
-head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type ;
+head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type;
 
 parameter_list: %empty
         | parameter
-        | parameter_list ',' parameter
-        | ;
+        | parameter_list ',' parameter;
 
-parameter: type TK_IDENTIFICADOR
-        | ;
-
-body:'{' '}'
-        | ;
-
-/* function: head body; */
-/* head: TK_IDENTIFICADOR '(' params_list ')' TK_OC_MAP type; */
-/* body:  %empty ; //WIP */
-
-/* params_list: params_list ',' param */
-        /* | param */
-        /* | %empty; */
-
-/* param: type TK_IDENTIFICADOR */
+parameter: type TK_IDENTIFICADOR;
 
 /* Command Blocks */
 
-command_block:  %empty //WIP
+command_block: '{' '}'
+      | '{' command_list '}';
 
-command: op_assignment
-        | flow_control
-        | op_return
+command_list: command ';'
+        | command_list command ';';
+
+command: var_declaration
+        | assignment
+        | flow_control 
+        | op_return 
         | command_block
+        | function_call;
 
-flow_control: conditional | iterative;
+var_declaration: type; //WIP
 
-conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block | TK_PR_IF '(' expression ')' command_block;
+assignment: TK_IDENTIFICADOR '=' expression;
 
-iterative: TK_PR_WHILE '(' expression ')' command_block;
-
-op_assignment: TK_IDENTIFICADOR '=' expression;
+function_call: TK_IDENTIFICADOR '(' expression ')';
 
 op_return: TK_PR_RETURN expression;
 
-expression: %empty; //WIP
+flow_control: conditional | iterative;
+
+conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block 
+        | TK_PR_IF '(' expression ')' command_block;
+
+iterative: TK_PR_WHILE '(' expression ')' command_block;
+
+expression: type ; //WIP
 
 literal: TK_LIT_INT
         | TK_LIT_FLOAT
@@ -112,8 +100,6 @@ literal: TK_LIT_INT
 type:   TK_PR_INT
         | TK_PR_FLOAT
         | TK_PR_BOOL;
-
-functions: %empty; //WIP
 
 %%
 
