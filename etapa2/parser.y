@@ -53,15 +53,35 @@ list_global_var: list_global_var ',' TK_IDENTIFICADOR
 
 /* Function */
 
-function: head body;
-head: TK_IDENTIFICADOR '(' params_list ')' TK_OC_MAP type;
-body:  %empty ; //WIP
+functions: functions function
+        | function
+        | ;
 
-params_list: params_list ',' param
-        | param
-        | %empty;
+function: head body
+        | ;
 
-param: type TK_IDENTIFICADOR
+head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type ;
+
+parameter_list: %empty
+        | parameter
+        | parameter_list ',' parameter
+        | ;
+
+parameter: type TK_IDENTIFICADOR
+        | ;
+
+body:'{' '}'
+        | ;
+
+/* function: head body; */
+/* head: TK_IDENTIFICADOR '(' params_list ')' TK_OC_MAP type; */
+/* body:  %empty ; //WIP */
+
+/* params_list: params_list ',' param */
+        /* | param */
+        /* | %empty; */
+
+/* param: type TK_IDENTIFICADOR */
 
 /* Command Blocks */
 
