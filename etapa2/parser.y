@@ -2,6 +2,7 @@
 #include <stdio.h>
 int yylex(void);
 void yyerror (char const *s);
+extern int yylineno;
 %}
 
 %define parse.error detailed
@@ -27,23 +28,18 @@ void yyerror (char const *s);
 %token TK_LIT_TRUE
 %token TK_ERRO
 
-%start programa
+%start program
 
 %%
 
-programa:;
-programa: lista;
-lista: lista elemento | elemento;
-elemento: funcao | declaracao_variavel_global;
-funcao: 'a';
-declaracao_variavel_global: 'b';
-
-/* S, exp, termo, fator */
-/* programa:; */
-
+program: global_variables functions
+       | functions
+       | global_variables
+       | /* empty */
+       ;
 
 %%
 
 void yyerror (char const *s){
-    printf("%s\n", s);
+    fprintf(stderr, "Error on line %d: %s\n", yylineno, s);
 }
