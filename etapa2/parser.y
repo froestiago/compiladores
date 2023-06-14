@@ -66,7 +66,7 @@ command_block: '{' '}'
       | '{' command_list '}';
 
 command_list: command ';'
-        | command_list command ';';
+        | command_list ';' command;
 
 command: var_declaration
         | assignment
@@ -74,6 +74,8 @@ command: var_declaration
         | op_return 
         | command_block
         | function_call;
+
+/* Commands */
 
 var_declaration: type; //WIP
 
@@ -90,7 +92,29 @@ conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block
 
 iterative: TK_PR_WHILE '(' expression ')' command_block;
 
-expression: type ; //WIP
+/* Expressions */
+
+expression: operands
+    | '(' expression ')'
+    | '-' expression
+    | '!' expression
+    | expression '*' expression
+    | expression '/' expression
+    | expression '%' expression    
+    | expression '+' expression
+    | expression '-' expression
+    | expression '<' expression
+    | expression '>' expression
+    | expression TK_OC_LE expression
+    | expression TK_OC_GE expression
+    | expression TK_OC_EQ expression
+    | expression TK_OC_NE expression
+    | expression TK_OC_AND expression
+    | expression TK_OC_OR expression;
+
+operands: TK_IDENTIFICADOR
+        | literal
+        | function_call
 
 literal: TK_LIT_INT
         | TK_LIT_FLOAT
