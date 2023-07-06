@@ -1,18 +1,24 @@
 CC=gcc
 LC=lex
 BC=bison
+ 
+etapa3: lex.yy.o parser.tab.o ast.o
+	${CC} -o etapa3 lex.yy.o ast.o parser.tab.o 
 
-etapa3: scanner parser c
-	${CC} -o etapa3 lex.yy.o parser.tab.o main.o
+main.o: main.c lex.yy.c
+	${CC} -c main.c
 
-c: main.c parser.tab.c lex.yy.c
-	${CC} -c main.c parser.tab.c lex.yy.c
+ast.o: ast.c
+	${CC} -c ast.c
 
-scanner: scanner.l
-	${LC} scanner.l
+lex.yy.o: lex.yy.c
+	${CC} -c lex.yy.c
 
-parser: parser.y
-	${BC} -d parser.y
+lex.yy.c: scanner.l parser.tab.o
+	${LC} --header-file=lex.yy.h scanner.l
 
-clean:
-	rm -rf etapa3 lex* *.o parser.tab*
+parser.tab.o: parser.tab.c
+	${CC} -c parser.tab.c
+
+parser.tab.c: parser.y
+	${BC} -d -v parser.y
