@@ -32,3 +32,37 @@ void add_children(node *parent, node *child) {
 //   printf("numero de filho do root: %d", pai->num_of_children);
 
 // }
+
+
+Node* createNode(LexicalValue lexicalValue) 
+{
+    Node* node = malloc(sizeof(Node));
+
+    node->lexicalValue = lexicalValue;
+    node->brother = NULL;
+    node->child = NULL;
+    node->parent = NULL;
+
+    return node;
+}
+
+void addChild(Node* parent, Node* child) 
+{
+    if (!child) return;
+
+    if (!parent) {
+        libera(child);
+        return;
+    }
+
+    Node* lastChild = getLastChild(parent);
+    if (lastChild)
+    {
+        lastChild->brother = child;
+    } 
+    else 
+    {
+        parent->child = child;
+    }
+    child->parent = parent;
+}
