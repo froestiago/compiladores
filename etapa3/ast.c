@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include "ast.h"
 
-node* create_node(char *label) {
-  node *new_node = NULL;
-  new_node = calloc(1, sizeof(node));
+Node* create_node(char *label) {
+  Node *new_node = NULL;
+  new_node = calloc(1, sizeof(Node));
   if (new_node != NULL){
     new_node->label = label;
     new_node->children = NULL;
@@ -14,9 +14,9 @@ node* create_node(char *label) {
   }
 }
 
-void add_children(node *parent, node *child) {
+void add_children(Node *parent, Node *child) {
   parent->num_of_children++;
-  parent->children = realloc(parent->children, parent->num_of_children * sizeof(struct node*));
+  parent->children = realloc(parent->children, parent->num_of_children * sizeof(struct Node*));
 }
 
 // int main() {

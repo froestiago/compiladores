@@ -1,21 +1,23 @@
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
 
-typedef struct node {
+typedef struct Node {
   char *label;
   int num_of_children;
-  struct node **children;
-} node;
+  struct Node **children;
+  int symbol;
+} Node;
 
 /*
  * Função asd_new, cria um nó sem filhos com o label informado.
  */
-node* create_node(char *label);
+Node* create_node(char *label);
 
 /*
  * Função asd_add_child, adiciona child como filho de tree.
  */
-void add_children(node *parent, node *child);
+
+void add_children(Node *parent, Node *child);
 
 // /*
 //  * Função asd_tree, libera recursivamente o nó e seus filhos.

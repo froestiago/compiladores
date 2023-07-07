@@ -21,4 +21,4 @@ parser.tab.o: parser.tab.c
 	${CC} -c parser.tab.c
 
 parser.tab.c: parser.y
-	${BC} -d -v parser.y
+	${BC} -d -v -t parser.y
