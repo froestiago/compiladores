@@ -1,6 +1,8 @@
 %{
     #include <stdio.h>
     #include "parser.tab.h"
+    #include "ast.h"
+    #include "valor_lexico.h"
 %}
 
 %option noyywrap
@@ -36,7 +38,7 @@ new_line        [\n]
 
 "false"             return TK_LIT_FALSE;
 "true"              return TK_LIT_TRUE;
-{integer}           return TK_LIT_INT;
+{integer}           {yylval.valor_lexico = get_yylval(yylineno, LITERAL, yytext); return TK_LIT_INT;}
 {float}             return TK_LIT_FLOAT;
 
 {identificador}     return TK_IDENTIFICADOR;

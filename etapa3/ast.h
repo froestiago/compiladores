@@ -1,5 +1,8 @@
+#pragma once
+
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
+#include "valor_lexico.h"
 
 typedef struct Node {
   int num_of_children;

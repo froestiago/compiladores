@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "valor_lexico.h"
 
 valorLexico get_yylval(int num_line, Tipo tipo, char* yytext) {

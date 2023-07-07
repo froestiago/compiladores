@@ -1,4 +1,5 @@
 %{
+#include <string.h>
 #include <stdio.h>
 extern void* arvore;
 int yylex(void);
@@ -17,59 +18,59 @@ extern int yylineno;
     #include "valor_lexico.h"
 }
 
-//%token<node> TK_PR_INT
-// %token<node> TK_PR_FLOAT
-// %token<node> TK_PR_BOOL
-// %token<node> TK_PR_IF
-// %token<node> TK_PR_ELSE
-// %token<node> TK_PR_WHILE
-// %token<node> TK_PR_RETURN
-// %token<node> TK_OC_LE
-// %token<node> TK_OC_GE
-// %token<node> TK_OC_EQ
-// %token<node> TK_OC_NE
-// %token<node> TK_OC_AND
-// %token<node> TK_OC_OR
-// %token<node> TK_OC_MAP
-// %token<node> TK_IDENTIFICADOR
-%token<node> TK_LIT_INT
-// %token<node> TK_LIT_FLOAT
-// %token<node> TK_LIT_FALSE
-// %token<node> TK_LIT_TRUE
-// %token<node> TK_ERRO
+%token<valor_lexico> TK_PR_INT
+%token<valor_lexico> TK_PR_FLOAT
+%token<valor_lexico> TK_PR_BOOL
+%token<valor_lexico> TK_PR_IF
+%token<valor_lexico> TK_PR_ELSE
+%token<valor_lexico> TK_PR_WHILE
+%token<valor_lexico> TK_PR_RETURN
+%token<valor_lexico> TK_OC_LE
+%token<valor_lexico> TK_OC_GE
+%token<valor_lexico> TK_OC_EQ
+%token<valor_lexico> TK_OC_NE
+%token<valor_lexico> TK_OC_AND
+%token<valor_lexico> TK_OC_OR
+%token<valor_lexico> TK_OC_MAP
+%token<valor_lexico> TK_IDENTIFICADOR
+%token<valor_lexico> TK_LIT_INT
+%token<valor_lexico> TK_LIT_FLOAT
+%token<valor_lexico> TK_LIT_FALSE
+%token<valor_lexico> TK_LIT_TRUE
+%token<valor_lexico> TK_ERRO
 
-%token<valor_lexico> '!'
-// %type<valor_lexico> program
-// %type<valor_lexico> list
-// %type<valor_lexico> global_var
-// %type<valor_lexico> list_global_var
-// %type<valor_lexico> function
-// %type<valor_lexico> head
-// %type<valor_lexico> parameter_list
-// %type<valor_lexico> parameter
-// %type<valor_lexico> func_body
-// %type<valor_lexico> command_block
-// %type<valor_lexico> command
-// %type<valor_lexico> var_declaration
-// %type<valor_lexico> var_in_func
-// %type<valor_lexico> assignment
-// %type<valor_lexico> function_call
-// %type<valor_lexico> args
-// %type<valor_lexico> arg_list
-// %type<valor_lexico> op_return
-// %type<valor_lexico> flow_control
-// %type<valor_lexico> conditional
-// %type<valor_lexico> iterative
-// %type<valor_lexico> expression
-%type<valor_lexico> expression_1
-%type<valor_lexico> expression_2
-//%type<valor_lexico> expression_3
-// %type<valor_lexico> expression_4
-// %type<valor_lexico> expression_5
-// %type<valor_lexico> expression_6
-// %type<valor_lexico> expression_7
-%type<valor_lexico> literal
-// %type<valor_lexico> type
+/* %token<node> '!' */
+// %type<node> program
+// %type<node> list
+/* %type<node> global_var */
+/* %type<node> list_global_var */
+// %type<node> function
+// %type<node> head
+// %type<node> parameter_list
+// %type<node> parameter
+// %type<node> func_body
+// %type<node> command_block
+// %type<node> command
+// %type<node> var_declaration
+// %type<node> var_in_func
+// %type<node> assignment
+// %type<node> function_call
+// %type<node> args
+// %type<node> arg_list
+// %type<node> op_return
+// %type<node> flow_control
+// %type<node> conditional
+// %type<node> iterative
+// %type<node> expression
+/* %type<node> expression_1 */
+/* %type<node> expression_2 */
+//%type<node> expression_3
+// %type<node> expression_4
+// %type<node> expression_5
+// %type<node> expression_6
+// %type<node> expression_7
+%type<node> literal
+/* %type<node> type */
 
 
 %start literal
@@ -104,17 +105,17 @@ extern int yylineno;
 
 // /* Global variables */
 
-// global_var: type list_global_var ';' { 
-//     $$ = NULL;
-//     libera($2);
-//     freeLexicalValue($3);
-// };
+/* global_var: type list_global_var ';' { 
+    $$ = NULL;
+    libera($2);
+    freeLexicalValue($3);
+}; */
 
-// list_global_var: TK_IDENTIFICADOR ',' list_global_var {
-//     $$ = NULL;
-//     freeLexicalValue($1);
-//     freeLexicalValue($2);
-// };
+/* list_global_var: TK_IDENTIFICADOR ',' list_global_var {
+    $$ = NULL;
+    freeLexicalValue($1);
+    freeLexicalValue($2);
+}; */
 
 
 // list_global_var: TK_IDENTIFICADOR { 
@@ -335,10 +336,10 @@ extern int yylineno;
 //     add_children($$, $2);
 // };
 
-expression_2: '!' expression_1 { 
+/* expression_2: '!' expression_1 { 
     $$ = create_node($1);
     add_children($$, $2);
-};
+}; */
 
 // expression_2: expression_1 {
 //     $$ = $1;
@@ -350,9 +351,9 @@ expression_2: '!' expression_1 {
 //     $$ = create_node($1);
 // };
 
-expression_1: literal { 
+/* expression_1: literal { 
     $$ = $1;
-};
+}; */
 
 // expression_1: function { //function or function_call??
 //     $$ = $1;
@@ -367,11 +368,8 @@ expression_1: literal {
 
 // /* Literals */ 
 
-literal: TK_LIT_INT { 
-    $$ = create_node("symbol");
-    $$->symbol = $1;
-};
-// /*
+literal: TK_LIT_INT { $$ = create_node($1); };
+//
 // literal: TK_LIT_FLOAT { 
 //     $$ = create_node($1);
 // };
@@ -386,11 +384,11 @@ literal: TK_LIT_INT {
 
 
 // /* Types */
-// /*
-// type: TK_PR_INT { 
-//     $$ = NULL; 
-//     freeLexicalValue($1);
-// };
+
+/* type: TK_PR_INT { 
+    $$ = NULL; 
+    freeLexicalValue($1);
+}; */
 
 // type: TK_PR_FLOAT { 
 //     $$ = NULL; 

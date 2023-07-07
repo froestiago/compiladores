@@ -11,8 +11,8 @@ Node *create_node(valorLexico valor_lexico) {
     new_node->num_of_children = 0;
     new_node->children = NULL;
     new_node->valor_lexico = valor_lexico;
-    return new_node;
   }
+  return new_node;
 }
 
 void add_children(Node *parent, Node *child) {

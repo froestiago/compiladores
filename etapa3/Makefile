@@ -18,7 +18,7 @@ lex.yy.o: lex.yy.c
 	${CC} -c lex.yy.c
 
 lex.yy.c: scanner.l parser.tab.o
-	${LC} --header-file=lex.yy.h scanner.l
+	${LC} scanner.l
 
 parser.tab.o: parser.tab.c
 	${CC} -c parser.tab.c
