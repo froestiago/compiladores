@@ -42,40 +42,37 @@ extern int yylineno;
 %token<valor_lexico> TK_LIT_TRUE
 %token<valor_lexico> TK_ERRO
 %token<valor_lexico> '(' ')'
+%token<valor_lexico> '!' '-' '*' '/' '%' '+' '<' '>' '='
 
-/* %token<node> '!' */
 // %type<node> program
 // %type<node> list
-/* %type<node> global_var */
-/* %type<node> list_global_var */
-// %type<node> function
-// %type<node> head
-// %type<node> parameter_list
-// %type<node> parameter
-// %type<node> func_body
+// %type<node> global_var
+// %type<node> list_global_var
+%type<node> function
+%type<node> head
+%type<node> parameter_list
+%type<node> parameter
+%type<node> func_body
 // %type<node> command_block
 // %type<node> command
 // %type<node> var_declaration
 // %type<node> var_in_func
 // %type<node> assignment
-// %type<node> function_call
-// %type<node> args
-// %type<node> arg_list
+%type<node> function_call
+%type<node> args
 // %type<node> op_return
 // %type<node> flow_control
 // %type<node> conditional
 // %type<node> iterative
-// %type<node> expression
+%type<node> expression
 %type<node> expression_1
-/* %type<node> expression_2 */
-//%type<node> expression_3
-// %type<node> expression_4
-// %type<node> expression_5
-// %type<node> expression_6
-// %type<node> expression_7
+%type<node> expression_2
+%type<node> expression_3
+%type<node> expression_4
+%type<node> expression_5
+%type<node> expression_6
+%type<node> expression_7
 %type<node> literal
-%type<node> type
-
 
 %start expression_1
 
