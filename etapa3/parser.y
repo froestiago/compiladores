@@ -41,6 +41,7 @@ extern int yylineno;
 %token<valor_lexico> TK_LIT_FALSE
 %token<valor_lexico> TK_LIT_TRUE
 %token<valor_lexico> TK_ERRO
+%token<valor_lexico> '(' ')'
 
 /* %token<node> '!' */
 // %type<node> program
@@ -65,7 +66,7 @@ extern int yylineno;
 // %type<node> conditional
 // %type<node> iterative
 // %type<node> expression
-/* %type<node> expression_1 */
+%type<node> expression_1
 /* %type<node> expression_2 */
 //%type<node> expression_3
 // %type<node> expression_4
@@ -73,10 +74,10 @@ extern int yylineno;
 // %type<node> expression_6
 // %type<node> expression_7
 %type<node> literal
-/* %type<node> type */
+%type<node> type
 
 
-%start literal
+%start expression_1
 
 %%
 
@@ -362,47 +363,27 @@ extern int yylineno;
 //     $$ = $1;
 // };
 
-//  expression_1: '(' expression ')' { 
-//     $$ = $2;
-//     freeLexicalValue($1);
-//     freeLexicalValue($3);
-// };
+expression_1: '(' literal ')' { 
+    $$ = $2;
+    freeLexicalValue($1);
+    freeLexicalValue($3);
+};
 
 
 // /* Literals */ 
 
-literal: TK_LIT_INT { $$ = create_node($1); };
-//
-// literal: TK_LIT_FLOAT { 
-//     $$ = create_node($1);
-// };
-
-// literal: TK_LIT_TRUE { 
-//     $$ = create_node($1);
-// };
-
-// literal: TK_LIT_FALSE { 
-//     $$ = create_node($1);
-// };
+literal:    TK_LIT_INT      { $$ = create_node($1); printf("num_of_children: %d", $$->num_of_children);};
+            |TK_LIT_FLOAT   { $$ = create_node($1); printf("num_of_children: %d", $$->num_of_children);};
+            |TK_LIT_TRUE    { $$ = create_node($1); printf("num_of_children: %d", $$->num_of_children);};
+            |TK_LIT_FALSE   { $$ = create_node($1); printf("num_of_children: %d", $$->num_of_children);};
 
 
 // /* Types */
 
-/* type: TK_PR_INT { 
-    $$ = NULL; 
-    freeLexicalValue($1);
-}; */
+type:   TK_PR_INT { $$ = NULL; freeLexicalValue($1); }
+        |TK_PR_FLOAT { $$ = NULL; freeLexicalValue($1); }
+        |TK_PR_BOOL { $$ = NULL; freeLexicalValue($1); };
 
-// type: TK_PR_FLOAT { 
-//     $$ = NULL; 
-//     freeLexicalValue($1);
-// };
-
-// type: TK_PR_BOOL { 
-//     $$ = NULL; 
-//     freeLexicalValue($1);
-// };
-// */
 %%
 
 void yyerror (char const *s){

@@ -12,3 +12,12 @@ valorLexico get_yylval(int num_line, Tipo tipo, char* yytext) {
 
     return valor_lexico;
 }
+
+void freeLexicalValue(valorLexico valor_lexico)
+{
+    if (!valor_lexico.valor) return;
+
+    free(valor_lexico.valor);
+    
+    valor_lexico.valor = NULL;
+}

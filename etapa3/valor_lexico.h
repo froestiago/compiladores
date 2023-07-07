@@ -14,3 +14,4 @@ typedef struct valor_lexico {
 } valorLexico;
 
 valorLexico get_yylval(int num_line, Tipo tipo, char* yytext);
+void freeLexicalValue(valorLexico valor_lexico);
