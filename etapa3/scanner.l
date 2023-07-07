@@ -1,7 +1,8 @@
 %{
-    #include <stdio.h>
-    #include "parser.tab.h"
+    #include<stdio.h>
+    #include<string.h>
     #include "ast.h"
+    #include "parser.tab.h"
     #include "valor_lexico.h"
 %}
 

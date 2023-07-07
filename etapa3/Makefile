@@ -1,30 +1,23 @@
-CC=gcc
-LC=lex
-BC=bison
- 
-etapa3: lex.yy.o parser.tab.o ast.o valor_lexico.o
-	${CC} -o etapa3 lex.yy.o ast.o valor_lexico.o parser.tab.o 
+etapa3: lex.yy.o parser.tab.o main.o ast.o valor_lexico.o
+	gcc -g -o etapa3 lex.yy.o parser.tab.o main.o ast.o valor_lexico.o
 
-main.o: main.c lex.yy.c
-	${CC} -c main.c
+lex.yy.o parser.tab.o main.o ast.o: lex.yy.c parser.tab.c ast.c main.c valor_lexico.c
+	gcc -g -c lex.yy.c main.c ast.c parser.tab.c valor_lexico.c
 
-valor_lexico.o: valor_lexico.c
-	$(CC) -c valor_lexico.c
+lex.yy.c: scanner.l
+	flex scanner.l
 
-ast.o: ast.c
-	${CC} -c ast.c
-
-lex.yy.o: lex.yy.c
-	${CC} -c lex.yy.c
-
-lex.yy.c: scanner.l parser.tab.o
-	${LC} scanner.l
-
-parser.tab.o: parser.tab.c
-	${CC} -c parser.tab.c
-
-parser.tab.c: parser.y
-	${BC} -d parser.y
+parser.tab.c parser.tab.h: parser.y
+	bison -d parser.y --report-file=FILE
 
 clean:
-	rm -rf etapa3 lex* *.o parser.tab*
+	rm -rf lex.yy.* parser.tab.* main.o ast.o valor_lexico.o etapa3
+
+submit:
+	tar cvzf etapa3.tgz .
+
+debug:
+	gdb ./etapa3
+
+checkleak: 
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./etapa3 < teste.txt

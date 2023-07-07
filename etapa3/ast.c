@@ -20,18 +20,33 @@ void add_children(Node *parent, Node *child) {
   parent->children = realloc(parent->children, parent->num_of_children * sizeof(struct Node*));
 }
 
-//usar este main para testar funcionalidades da arvore
+// void imprime_arvore(Node *nodo, int profundidade)
+// {
+//     int i = 0;
 
-// int main() {
-//   struct node* pai = create_node("0");
-//   struct node* filho = create_node("1");
-//   struct node* filha = create_node("2");
-//   struct node* filho_2 = create_node("3");
+//     if (nodo == NULL)
+//         return;
+    
+//     for(i = 0; i<profundidade-1; i++) 
+//     {
+//         printf("    ");
+//     }
 
-//   add_children(pai, filho);
-//   add_children(pai, filha);
-//   add_children(pai, filho_2);
+//     if (profundidade == 0)
+//         printf("%s", nodo->valor_lexico);
+//     else 
+//     {
+//         printf("+---");
+//         printf("%s", nodo->valor_lexico);
+//     }
+//     printf("\n");
 
-//   printf("numero de filho do root: %d", pai->num_of_children);
-
+//     Node *nodo_f = nodo->children;
+//     // while(nodo_f!=NULL)
+//     // {
+//     //     imprime_arvore(nodo_f, profundidade+1);
+//     //     nodo_f = nodo_f->;
+//     // }
+    
+//     return;
 // }

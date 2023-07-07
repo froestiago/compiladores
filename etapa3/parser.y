@@ -1,11 +1,18 @@
 %{
-#include <string.h>
-#include <stdio.h>
+#include<stdio.h>
+#include<string.h>
+#include "ast.h"
+// #include "main.h"
 extern void* arvore;
 int yylex(void);
 void yyerror (char const *s);
 extern int yylineno;
 %}
+
+%code requires { 
+    #include "ast.h" 
+    #include "valor_lexico.h"
+}
 
 %union {
     Node* node;
@@ -13,10 +20,6 @@ extern int yylineno;
 }
 
 %define parse.error verbose
-%code requires { 
-    #include "ast.h" 
-    #include "valor_lexico.h"
-}
 
 %token<valor_lexico> TK_PR_INT
 %token<valor_lexico> TK_PR_FLOAT
