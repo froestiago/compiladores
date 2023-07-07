@@ -2,16 +2,15 @@
 #define _ARVORE_H_
 
 typedef struct Node {
-  char *label;
   int num_of_children;
   struct Node **children;
-  int symbol;
+  valorLexico valor_lexico;
 } Node;
 
 /*
  * Função asd_new, cria um nó sem filhos com o label informado.
  */
-Node* create_node(char *label);
+Node *create_node(valorLexico valor_lexico);
 
 /*
  * Função asd_add_child, adiciona child como filho de tree.

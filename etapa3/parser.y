@@ -8,12 +8,13 @@ extern int yylineno;
 
 %union {
     Node* node;
-    Node* valor_lexico;
+    valorLexico valor_lexico;
 }
 
 %define parse.error verbose
 %code requires { 
     #include "ast.h" 
+    #include "valor_lexico.h"
 }
 
 //%token<node> TK_PR_INT
