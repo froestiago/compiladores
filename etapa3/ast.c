@@ -19,34 +19,3 @@ void add_children(Node *parent, Node *child) {
   parent->num_of_children++;
   parent->children = realloc(parent->children, parent->num_of_children * sizeof(struct Node*));
 }
-
-// void imprime_arvore(Node *nodo, int profundidade)
-// {
-//     int i = 0;
-
-//     if (nodo == NULL)
-//         return;
-    
-//     for(i = 0; i<profundidade-1; i++) 
-//     {
-//         printf("    ");
-//     }
-
-//     if (profundidade == 0)
-//         printf("%s", nodo->valor_lexico);
-//     else 
-//     {
-//         printf("+---");
-//         printf("%s", nodo->valor_lexico);
-//     }
-//     printf("\n");
-
-//     Node *nodo_f = nodo->children;
-//     // while(nodo_f!=NULL)
-//     // {
-//     //     imprime_arvore(nodo_f, profundidade+1);
-//     //     nodo_f = nodo_f->;
-//     // }
-    
-//     return;
-// }

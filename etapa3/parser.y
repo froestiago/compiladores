@@ -44,26 +44,27 @@ extern int yylineno;
 %token<valor_lexico> '(' ')'
 %token<valor_lexico> '!' '-' '*' '/' '%' '+' '<' '>' '='
 
-// %type<node> program
-// %type<node> list
-// %type<node> global_var
-// %type<node> list_global_var
+%type<node> program
+%type<node> list
+%type<node> global_var
+%type<node> list_global_var
 %type<node> function
 %type<node> head
 %type<node> parameter_list
 %type<node> parameter
 %type<node> func_body
-// %type<node> command_block
-// %type<node> command
-// %type<node> var_declaration
-// %type<node> var_in_func
-// %type<node> assignment
+%type<node> command_block
+%type<node> command_list
+%type<node> command
+%type<node> var_declaration
+%type<node> var_in_func
+%type<node> assignment
 %type<node> function_call
 %type<node> args
-// %type<node> op_return
-// %type<node> flow_control
-// %type<node> conditional
-// %type<node> iterative
+%type<node> op_return
+%type<node> flow_control
+%type<node> conditional
+%type<node> iterative
 %type<node> expression
 %type<node> expression_1
 %type<node> expression_2
@@ -74,70 +75,32 @@ extern int yylineno;
 %type<node> expression_7
 %type<node> literal
 
-%start expression_1
+%start program
 
 %%
 
-// program:  { 
-//     $$ = $$; 
-// };
+program:  {$$ = NULL; arvore = NULL;};
 
-// program: list { 
-//     $$ = $$; 
-// };
+program: list {$$ = $1; arvore = $$;};
 
-// list: list function { 
-//     $$ = $1;
-//     add_children($$, $2);
-// };
+list: list function { $$ = $1; add_children($$, $2);};
+    | list global_var {$$ = $2;};
+    | function {$$ = $1;};
+    | global_var {$$ = NULL;};
 
-// list: list global_var {
-//     $$ = $2;
-// };
+/* Global variables */
 
-// list: function { 
-//     $$ = $1;
-// };
+//revisar aqui, função libera()
+global_var: type list_global_var ';' {$$ = NULL; libera($2); free_lexical_value($3);};
 
-// list: global_var { 
-//     $$ = NULL;
-// };
-
-
-// /* Global variables */
-
-/* global_var: type list_global_var ';' { 
-    $$ = NULL;
-    libera($2);
-    freeLexicalValue($3);
-}; */
-
-/* list_global_var: TK_IDENTIFICADOR ',' list_global_var {
-    $$ = NULL;
-    freeLexicalValue($1);
-    freeLexicalValue($2);
-}; */
-
-
-// list_global_var: TK_IDENTIFICADOR { 
-//     $$ = NULL; 
-//     freeLexicalValue($1);
-// };
-
-// global_var: type list_global_var ';';
-// list_global_var: list_global_var ',' TK_IDENTIFICADOR
-//         | TK_IDENTIFICADOR;
+list_global_var: TK_IDENTIFICADOR ',' list_global_var {$$ = NULL; free_lexical_value($1); free_lexical_value($2);}
+                | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-//is this correct??
-function: head command_block {
-    $$ = $1;
-    add_children($$, $2);
-};
+//revisar aqui a parte das funções
+function: head command_block {$$ = $1; add_children($$, $2);};
 
-head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {
-    $$ = create_node($2);
-};
+head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($2);};
 
 parameter_list: %empty {$$ = NULL;}
          | parameter {$$ = NULL;}
@@ -146,17 +109,14 @@ parameter_list: %empty {$$ = NULL;}
 parameter: type TK_IDENTIFICADOR {$$ = NULL; delete $2;};
 
 /* func body */
+func_body: command_block {$$ = $1};
 
 command_block: '{' command_list '}' {$$ = $2;};
                 
 command_list: %empty {$$ = NULL;}
-              | command ';' command_block {
-                if ($1 != NULL) {
-                    $$ = $1; 
-                    $$->add_child($3);
-                } else {
-                    $$ = $3;
-                }};
+            | command ';' command_block {
+                if ($1 != NULL) {$$ = $1; $$->add_children($3);} 
+                else {$$ = $3;}};
 
 command: var_declaration {$$ = $1;}
         | assignment {$$ = $1;}
@@ -167,147 +127,66 @@ command: var_declaration {$$ = $1;}
 
 // /* Commands */
 
-// var_declaration: type var_in_func;
-// var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func
-//         | TK_IDENTIFICADOR TK_OC_LE literal
-//         | TK_IDENTIFICADOR ',' var_in_func
-//         | TK_IDENTIFICADOR;
+var_declaration: type var_in_func {$$ = $2};
 
-// assignment: TK_IDENTIFICADOR '=' expression;
+var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5); free_lexical_value($4);}
+        | TK_IDENTIFICADOR TK_OC_LE literal {$$ = create_node($2); add_children($$, create_node($1); add_children($$, $3);)}
+        | TK_IDENTIFICADOR ',' var_in_func {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
+        | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
-function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; $$->add_child($3);}; //incomplete
+assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
+
+function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; $$->add_children($3);}; //incompleto!! revisar aqui
 
 args: %empty {$$ = NULL;}
-        | expression ',' args {$$ = $1; $$->add_child($3);}
+        | expression ',' args {$$ = $1; $$->add_children($3);}
         | expression {$$ = $1};
 
-
-op_return: TK_PR_RETURN expression {$$ = $1; $$->add_child($2);};
+op_return: TK_PR_RETURN expression {$$ = $1; $$->add_children($2);};
 
 flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
-conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block 
-                {$$ = $1; $$-> add_children($3); $$->add_children($5); $$->add_children($7);}
-            | TK_PR_IF '(' expression ')' command_block 
-                 {$$ = $1; $$-> add_children($3); $$->add_children($5);};
+conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = $1; $$-> add_children($3); $$->add_children($5); $$->add_children($7);}
+            | TK_PR_IF '(' expression ')' command_block {$$ = $1; $$-> add_children($3); $$->add_children($5);};
 
-iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = $1; $$->add_child($3); $$->add_child($5);};
+iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = $1; $$->add_children($3); $$->add_children($5);};
 
 /* Expressions */
 
-expression: expression TK_OC_OR expression_7 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
+expression: expression TK_OC_OR expression_7 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_7 {$$ = $1;};
 
-expression: expression_7 {$$ = $1;};
+expression_7: expression_7 TK_OC_AND expression_6 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+             | expression_6 {$$ = $1;};
 
-/* expression 7 */
+expression_6: expression_6 TK_OC_EQ expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_6 TK_OC_NE expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_5 {$$ = $1;};
 
-expression_7: expression_7 TK_OC_AND expression_6 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
+expression_5: expression_5 '<' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_5 '>' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);};
+            | expression_5 TK_OC_LE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_5 TK_OC_GE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_4 {$$ = $1;};
 
-expression_7: expression_6 {$$ = $1;};
+expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_4 '-' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_3 {$$ = $1;};
 
-/* expression 6 */
-
-expression_6: expression_6 TK_OC_EQ expression_5 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_6: expression_6 TK_OC_NE expression_5 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);    
-};
-
-expression_6: expression_5 {$$ = $1;};
-
-/* expression 5 */
-expression_5: expression_5 '<' expression_4 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_5: expression_5 '>' expression_4 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_5: expression_5 TK_OC_LE expression_4 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_5: expression_5 TK_OC_GE expression_4 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_5: expression_4 {$$ = $1;};
-
-/* expression 4 */
-
-expression_4: expression_4 '+' expression_3 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_4: expression_4 '-' expression_3 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_4: expression_3 {$$ = $1;};
-
-/* expression 3 */
-
-expression_3: expression_3 '*' expression_2 {
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_3: expression_3 '/' expression_2 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_3: expression_3 '%' expression_2 { 
-    $$ = create_node($2);
-    add_children($$, $1);
-    add_children($$, $3);
-};
-
-expression_3: expression_2 {$$ = $1;};
-
-/* expression 2 */
+expression_3: expression_3 '*' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_3 '/' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_3 '%' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_2 {$$ = $1;};
 
 expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
             |'!' expression_1 {$$ = create_node($1); add_children($$, $2);}
             | expression_1 {$$ = $1;};
 
-// /* expression 1 */
-
 expression_1: TK_IDENTIFICADOR {$$ = $1;}
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
-            | '(' expression ')' { $$ = $2; freeLexicalValue($1); freeLexicalValue($3);};
-
+            | '(' expression ')' { $$ = $2; free_lexical_value($1); free_lexical_value($3);};
 
 // /* Literals */ 
 
@@ -318,9 +197,9 @@ literal: TK_LIT_INT   {$$ = create_node($1);}
 
 // /* Types */
 
-type:   TK_PR_INT { $$ = NULL; freeLexicalValue($1); }
-        |TK_PR_FLOAT { $$ = NULL; freeLexicalValue($1); }
-        |TK_PR_BOOL { $$ = NULL; freeLexicalValue($1); };
+type:   TK_PR_INT { $$ = NULL; free_lexical_value($1); }
+        |TK_PR_FLOAT { $$ = NULL; free_lexical_value($1); }
+        |TK_PR_BOOL { $$ = NULL; free_lexical_value($1); };
 
 %%
 
