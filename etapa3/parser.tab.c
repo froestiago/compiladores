@@ -1631,7 +1631,7 @@ yyreduce:
 
   case 36:
 #line 141 "parser.y"
-                     {(yyval.node) = (yyvsp[0].node)}
+                     {(yyval.node) = (yyvsp[0].node);}
 #line 1636 "parser.tab.c"
     break;
 

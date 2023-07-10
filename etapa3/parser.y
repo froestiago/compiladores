@@ -138,7 +138,7 @@ function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; add_children($$, $3);}; /
 
 args: %empty {$$ = NULL;}
         | expression ',' args {$$ = $1; add_children($$, $3);}
-        | expression {$$ = $1};
+        | expression {$$ = $1;};
 
 op_return: TK_PR_RETURN expression {$$ = $1; add_children($$, $2);};
 
