@@ -45,8 +45,10 @@ void free_node(Node* node)
     
     free_lexical_value(node->valor_lexico);
 
-    Node* child = node->children;
-    free_node(child);
+    for (int i = 0; i < node->num_of_children; i++) {
+        free_node(node->children[i]);
+    }
 
+    free(node->children);
     free(node);
 }
