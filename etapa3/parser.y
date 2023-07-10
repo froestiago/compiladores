@@ -72,14 +72,14 @@ extern int yylineno;
 %type<node> expression_6
 %type<node> expression_7
 %type<node> literal
+%type<node> type
 
 %start program
 
 %%
 
-program:  {$$ = NULL; arvore = NULL;};
-
-program: list {$$ = $1; arvore = $$;};
+program: %empty {$$ = NULL; arvore = NULL;}
+        | list {$$ = $1; arvore = $$;};
 
 list: list function { $$ = $1; add_children($$, $2);};
     | list global_var {$$ = $2;};
@@ -88,17 +88,16 @@ list: list function { $$ = $1; add_children($$, $2);};
 
 /* Global variables */
 
-//revisar aqui, função free_node()
 global_var: type list_global_var ';' {$$ = NULL; free_node($2); free_lexical_value($3);};
 
 list_global_var: TK_IDENTIFICADOR ',' list_global_var {$$ = NULL; free_lexical_value($1); free_lexical_value($2);}
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-//revisar aqui a parte das funções
+//erros aqui
 function: head command_block {$$ = $1; add_children($$, $2);};
 
-head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($2);};
+head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
 
 parameter_list: %empty {$$ = NULL;}
          | parameter {$$ = NULL;}
@@ -134,6 +133,7 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node
 
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
+//erros aqui
 function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; $$->add_children($3);}; //incompleto!! revisar aqui
 
 args: %empty {$$ = NULL;}
@@ -188,16 +188,16 @@ expression_1: TK_IDENTIFICADOR {$$ = $1;}
 
 // /* Literals */ 
 
-literal: TK_LIT_INT   {$$ = create_node($1);}
+literal: TK_LIT_INT    {$$ = create_node($1);}
         | TK_LIT_FLOAT {$$ = create_node($1);}
         | TK_LIT_TRUE  {$$ = create_node($1);}
         | TK_LIT_FALSE {$$ = create_node($1);};
 
 // /* Types */
 
-type:   TK_PR_INT
-        |TK_PR_FLOAT
-        |TK_PR_BOOL
+type:   TK_PR_INT    {$$ = NULL; free_lexical_value($1);}
+        |TK_PR_FLOAT {$$ = NULL; free_lexical_value($1);}
+        |TK_PR_BOOL  {$$ = NULL; free_lexical_value($1);};
 
 %%
 
