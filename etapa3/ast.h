@@ -17,7 +17,7 @@ typedef struct valor_lexico {
 } valorLexico;
 
 typedef struct Node {
-  int num_of_children;
+  int num_children;
   struct Node **children;
   valorLexico valor_lexico;
 } Node;
@@ -25,9 +25,10 @@ typedef struct Node {
 /* ----------------------------------------------------------------------------------- */
 
 valorLexico get_yylval(int num_line, Tipo tipo, char* yytext);
-Node *create_node(valorLexico valor_lexico);
+Node* create_node(valorLexico valor_lexico);
 void free_lexical_value(valorLexico valor_lexico);
 void free_node(Node* node);
 void add_children(Node *parent, Node *child);
+void print_tree(Node* root, int level);
 
 #endif //_ARVORE_H_

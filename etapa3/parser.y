@@ -2,11 +2,11 @@
 #include<stdio.h>
 #include<string.h>
 #include "ast.h"
-// #include "main.h"
 extern void* arvore;
 int yylex(void);
 void yyerror (char const *s);
 extern int yylineno;
+extern void *arvore;
 %}
 
 %code requires { 
@@ -111,7 +111,7 @@ command_block: '{' command_list '}' {$$ = $2;};
                 
 command_list: %empty {$$ = NULL;}
             | command ';' command_list {
-                if ($1 != NULL) {$$ = $1; add_children($$, $3);} 
+                if ($1 != NULL) {$$ = $1; add_children($$, $3);}  
                 else {$$ = $3;}};
 
 command: var_declaration {$$ = $1;}
@@ -144,7 +144,7 @@ flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
 conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = create_node($1);  add_children($$, $3); add_children($$, $5); add_children($$, $7);}
-            | TK_PR_IF '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
+            | TK_PR_IF '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);print_tree($$, 0);};
 
 iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
