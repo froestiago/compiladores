@@ -1521,7 +1521,7 @@ yyreduce:
 
   case 18:
 #line 111 "parser.y"
-                                    {(yyval.node) = (yyvsp[-1].node)}
+                                    {(yyval.node) = (yyvsp[-1].node);}
 #line 1526 "parser.tab.c"
     break;
 
@@ -1534,7 +1534,7 @@ yyreduce:
   case 20:
 #line 114 "parser.y"
                                        {
-                if ((yyvsp[-2].node) != NULL) {(yyval.node) = (yyvsp[-2].node); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));} 
+                if ((yyvsp[-2].node) != NULL) {(yyval.node) = (yyvsp[-2].node); add_children((yyval.node), (yyvsp[0].node));} 
                 else {(yyval.node) = (yyvsp[0].node);}}
 #line 1540 "parser.tab.c"
     break;
@@ -1613,7 +1613,7 @@ yyreduce:
 
   case 33:
 #line 137 "parser.y"
-                                             {(yyval.node) = (yyvsp[-3].valor_lexico); (yyval.node)->add_children((yyval.node), (yyvsp[-1].node));}
+                                             {(yyval.node) = (yyvsp[-3].valor_lexico); add_children((yyval.node), (yyvsp[-1].node));}
 #line 1618 "parser.tab.c"
     break;
 
@@ -1625,7 +1625,7 @@ yyreduce:
 
   case 35:
 #line 140 "parser.y"
-                              {(yyval.node) = (yyvsp[-2].node); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));}
+                              {(yyval.node) = (yyvsp[-2].node); add_children((yyval.node), (yyvsp[0].node));}
 #line 1630 "parser.tab.c"
     break;
 
@@ -1637,7 +1637,7 @@ yyreduce:
 
   case 37:
 #line 143 "parser.y"
-                                   {(yyval.node) = (yyvsp[-1].valor_lexico); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));}
+                                   {(yyval.node) = (yyvsp[-1].valor_lexico); add_children((yyval.node), (yyvsp[0].node));}
 #line 1642 "parser.tab.c"
     break;
 
@@ -1655,19 +1655,19 @@ yyreduce:
 
   case 40:
 #line 148 "parser.y"
-                                                                                {(yyval.node) = (yyvsp[-6].valor_lexico); (yyval.node)-> add_children((yyval.node), (yyvsp[-4].node)); (yyval.node)->add_children((yyval.node), (yyvsp[-2].node)); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));}
+                                                                                {(yyval.node) = (yyvsp[-6].valor_lexico);  add_children((yyval.node), (yyvsp[-4].node)); add_children((yyval.node), (yyvsp[-2].node)); add_children((yyval.node), (yyvsp[0].node));}
 #line 1660 "parser.tab.c"
     break;
 
   case 41:
 #line 149 "parser.y"
-                                                        {(yyval.node) = (yyvsp[-4].valor_lexico); (yyval.node)-> add_children((yyval.node), (yyvsp[-2].node)); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));}
+                                                        {(yyval.node) = (yyvsp[-4].valor_lexico); add_children((yyval.node), (yyvsp[-2].node)); add_children((yyval.node), (yyvsp[0].node));}
 #line 1666 "parser.tab.c"
     break;
 
   case 42:
 #line 151 "parser.y"
-                                                        {(yyval.node) = (yyvsp[-4].valor_lexico); (yyval.node)->add_children((yyval.node), (yyvsp[-2].node)); (yyval.node)->add_children((yyval.node), (yyvsp[0].node));}
+                                                        {(yyval.node) = (yyvsp[-4].valor_lexico); add_children((yyval.node), (yyvsp[-2].node)); add_children((yyval.node), (yyvsp[0].node));}
 #line 1672 "parser.tab.c"
     break;
 

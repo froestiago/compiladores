@@ -108,11 +108,11 @@ parameter: type TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($2);};
 /* func body */
 func_body: command_block {$$ = $1;};
 
-command_block: '{' command_list '}' {$$ = $2};
+command_block: '{' command_list '}' {$$ = $2;};
                 
 command_list: %empty {$$ = NULL;}
             | command ';' command_list {
-                if ($1 != NULL) {$$ = $1; $$->add_children($$, $3);} 
+                if ($1 != NULL) {$$ = $1; add_children($$, $3);} 
                 else {$$ = $3;}};
 
 command: var_declaration {$$ = $1;}
@@ -134,21 +134,21 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
 //erros aqui
-function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; $$->add_children($$, $3);}; //incompleto!! revisar aqui
+function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; add_children($$, $3);}; //incompleto!! revisar aqui
 
 args: %empty {$$ = NULL;}
-        | expression ',' args {$$ = $1; $$->add_children($$, $3);}
+        | expression ',' args {$$ = $1; add_children($$, $3);}
         | expression {$$ = $1};
 
-op_return: TK_PR_RETURN expression {$$ = $1; $$->add_children($$, $2);};
+op_return: TK_PR_RETURN expression {$$ = $1; add_children($$, $2);};
 
 flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
-conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = $1; $$-> add_children($$, $3); $$->add_children($$, $5); $$->add_children($$, $7);}
-            | TK_PR_IF '(' expression ')' command_block {$$ = $1; $$-> add_children($$, $3); $$->add_children($$, $5);};
+conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = $1;  add_children($$, $3); add_children($$, $5); add_children($$, $7);}
+            | TK_PR_IF '(' expression ')' command_block {$$ = $1; add_children($$, $3); add_children($$, $5);};
 
-iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = $1; $$->add_children($$, $3); $$->add_children($$, $5);};
+iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = $1; add_children($$, $3); add_children($$, $5);};
 
 /* Expressions */
 
