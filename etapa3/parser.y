@@ -72,7 +72,7 @@ extern int yylineno;
 %type<node> expression_6
 %type<node> expression_7
 %type<node> literal
-%type<node> type
+
 
 %start program
 
@@ -134,21 +134,21 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
 //erros aqui
-function_call: TK_IDENTIFICADOR '(' args ')' {$$ = $1; add_children($$, $3);}; //incompleto!! revisar aqui
+function_call: TK_IDENTIFICADOR '(' args ')' {$$ = create_node($1); add_children($$, $3);}; //incompleto!! revisar aqui
 
 args: %empty {$$ = NULL;}
         | expression ',' args {$$ = $1; add_children($$, $3);}
         | expression {$$ = $1;};
 
-op_return: TK_PR_RETURN expression {$$ = $1; add_children($$, $2);};
+op_return: TK_PR_RETURN expression {$$ = create_node($1); add_children($$, $2);};
 
 flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
-conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = $1;  add_children($$, $3); add_children($$, $5); add_children($$, $7);}
-            | TK_PR_IF '(' expression ')' command_block {$$ = $1; add_children($$, $3); add_children($$, $5);};
+conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = create_node($1);  add_children($$, $3); add_children($$, $5); add_children($$, $7);}
+            | TK_PR_IF '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
-iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = $1; add_children($$, $3); add_children($$, $5);};
+iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
 /* Expressions */
 
@@ -181,7 +181,7 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
             |'!' expression_1 {$$ = create_node($1); add_children($$, $2);}
             | expression_1 {$$ = $1;};
 
-expression_1: TK_IDENTIFICADOR {$$ = $1;}
+expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
@@ -195,9 +195,9 @@ literal: TK_LIT_INT    {$$ = create_node($1);}
 
 // /* Types */
 
-type:   TK_PR_INT    {$$ = NULL; free_lexical_value($1);}
-        |TK_PR_FLOAT {$$ = NULL; free_lexical_value($1);}
-        |TK_PR_BOOL  {$$ = NULL; free_lexical_value($1);};
+type:   TK_PR_INT
+        |TK_PR_FLOAT
+        |TK_PR_BOOL;
 
 %%
 
