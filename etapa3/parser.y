@@ -11,7 +11,6 @@ extern int yylineno;
 
 %code requires { 
     #include "ast.h" 
-    #include "valor_lexico.h"
 }
 
 %union {
@@ -41,8 +40,7 @@ extern int yylineno;
 %token<valor_lexico> TK_LIT_FALSE
 %token<valor_lexico> TK_LIT_TRUE
 %token<valor_lexico> TK_ERRO
-%token<valor_lexico> '(' ')'
-%token<valor_lexico> '!' '-' '*' '/' '%' '+' '<' '>' '='
+%token<valor_lexico> '(' ')' '!' '-' '*' '/' '%' '+' '<' '>' '=' ';' ','
 
 %type<node> program
 %type<node> list
@@ -90,8 +88,8 @@ list: list function { $$ = $1; add_children($$, $2);};
 
 /* Global variables */
 
-//revisar aqui, função libera()
-global_var: type list_global_var ';' {$$ = NULL; libera($2); free_lexical_value($3);};
+//revisar aqui, função free_node()
+global_var: type list_global_var ';' {$$ = NULL; free_node($2); free_lexical_value($3);};
 
 list_global_var: TK_IDENTIFICADOR ',' list_global_var {$$ = NULL; free_lexical_value($1); free_lexical_value($2);}
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
@@ -104,12 +102,12 @@ head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($
 
 parameter_list: %empty {$$ = NULL;}
          | parameter {$$ = NULL;}
-         | parameter_list ',' parameter {$$ = NULL};;
+         | parameter_list ',' parameter {$$ = NULL;};
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL; delete $2;};
 
 /* func body */
-func_body: command_block {$$ = $1};
+func_body: command_block {$$ = $1;};
 
 command_block: '{' command_list '}' {$$ = $2;};
                 
@@ -127,7 +125,7 @@ command: var_declaration {$$ = $1;}
 
 // /* Commands */
 
-var_declaration: type var_in_func {$$ = $2};
+var_declaration: type var_in_func {$$ = $2;};
 
 var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5); free_lexical_value($4);}
         | TK_IDENTIFICADOR TK_OC_LE literal {$$ = create_node($2); add_children($$, create_node($1); add_children($$, $3);)}
@@ -186,7 +184,7 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
 expression_1: TK_IDENTIFICADOR {$$ = $1;}
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
-            | '(' expression ')' { $$ = $2; free_lexical_value($1); free_lexical_value($3);};
+            | '(' expression ')' { $$ = $2; };
 
 // /* Literals */ 
 
@@ -197,9 +195,9 @@ literal: TK_LIT_INT   {$$ = create_node($1);}
 
 // /* Types */
 
-type:   TK_PR_INT { $$ = NULL; free_lexical_value($1); }
-        |TK_PR_FLOAT { $$ = NULL; free_lexical_value($1); }
-        |TK_PR_BOOL { $$ = NULL; free_lexical_value($1); };
+type:   TK_PR_INT
+        |TK_PR_FLOAT
+        |TK_PR_BOOL
 
 %%
 

@@ -3,7 +3,6 @@
     #include<string.h>
     #include "ast.h"
     #include "parser.tab.h"
-    #include "valor_lexico.h"
 %}
 
 %option noyywrap
