@@ -90,11 +90,10 @@ list: list function { $$ = $1; add_children($$, $2);};
 
 global_var: type list_global_var ';' {$$ = NULL; free_node($2); free_lexical_value($3);};
 
-list_global_var: TK_IDENTIFICADOR ',' list_global_var {$$ = NULL; free_lexical_value($1); free_lexical_value($2);}
+list_global_var: list_global_var ',' TK_IDENTIFICADOR {$$ = NULL; free_node($1); free_lexical_value($3);}
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-//erros aqui
 function: head command_block {$$ = $1; add_children($$, $2);};
 
 head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
@@ -122,7 +121,7 @@ command: var_declaration {$$ = $1;}
         | func_body {$$ = $1;}
         | function_call {$$ = $1;};
 
-// /* Commands */
+/* Commands */
 
 var_declaration: type var_in_func {$$ = $2;};
 
@@ -133,7 +132,6 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node
 
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
-//erros aqui
 function_call: TK_IDENTIFICADOR '(' args ')' {$$ = create_node($1); add_children($$, $3);}; //incompleto!! revisar aqui
 
 args: %empty {$$ = NULL;}
@@ -186,7 +184,7 @@ expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
 
-// /* Literals */ 
+/* Literals */ 
 
 literal: TK_LIT_INT    {$$ = create_node($1);}
         | TK_LIT_FLOAT {$$ = create_node($1);}
