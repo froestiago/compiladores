@@ -26,7 +26,7 @@ typedef struct Node {
 
 valorLexico get_yylval(int num_line, Tipo tipo, char* yytext);
 Node *create_node(valorLexico valor_lexico);
-void freeLexicalValue(valorLexico valor_lexico);
+void free_lexical_value(valorLexico valor_lexico);
 void free_node(Node* node);
 void add_children(Node *parent, Node *child);
 
