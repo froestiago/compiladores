@@ -42,6 +42,7 @@ void add_children(Node *parent, Node *child) {
 
 void print_tree(Node* root, int level) {
     if (root == NULL)
+        printf("blau blau");
         return;
 
     printf("%*s%s\n", level * 4, "valor_lexico.valor: \t\t", root->valor_lexico.valor);
@@ -70,6 +71,6 @@ void exporta(void *arvore)
 {
     Node *nodo_arvore;
     nodo_arvore = (Node*) arvore;
-    print_tree(nodo_arvore, 0);
+    print_tree(nodo_arvore, 1);
     return;
 }

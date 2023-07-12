@@ -78,8 +78,8 @@ extern void *arvore;
 
 %%
 
-program: %empty {$$ = NULL; arvore = NULL;}
-        | list {$$ = $1; arvore = $$;};
+program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
+        | list {$$ = $1; arvore = $$; printf("criou arvere");};
 
 list: list function { $$ = $1; add_children($$, $2);};
     | list global_var {$$ = $2;};
@@ -90,19 +90,19 @@ list: list function { $$ = $1; add_children($$, $2);};
 
 global_var: type list_global_var ';' {$$ = NULL; free_node($2); free_lexical_value($3);};
 
-list_global_var: list_global_var ',' TK_IDENTIFICADOR {$$ = NULL; free_node($1); free_lexical_value($3);}
+list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); free_lexical_value($1);}
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-function: head command_block {$$ = $1; add_children($$, $2);};
+function: head command_block {$$ = $1; add_children($$, $2); print_tree($$, 0);};
 
-head: TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
+head: TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
 
 parameter_list: %empty {$$ = NULL;}
          | parameter {$$ = NULL;}
-         | parameter_list ',' parameter {$$ = NULL;};
+         | parameter ',' parameter_list {$$ = NULL;};
 
-parameter: type TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($2);};
+parameter: TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* func body */
 func_body: command_block {$$ = $1;};
@@ -144,12 +144,12 @@ flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
 conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {$$ = create_node($1);  add_children($$, $3); add_children($$, $5); add_children($$, $7);}
-            | TK_PR_IF '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);print_tree($$, 0);};
+            | TK_PR_IF '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
 iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
 /* Expressions */
-
+/* regressão a direita ate aqui */
 expression: expression TK_OC_OR expression_7 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_7 {$$ = $1;};
 
