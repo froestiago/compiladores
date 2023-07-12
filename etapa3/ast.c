@@ -42,10 +42,10 @@ void add_children(Node *parent, Node *child) {
 
 void print_tree(Node* root, int level) {
     if (root == NULL)
-        printf("\nblau blau");
+        printf("blau blau");
         return;
 
-    printf("%*s%s\n", level * 4, "valor_lexico.valor: \t\t", root->num_children);
+    printf("%*s%s\n", level * 4, "valor_lexico.valor: \t\t", root->valor_lexico.valor);
 
     for (int i = 0; i < root->num_children; i++) {
         print_tree(root->children[i], level + 1);

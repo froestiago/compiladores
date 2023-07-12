@@ -78,8 +78,8 @@ extern void *arvore;
 
 %%
 
-program: %empty {$$ = NULL; arvore = NULL;}
-        | list {$$ = $1; arvore = $$;};
+program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
+        | list {$$ = $1; arvore = $$; printf("criou arvere");};
 
 list: list function { $$ = $1; add_children($$, $2);};
     | list global_var {$$ = $2;};
@@ -94,12 +94,12 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-function: head command_block {$$ = $1; add_children($$, $2);};
+function: head command_block {$$ = $1; add_children($$, $2); print_tree($$, 0);};
 
-head: TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);}
-        | TK_IDENTIFICADOR '(' ')' TK_OC_MAP type {$$ = create_node($1);}
+head: TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
 
-parameter_list: parameter {$$ = NULL;}
+parameter_list: %empty {$$ = NULL;}
+         | parameter {$$ = NULL;}
          | parameter ',' parameter_list {$$ = NULL;};
 
 parameter: TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
@@ -150,29 +150,29 @@ iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); a
 
 /* Expressions */
 /* regressão a direita ate aqui */
-expression: expression_7 TK_OC_OR expression {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression: expression TK_OC_OR expression_7 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_7 {$$ = $1;};
 
-expression_7: expression_6 TK_OC_AND expression_7 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_7: expression_7 TK_OC_AND expression_6 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
              | expression_6 {$$ = $1;};
 
-expression_6: expression_5 TK_OC_EQ expression_6 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_5 TK_OC_NE expression_6 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_6: expression_6 TK_OC_EQ expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_6 TK_OC_NE expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_5 {$$ = $1;};
 
-expression_5: expression_4 '<' expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_4 '>' expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);};
-            | expression_4 TK_OC_LE expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_4 TK_OC_GE expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_5: expression_5 '<' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_5 '>' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);};
+            | expression_5 TK_OC_LE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_5 TK_OC_GE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_4 {$$ = $1;};
 
-expression_4: expression_3 '+' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_3 '-' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_4 '-' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_3 {$$ = $1;};
 
-expression_3: expression_2 '*' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_2 '/' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_2 '%' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_3: expression_3 '*' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_3 '/' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+            | expression_3 '%' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_2 {$$ = $1;};
 
 expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
