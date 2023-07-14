@@ -79,7 +79,7 @@ extern void *arvore;
 %%
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; printf("criou arvere");};
+        | list {$$ = $1; arvore = $$; printf("criou arvere"); asd_print(arvore); asd_print_graphviz(arvore);};
 
 list: list function { $$ = $1; add_children($$, $2);};
     | list global_var {$$ = $2;};
@@ -96,7 +96,8 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
 /* Function */
 function: head command_block {$$ = $1; add_children($$, $2); print_tree($$, 0);};
 
-head: TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
+head:   TK_IDENTIFICADOR '(' ')' TK_OC_MAP type {$$ = create_node($1);}
+        | TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
 
 parameter_list: %empty {$$ = NULL;}
          | parameter {$$ = NULL;}
@@ -166,7 +167,7 @@ expression_5: expression_5 '<' expression_4 {$$ = create_node($2);add_children($
             | expression_5 TK_OC_GE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_4 {$$ = $1;};
 
-expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3); asd_print($$);}
             | expression_4 '-' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_3 {$$ = $1;};
 
