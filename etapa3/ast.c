@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "ast.h"
 
-#define ARQUIVO_SAIDA "/Users/tiagofroes/Desktop/compiladores/etapa3/saida.dot"
+#define ARQUIVO_SAIDA "/mnt/c/Users/guibg/OneDrive/Área de Trabalho/compiladores/NOVO/compiladores/etapa3/saida.dot"
+//"/Users/tiagofroes/Desktop/compiladores/etapa3/saida.dot"
 
 valorLexico get_yylval(int num_line, Tipo tipo, char* yytext) {
     

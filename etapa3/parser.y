@@ -47,10 +47,8 @@ extern void *arvore;
 %type<node> global_var
 %type<node> list_global_var
 %type<node> function
-%type<node> head
 %type<node> parameter_list
 %type<node> parameter
-%type<node> func_body
 %type<node> command_block
 %type<node> command_list
 %type<node> command
@@ -78,6 +76,8 @@ extern void *arvore;
 
 %%
 
+//%type<node> func_body %type<node> head
+
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
         | list {$$ = $1; arvore = $$; printf("criou arvere"); asd_print(arvore); asd_print_graphviz(arvore);};
 
@@ -94,32 +94,29 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
                 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
 
 /* Function */
-function: head command_block {$$ = $1; add_children($$, $2); print_tree($$, 0);};
 
-head:   TK_IDENTIFICADOR '(' ')' TK_OC_MAP type {$$ = create_node($1);}
-        | TK_IDENTIFICADOR '(' type parameter_list ')' TK_OC_MAP type {$$ = create_node($1);};
+function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block {$$ = create_node($1); 
+                                                                if($6 != NULL){add_children($$, $6);}}
+        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block {$$ = create_node($1); 
+                                                                                if($7 != NULL){add_children($$, $7);}};
 
-parameter_list: %empty {$$ = NULL;}
-         | parameter {$$ = NULL;}
-         | parameter ',' parameter_list {$$ = NULL;};
+parameter_list: parameter {$$ = NULL;}
+	        | parameter_list ',' parameter  {$$ = NULL;}; 
 
-parameter: TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
+parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-/* func body */
-func_body: command_block {$$ = $1;};
+command_block: '{' '}' {$$ = NULL;}
+                | '{' command_list '}' {$$ = $2;};
 
-command_block: '{' command_list '}' {$$ = $2;};
-                
-command_list: %empty {$$ = NULL;}
-            | command ';' command_list {
-                if ($1 != NULL) {$$ = $1; add_children($$, $3);}  
-                else {$$ = $3;}};
+command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}
+                                        else {add_children($1, $3); $$ = $1;}}
+	        | command ';' { $$ = $1;};
 
 command: var_declaration {$$ = $1;}
         | assignment {$$ = $1;}
         | flow_control  {$$ = $1;}
         | op_return  {$$ = $1;}
-        | func_body {$$ = $1;}
+        | command_block {$$ = $1;}
         | function_call {$$ = $1;};
 
 /* Commands */
