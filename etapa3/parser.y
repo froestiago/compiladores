@@ -122,14 +122,19 @@ command: var_declaration {$$ = $1;}
 
 var_declaration: type var_in_func {$$ = $2;};
 
-var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5); free_lexical_value($4);}
-        | TK_IDENTIFICADOR TK_OC_LE literal {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
-        | TK_IDENTIFICADOR ',' var_in_func {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
-        | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
+var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func 
+    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
+ | TK_IDENTIFICADOR TK_OC_LE literal 
+    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
+ | TK_IDENTIFICADOR ',' var_in_func 
+    {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
+ | TK_IDENTIFICADOR 
+    {$$ = NULL; free_lexical_value($1);}
+;
 
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
-function_call: TK_IDENTIFICADOR '(' args ')' {$$ = create_node($1); add_children($$, $3);}; //incompleto!! revisar aqui
+function_call: TK_IDENTIFICADOR '(' args ')' {$$ = create_node($1); add_children($$, $3);};
 
 args: %empty {$$ = NULL;}
         | expression ',' args {$$ = $1; add_children($$, $3);}
