@@ -81,8 +81,8 @@ extern void *arvore;
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
         | list {$$ = $1; arvore = $$; printf("criou arvere"); asd_print(arvore); asd_print_graphviz(arvore);};
 
-list: list function { $$ = $1; add_children($$, $2);};
-    | list global_var {$$ = $2;};
+list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
+    | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | function {$$ = $1;};
     | global_var {$$ = NULL;};
 
@@ -106,11 +106,10 @@ parameter_list: parameter {$$ = NULL;}
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
 command_block: '{' '}' {$$ = NULL;}
-                | '{' command_list '}' {$$ = $2;};
+             | '{' command_list '}' {$$ = $2;};
 
-command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}
-                                        else {add_children($1, $3); $$ = $1;}}
-	        | command ';' { $$ = $1;};
+command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
+	    | command ';' { $$ = $1;};
 
 command: var_declaration {$$ = $1;}
         | assignment {$$ = $1;}
