@@ -26,14 +26,6 @@ Node* create_node(valorLexico valor_lexico) {
   return new_node;
 }
 
-// void add_children(Node *parent, Node *child) {
-//     if(child!= NULL && parent!=NULL){
-//         if(parent->children==NULL){
-//             parent->children = child;
-//         }
-//     }
-// }
-
 void add_children(Node *tree, Node *child)
 {
   if (tree != NULL && child != NULL){
@@ -48,15 +40,22 @@ void add_children(Node *tree, Node *child)
 static void _asd_print (FILE *foutput, Node *tree, int profundidade)
 {
   int i;
-  if (tree != NULL){
-    fprintf(foutput, "%d%*s: Nó '%s' tem %d filhos:\n", profundidade, profundidade*2, "", tree->valor_lexico.valor, tree->num_children);
+  if (tree != NULL)
+  {
+    if(tree != NULL){
+      for (i = 0; i < tree->num_children; i++){
+        fprintf(foutput, "%p - %p\n", tree, tree->children[i]);
+      }
+    }
     for (i = 0; i < tree->num_children; i++){
       _asd_print(foutput, tree->children[i], profundidade+1);
     }
+
   }else{
     printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
   }
 }
+
 
 void asd_print(Node *tree)
 {
@@ -107,18 +106,6 @@ void free_lexical_value(valorLexico valor_lexico)
     valor_lexico.valor = NULL;
 }
 
-void print_tree(Node* root, int level) {
-    if (root == NULL)
-        printf("blau blau");
-        return;
-
-    printf("%*s%s\n", level * 4, "valor_lexico.valor: \t\t", root->valor_lexico.valor);
-
-    for (int i = 0; i < root->num_children; i++) {
-        print_tree(root->children[i], level + 1);
-    }
-}
-
 void print_node(Node* root)
 {
     if (root == NULL)
@@ -145,7 +132,6 @@ void print_node(Node* root)
 
 }
 
-
 void free_node(Node* node)
 {
     if (!node) return;
@@ -164,6 +150,6 @@ void exporta(void *arvore)
 {
     Node *nodo_arvore;
     nodo_arvore = (Node*) arvore;
-    print_tree(nodo_arvore, 1);
+    asd_print(arvore);
     return;
 }

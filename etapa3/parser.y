@@ -79,7 +79,7 @@ extern void *arvore;
 //%type<node> func_body %type<node> head
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; printf("criou arvere"); asd_print(arvore); asd_print_graphviz(arvore);};
+        | list {$$ = $1; arvore = $$; printf("criou arvere"); asd_print_graphviz(arvore);};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -168,7 +168,7 @@ expression_5: expression_5 '<' expression_4 {$$ = create_node($2);add_children($
             | expression_5 TK_OC_GE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_4 {$$ = $1;};
 
-expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3); asd_print($$);}
+expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_4 '-' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
             | expression_3 {$$ = $1;};
 
