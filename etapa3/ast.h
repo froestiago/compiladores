@@ -29,11 +29,12 @@ Node* create_node(valorLexico valor_lexico);
 void free_lexical_value(valorLexico valor_lexico);
 void free_node(Node* node);
 void add_children(Node *parent, Node *child);
-void print_tree(Node* root, int level);
-void print_node(Node* root);
 
-static void _asd_print (FILE *foutput, Node *tree, int profundidade);
-void asd_print(Node *tree);
+static void _print_tree (FILE *foutput, Node *tree, int profundidade);
+void print_tree(Node *tree);
+
+static void _print_node (FILE *foutput, Node *tree, int profundidade);
+void print_node(Node *tree);
 
 static void _asd_print_graphviz (FILE *foutput, Node *tree);
 void asd_print_graphviz(Node *tree);

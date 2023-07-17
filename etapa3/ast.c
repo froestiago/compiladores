@@ -32,12 +32,10 @@ void add_children(Node *tree, Node *child)
     tree->num_children++;
     tree->children = realloc(tree->children, tree->num_children * sizeof(Node*));
     tree->children[tree->num_children-1] = child;
-  }else{
-    printf("Erro: %s recebeu parâmetro tree = %p / %p.\n", __FUNCTION__, tree, child);
   }
 }
 
-static void _asd_print (FILE *foutput, Node *tree, int profundidade)
+static void _print_tree (FILE *foutput, Node *tree, int profundidade)
 {
   int i;
   if (tree != NULL)
@@ -48,24 +46,46 @@ static void _asd_print (FILE *foutput, Node *tree, int profundidade)
       }
     }
     for (i = 0; i < tree->num_children; i++){
-      _asd_print(foutput, tree->children[i], profundidade+1);
+      _print_tree(foutput, tree->children[i], profundidade+1);
     }
 
-  }else{
-    printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
   }
 }
 
 
-void asd_print(Node *tree)
+static void _print_node (FILE *foutput, Node *tree, int profundidade)
+{
+  int i;
+  if (tree != NULL)
+  {
+    fprintf(foutput, "%p [label=\"%s\"];\n", tree, tree->valor_lexico.valor);
+    
+    for (i = 0; i < tree->num_children; i++){
+      _print_node(foutput, tree->children[i], profundidade+1);
+    }
+
+  }
+}
+
+
+void print_node(Node *tree)
 {
   FILE *foutput = stderr;
   if (tree != NULL){
-    _asd_print(foutput, tree, 0);
-  }else{
-    printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
+    _print_node(foutput, tree, 0);
   }
 }
+
+void print_tree(Node *tree)
+{
+  FILE *foutput = stderr;
+  if (tree != NULL){
+    _print_tree(foutput, tree, 0);
+  }
+}
+
+
+
 
 static void _asd_print_graphviz (FILE *foutput, Node *tree)
 {
@@ -106,31 +126,6 @@ void free_lexical_value(valorLexico valor_lexico)
     valor_lexico.valor = NULL;
 }
 
-void print_node(Node* root)
-{
-    if (root == NULL)
-    {
-        return;
-    }
-    printf("%p [label=\"", root);
-    printf("%s", root->valor_lexico.valor);
-    printf("\"];\n");
-    printf("%p [num_child=\"", root);
-    printf("%d", root->num_children);
-    printf("\"];\n");
-
-
-    Node *child;
-    child = root->children;
-    while(child!=NULL)
-    {
-        print_node(child);
-        child = child->children;
-    }
-    
-    return;
-
-}
 
 void free_node(Node* node)
 {
@@ -150,6 +145,8 @@ void exporta(void *arvore)
 {
     Node *nodo_arvore;
     nodo_arvore = (Node*) arvore;
-    asd_print(arvore);
+    print_tree(arvore);
+    print_node(arvore);
+    asd_print_graphviz(arvore);
     return;
 }
