@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 #include "ast.h"
+#include "table.h"
 extern void* arvore;
 int yylex(void);
 void yyerror (char const *s);
@@ -11,6 +12,7 @@ extern void *arvore;
 
 %code requires { 
     #include "ast.h" 
+    #include "table.h"
 }
 
 %union {
@@ -103,8 +105,11 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-command_block: '{' '}' {$$ = NULL;}
-             | '{' command_list '}' {$$ = $2;};
+command_block: begin_command_block command_list end_command_block {$$ = $2;};
+
+begin_command_block: '{' {empilha();};
+end_command_block: '}' {desempilha();};
+
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
 	    | command ';' { $$ = $1;};

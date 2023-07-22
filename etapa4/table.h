@@ -38,3 +38,4 @@ typedef struct Pile {
 TableNode *_malloc_table();
 void _inicializa_entrada(TableNode *entrada);
 void empilha();
+void desempilha();

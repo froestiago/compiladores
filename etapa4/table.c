@@ -25,6 +25,12 @@ void empilha()
     pilha_aux->the_rest = global_pilha_hash;
 
     global_pilha_hash = pilha_aux;
+    printf("%p", global_pilha_hash);
+}
+
+void desempilha()
+{
+    printf("desempilhou!");
 }
 
 TableNode *_malloc_table() {
