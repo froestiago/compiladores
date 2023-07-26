@@ -14,28 +14,32 @@ typedef enum Nature
     NAT_FUNC
 } Nature;
 
-typedef struct Item {
+typedef struct Cell {
     int line;
     int size;
     Tipo tipo;
     Nature nature;
     valorLexico valor_lexico;
-} Item;
+} Cell;
 
-typedef struct TableNode
+typedef struct TableItem
 {
     char *key;
-    Item item_atr;
-} TableNode;
+    Cell item_atr;
+} TableItem;
 
 typedef struct Pile {
-    TableNode *top;
+    TableItem *top;
     int table_size;
     int n_table_nodes;
     struct Pile *the_rest;
 } Pile;
 
-TableNode *_malloc_table();
-void _inicializa_entrada(TableNode *entrada);
+TableItem *_malloc_table();
+void _inicializa_entrada(TableItem *entrada);
 void empilha();
 void desempilha();
+
+TableItem *push_to_hash(Nature nature, valorLexico valor_lexico);
+char *get_chave(valorLexico valor_lexico);
+Cell get_cell(valorLexico valor_lexico, Nature nature);

@@ -105,10 +105,10 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-command_block: begin_command_block command_list end_command_block {$$ = $2;};
+command_block: open_command_block command_list close_command_block {$$ = $2;};
 
-begin_command_block: '{' {empilha();};
-end_command_block: '}' {desempilha();};
+open_command_block: '{' {empilha();};
+close_command_block: '}' {desempilha();};
 
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
@@ -125,15 +125,10 @@ command: var_declaration {$$ = $1;}
 
 var_declaration: type var_in_func {$$ = $2;};
 
-var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func 
-    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
- | TK_IDENTIFICADOR TK_OC_LE literal 
-    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
- | TK_IDENTIFICADOR ',' var_in_func 
-    {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
- | TK_IDENTIFICADOR 
-    {$$ = NULL; free_lexical_value($1);}
-;
+var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
+           | TK_IDENTIFICADOR TK_OC_LE literal {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
+           | TK_IDENTIFICADOR ',' var_in_func  {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
+           | TK_IDENTIFICADOR {$$ = NULL; push_to_hash(NAT_LIT,$1); free_lexical_value($1);};
 
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 

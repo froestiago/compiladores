@@ -58,7 +58,7 @@ static void _print_node (FILE *foutput, Node *node, int depth)
   int i;
   if (node != NULL)
   {
-    fprintf(foutput, "%p [label=\"%s\"];\n", node, node->valor_lexico.valor);
+    fprintf(foutput, "%p [label=\"%u\"];\n", node, node->valor_lexico.tipo);
     
     for (i = 0; i < node->num_children; i++){
       _print_node(foutput, node->children[i], depth+1);
