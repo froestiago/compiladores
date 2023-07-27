@@ -72,3 +72,21 @@ Cell get_cell(valorLexico valor_lexico, Nature nature)
     printf("dentro do get_cell");
     // valorLexico valor_lexico;
 }
+
+int validate_declaration(valorLexico valor_lexico) {
+    Pile *pilha_aux = global_pilha_hash;
+
+    while (pilha_aux != NULL) {
+        TableItem *entry = pilha_aux->top;
+        for (int i = 0; i < pilha_aux->n_table_nodes; i++) {
+            if (entry[i].key != NULL && strcmp(entry[i].key, valor_lexico.valor) == 0) {
+                // Identificador já foi declarado em algum escopo
+                return 0;
+            }
+        }
+        pilha_aux = pilha_aux->the_rest;
+    }
+
+    // Identificador ainda não foi declarado em nenhum escopo
+    return 1;
+}
