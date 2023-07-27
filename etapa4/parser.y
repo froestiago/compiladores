@@ -97,8 +97,22 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
 
 /* Function */
 
-function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block {$$ = create_node($1); if($6 != NULL){add_children($$, $6);}}
-        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block {$$ = create_node($1); if($7 != NULL){add_children($$, $7);}};
+function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block { 
+              $$ = create_node($1);
+              empilha(); // Empilha o escopo para a função atual
+              if ($6 != NULL) {
+                  add_children($$, $6);
+              }
+              desempilha(); // Desempilha o escopo após o bloco de comandos
+          }
+        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block {
+              $$ = create_node($1);
+              empilha(); // Empilha o escopo para a função atual
+              if ($7 != NULL) {
+                  add_children($$, $7);
+              }
+              desempilha(); // Desempilha o escopo após o bloco de comandos
+          };
 
 parameter_list: parameter {$$ = NULL;}
 	        | parameter_list ',' parameter  {$$ = NULL;}; 
