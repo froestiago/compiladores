@@ -105,10 +105,8 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-command_block: open_command_block command_list close_command_block {$$ = $2;};
-
-open_command_block: '{' {empilha();};
-close_command_block: '}' {desempilha();};
+command_block: '{' '}' {$$ = NULL;}
+             | '{' {empilha();} command_list  {desempilha();} '}' {$$ = $2;};
 
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
