@@ -119,8 +119,9 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-command_block: '{' '}' {$$ = NULL;}
-             | '{' {empilha();} command_list  {desempilha();} '}' {$$ = $2;};
+command_block: '{' '}' {$$ = NULL; empilha(); desempilha();}
+             | '{' {empilha();} command_list '}' {desempilha(); $$ = $2;};
+
 
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
