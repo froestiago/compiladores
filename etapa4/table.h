@@ -43,3 +43,4 @@ void desempilha();
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico);
 char *get_chave(valorLexico valor_lexico);
 Cell get_cell(valorLexico valor_lexico, Nature nature);
+int validate_declaration(valorLexico valor_lexico);
