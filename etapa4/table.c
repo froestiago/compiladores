@@ -83,18 +83,18 @@ void insertSymbolInTable(const char* chave, Tipo tipo, Nature nature, int linha,
     ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
     if (!result.foundSameScope && !result.foundPreviousScope) {
         // Insere o símbolo na tabela de símbolos
-        TableItem* novaEntrada = malloc(sizeof(TableItem));
-        novaEntrada->key = strdup(chave);
-        novaEntrada->item_atr.tipo = tipo;
-        novaEntrada->item_atr.nature = nature;
-        novaEntrada->item_atr.line = linha;
-        novaEntrada->item_atr.size = size;
+        TableItem* newEntry = malloc(sizeof(TableItem));
+        newEntry->key = strdup(chave);
+        newEntry->item_atr.tipo = tipo;
+        newEntry->item_atr.nature = nature;
+        newEntry->item_atr.line = linha;
+        newEntry->item_atr.size = size;
 
         // Adicione a nova entrada à tabela no topo da pilha
-        Stack* escopoAtual = global_stack_hash;
-        int posicaoInsercao = escopoAtual->n_table_nodes;
-        escopoAtual->top[posicaoInsercao] = *novaEntrada;
-        escopoAtual->n_table_nodes++;
+        Stack* currentScope = global_stack_hash;
+        int positionInsert = currentScope->n_table_nodes;
+        currentScope->top[positionInsert] = *newEntry;
+        currentScope->n_table_nodes++;
 
         printf("Inseriu o símbolo '%s' na tabela de símbolos.\n", chave);
     } else {
