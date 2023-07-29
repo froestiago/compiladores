@@ -55,32 +55,51 @@ TableItem *_malloc_table() {
     return table;
 }
 
-ValidationResult verificarDeclaracao(const char* chave) {
+ValidationResult validateDeclaration(const char* chave) {
     Stack* currentScope = global_stack_hash; // Inicializa a partir do escopo atual
 
     ValidationResult result;
     result.foundSameScope = false;
     result.foundPreviousScope = false;
 
-    // Percorre a pilha de tabelas de símbolos do escopo atual até o escopo global
-    while (currentScope != NULL) {
+    while (currentScope != NULL) { //Percorre a pilha de tabelas do escopo atual até o escopo global
         TableItem* table = currentScope->top;
 
-        // Verifica se a chave está presente na tabela atual
-        for (int i = 0; i < currentScope->n_table_nodes; i++) {
+        for (int i = 0; i < currentScope->n_table_nodes; i++) { //Verifica se a chave está no mesmo escopo
             if (table[i].key != NULL && strcmp(table[i].key, chave) == 0) {
-                // Chave encontrada na tabela
-                result.foundSameScope = true;
+                result.foundSameScope = true; //Chave encontrada na tabela atual
                 if (currentScope != global_stack_hash) {
-                    result.foundPreviousScope = true;
+                    result.foundPreviousScope = true; //Chave encontrada em escopo anterior
                 }
                 return result; // Chave encontrada, retorna o resultado
             }
         }
-        // Desce para o escopo anterior
-        currentScope = currentScope->the_rest;
+        currentScope = currentScope->the_rest; //Desce para o escopo anterior
     }
     return result; // Chave não encontrada em nenhum escopo
+}
+
+void insertSymbolInTable(const char* chave, Tipo tipo, Nature nature, int linha, int size) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior
+    ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
+    if (!result.foundSameScope && !result.foundPreviousScope) {
+        // Insere o símbolo na tabela de símbolos
+        TableItem* novaEntrada = malloc(sizeof(TableItem));
+        novaEntrada->key = strdup(chave);
+        novaEntrada->item_atr.tipo = tipo;
+        novaEntrada->item_atr.nature = nature;
+        novaEntrada->item_atr.line = linha;
+        novaEntrada->item_atr.size = size;
+
+        // Adicione a nova entrada à tabela no topo da pilha
+        Stack* escopoAtual = global_stack_hash;
+        int posicaoInsercao = escopoAtual->n_table_nodes;
+        escopoAtual->top[posicaoInsercao] = *novaEntrada;
+        escopoAtual->n_table_nodes++;
+
+        printf("Inseriu o símbolo '%s' na tabela de símbolos.\n", chave);
+    } else {
+        printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
+    }
 }
 
 /*

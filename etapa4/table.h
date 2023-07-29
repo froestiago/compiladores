@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "ast.h"
+#include <stdbool.h>
+
 
 #define INIT_TABLE_SIZE 512
 
@@ -37,6 +39,15 @@ TableItem *_malloc_table();
 void initialize_table_entry(TableItem *entrada);
 void create_scope();
 void end_scope();
+
+typedef struct ValidationResult{
+    bool foundSameScope;
+    bool foundPreviousScope;
+} ValidationResult;
+
+ValidationResult validateDeclaration(const char* chave);
+
+#include <string.h>
 
 /*TableItem *push_to_hash(Nature nature, valorLexico valor_lexico);
 char *get_chave(valorLexico valor_lexico);
