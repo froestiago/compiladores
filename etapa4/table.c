@@ -55,6 +55,34 @@ TableItem *_malloc_table() {
     return table;
 }
 
+ValidationResult verificarDeclaracao(const char* chave) {
+    Stack* currentScope = global_stack_hash; // Inicializa a partir do escopo atual
+
+    ValidationResult result;
+    result.foundSameScope = false;
+    result.foundPreviousScope = false;
+
+    // Percorre a pilha de tabelas de símbolos do escopo atual até o escopo global
+    while (currentScope != NULL) {
+        TableItem* table = currentScope->top;
+
+        // Verifica se a chave está presente na tabela atual
+        for (int i = 0; i < currentScope->n_table_nodes; i++) {
+            if (table[i].key != NULL && strcmp(table[i].key, chave) == 0) {
+                // Chave encontrada na tabela
+                result.foundSameScope = true;
+                if (currentScope != global_stack_hash) {
+                    result.foundPreviousScope = true;
+                }
+                return result; // Chave encontrada, retorna o resultado
+            }
+        }
+        // Desce para o escopo anterior
+        currentScope = currentScope->the_rest;
+    }
+    return result; // Chave não encontrada em nenhum escopo
+}
+
 /*
 //declara_literal_em_escopo
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico)
