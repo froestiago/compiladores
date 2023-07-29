@@ -30,12 +30,12 @@ typedef struct TableItem
     Content item_atr;
 } TableItem;
 
-typedef struct Pile {
+typedef struct Stack {
     TableItem *top;
     int table_size;
     int n_table_nodes;
-    struct Pile *the_rest;
-} Pile;
+    struct Stack *the_rest;
+} Stack;
 
 TableItem *_malloc_table();
 void _inicializa_entrada(TableItem *entrada);

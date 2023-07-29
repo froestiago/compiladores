@@ -1,7 +1,6 @@
 #include "table.h"
 
 Stack *global_stack_hash = NULL;
-char *global_last_func = NULL;
 
 void _inicializa_entrada(TableItem *entrada) {
     entrada->key = NULL;
@@ -57,6 +56,7 @@ TableItem *_malloc_table() {
 
     return table;
 }
+
 /*
 //declara_literal_em_escopo
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico)
