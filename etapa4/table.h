@@ -7,27 +7,27 @@
 
 #define INIT_TABLE_SIZE 512
 
-/*
+
 typedef enum Nature
 {
     NAT_LIT,
     NAT_VAR,
     NAT_FUNC
 } Nature;
-*/
 
-typedef struct Cell {
+
+typedef struct Content {
     int line;
     int size;
     Tipo tipo;
     Nature nature;
     valorLexico valor_lexico;
-} Cell;
+} Content;
 
 typedef struct TableItem
 {
     char *key;
-    Cell item_atr;
+    Content item_atr;
 } TableItem;
 
 typedef struct Pile {
@@ -44,5 +44,5 @@ void desempilha();
 
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico);
 char *get_chave(valorLexico valor_lexico);
-Cell get_cell(valorLexico valor_lexico, Nature nature);
+Content get_content(valorLexico valor_lexico, Nature nature);
 int validate_declaration(valorLexico valor_lexico);

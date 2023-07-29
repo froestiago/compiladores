@@ -5,12 +5,25 @@
 
 #define ARQUIVO_SAIDA "saida.dot" //assim sempre fica no diretorio
 
-valorLexico get_yylval(int num_line, Tipo tipo, char* yytext) {
+valorLexico get_yylval(int num_line, Tipo tipo, TipoInf tipo_inf, char* yytext) {
     
     valorLexico valor_lexico;
     valor_lexico.linha = num_line;
     valor_lexico.tipo = tipo;
+    valor_lexico.tipo_inf = tipo_inf;
     valor_lexico.valor = strdup(yytext);
+
+    switch(valor_lexico.tipo_inf){
+      case INF_INT:
+        printf("aloca size int");
+        break;
+      case INF_FLOAT:
+        printf("aloca size float");
+        break;
+      case INF_BOOL:
+        printf("aloca size bool");
+        break;
+    }
 
     return valor_lexico;
 }
@@ -22,6 +35,7 @@ Node* create_node(valorLexico valor_lexico) {
   new_node->num_children = 0;
   new_node->children = NULL;
   new_node->valor_lexico = valor_lexico;
+  new_node->tipo_inf = valor_lexico.tipo_inf;
   
   return new_node;
 }
@@ -58,7 +72,7 @@ static void _print_node (FILE *foutput, Node *node, int depth)
   int i;
   if (node != NULL)
   {
-    fprintf(foutput, "%p [label=\"%s\"];\n", node, node->valor_lexico.valor);
+    fprintf(foutput, "%p [label=\"%u\"];\n", node, node->tipo_inf);
     
     for (i = 0; i < node->num_children; i++){
       _print_node(foutput, node->children[i], depth+1);

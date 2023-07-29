@@ -10,9 +10,17 @@ typedef enum tipo {
     LITERAL
 } Tipo;
 
+typedef enum tipo_inf {
+	INF_INT,
+	INF_FLOAT,
+	INF_BOOL,
+	INF_ND	//nao definido
+} TipoInf;
+
 typedef struct valor_lexico {
     int linha;
     Tipo tipo;
+	TipoInf tipo_inf;
     char *valor;
 } valorLexico;
 
@@ -20,11 +28,12 @@ typedef struct Node {
   int num_children;
   struct Node** children;
   valorLexico valor_lexico;
+  TipoInf tipo_inf;
 } Node;
 
 /* ----------------------------------------------------------------------------------- */
 
-valorLexico get_yylval(int num_line, Tipo tipo, char* yytext);
+valorLexico get_yylval(int num_line, Tipo tipo, TipoInf tipo_inf, char* yytext);
 Node* create_node(valorLexico valor_lexico);
 void free_lexical_value(valorLexico valor_lexico);
 void free_node(Node* node);

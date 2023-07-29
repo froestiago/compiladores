@@ -64,9 +64,9 @@ TableItem *push_to_hash(Nature nature, valorLexico valor_lexico)
 
     char *chave = get_chave(valor_lexico);
 
-    Cell cell = get_cell(valor_lexico, nature);
+    Content content = get_content(valor_lexico, nature);
     
-    // return _insere_topo_pilha(chave, pilha, cell)
+    // return _insere_topo_pilha(chave, pilha, content)
 
 }
 
@@ -75,15 +75,15 @@ char *get_chave(valorLexico valor_lexico)
     return strdup(valor_lexico.valor);
 }
 
-Cell get_cell(valorLexico valor_lexico, Nature nature)
+Content get_content(valorLexico valor_lexico, Nature nature)
 {
-    Cell cell;
+    Content content;
 
-    cell.line = valor_lexico.linha;
-    cell.size = 8;
-    cell.tipo = valor_lexico.tipo;
-    cell.nature = nature;
-    printf("dentro do get_cell");
+    content.line = valor_lexico.linha;
+    content.size = 8;
+    content.tipo = valor_lexico.tipo;
+    content.nature = nature;
+    printf("dentro do get_content");
     // valorLexico valor_lexico;
 }
 

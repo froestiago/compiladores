@@ -1,5 +1,5 @@
 etapa4: lex.yy.o parser.tab.o main.o ast.o table.o
-	gcc -g -o etapa3 lex.yy.o parser.tab.o main.o ast.o table.o
+	gcc -g -o etapa4 lex.yy.o parser.tab.o main.o ast.o table.o
 
 lex.yy.o parser.tab.o main.o ast.o: lex.yy.c parser.tab.c ast.c table.c main.c
 	gcc -g -c lex.yy.c main.c ast.c table.c parser.tab.c
