@@ -49,6 +49,8 @@ extern void *arvore;
 %type<node> global_var
 %type<node> list_global_var
 %type<node> function
+%type<node> header
+%type<node> open_parenthesis
 %type<node> parameter_list
 %type<node> parameter
 %type<node> command_block
@@ -99,25 +101,23 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
 
 /* Function */
 
-function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block 
-        {$$ = create_node($1); if($6 != NULL){add_children($$, $6);}}
-        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block 
-        {$$ = create_node($1); if($7 != NULL){add_children($$, $7);}};
+function: header command_block {if($2 != NULL){add_children($$, $2); end_scope();}}
+
+header: TK_IDENTIFICADOR open_parenthesis ')' TK_OC_MAP type {$$ = create_node($1);}
+       | TK_IDENTIFICADOR open_parenthesis parameter_list ')' TK_OC_MAP type  {$$ = create_node($1);};
+
+open_parenthesis: '(' {create_scope();};
 
 parameter_list: parameter {$$ = NULL;}
 	        | parameter_list ',' parameter  {$$ = NULL;}; 
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
-/*
-command_block: '{' '}' {$$ = NULL;}
-             | {empilha();} '{' command_list '}' {desempilha();} {$$ = $2;};*/
-
 command_block: '{' '}' {$$ = NULL;}
             | begin_command_block command_list end_command_block {$$ = $2;};
 
-begin_command_block: '{' {empilha();};
-end_command_block: '}' {desempilha();};
+begin_command_block: '{' {create_scope();};
+end_command_block: '}' {end_scope();};
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
 	    | command ';' { $$ = $1;};

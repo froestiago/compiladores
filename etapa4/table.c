@@ -2,17 +2,16 @@
 
 Stack *global_stack_hash = NULL;
 
-void _inicializa_entrada(TableItem *entrada) {
-    entrada->key = NULL;
-    entrada->item_atr.tipo = -1;
-    entrada->item_atr.nature = -1;
-    entrada->item_atr.line = -1;
-    entrada->item_atr.size = -1;
-    // entrada->item_atr.argumentos = NULL;
+void initialize_table_entry(TableItem *entry) {
+    entry->key = NULL;
+    entry->item_atr.tipo = -1;
+    entry->item_atr.nature = -1;
+    entry->item_atr.line = -1;
+    entry->item_atr.size = -1;
+    // entry->item_atr.argumentos = NULL;
 }
 
-//cria escopo
-void empilha()
+void create_scope()
 {
     Stack *pilha_aux;
     pilha_aux = malloc(sizeof(Stack));
@@ -28,7 +27,7 @@ void empilha()
      printf("empilhou!\n");
 }
 
-void desempilha()
+void end_scope()
 {
     if (global_stack_hash == NULL) {
         printf("Error: Stack underflow\n");
@@ -50,10 +49,9 @@ TableItem *_malloc_table() {
     TableItem *table = malloc(sizeof(TableItem) * INIT_TABLE_SIZE);
 
     for (int i = 0; i < INIT_TABLE_SIZE; i++) {
-        TableItem* entrada = &table[i];
-        _inicializa_entrada(entrada);
+        TableItem* entry = &table[i];
+        initialize_table_entry(entry);
     }
-
     return table;
 }
 
