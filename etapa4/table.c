@@ -11,6 +11,7 @@ void _inicializa_entrada(TableItem *entrada) {
     // entrada->item_atr.argumentos = NULL;
 }
 
+//cria escopo
 void empilha()
 {
     Pile *pilha_aux;
@@ -19,7 +20,7 @@ void empilha()
     pilha_aux->n_table_nodes = 0;
     pilha_aux->table_size = INIT_TABLE_SIZE;
 
-    TableItem *table = _malloc_table();
+    TableItem *table = _malloc_table(); //criei tabela sem preencher
     pilha_aux->top = table;
     pilha_aux->the_rest = global_pilha_hash;
 
@@ -29,8 +30,24 @@ void empilha()
 
 void desempilha()
 {
-    printf("desempilhou!");
+    if (global_pilha_hash == NULL) {
+        printf("Error: Stack underflow\n");
+        return;
+    }
+
+    // Keep the pointer to the old top of the stack.
+    Pile *old_top = global_pilha_hash; //current scope
+
+    // Change the top of the stack to the next element.
+    global_pilha_hash = global_pilha_hash->the_rest; //remove top pile
+
+    // Free the old top of the stack.
+    free(old_top->top);
+    free(old_top);
+
+    printf("desempilhou!\n");
 }
+//teste
 
 TableItem *_malloc_table() {
 
@@ -43,6 +60,7 @@ TableItem *_malloc_table() {
 
     return table;
 }
+
 //declara_literal_em_escopo
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico)
 {
@@ -90,3 +108,4 @@ int validate_declaration(valorLexico valor_lexico) {
     // Identificador ainda não foi declarado em nenhum escopo
     return 1;
 }
+
