@@ -99,8 +99,12 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); 
 
 /* Function */
 
-function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block {$$ = create_node($1); if($6 != NULL){add_children($$, $6);}}
-        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block {$$ = create_node($1); if($7 != NULL){add_children($$, $7);}};
+/*function: TK_IDENTIFICADOR '(' ')' TK_OC_MAP type command_block {$$ = create_node($1); if($6 != NULL){add_children($$, $6);}}
+        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block {$$ = create_node($1); if($7 != NULL){add_children($$, $7);}};*/
+function: TK_IDENTIFICADOR  '(' ')' TK_OC_MAP type command_block
+			{$$ = create_node($1); empilha(); if($6 != NULL){add_children($$, $6);} desempilha();}
+        | TK_IDENTIFICADOR '(' parameter_list ')' TK_OC_MAP type command_block 
+			{$$ = create_node($1); empilha(); if($7 != NULL){add_children($$, $7);}; desempilha();};
 
 parameter_list: parameter {$$ = NULL;}
 	        | parameter_list ',' parameter  {$$ = NULL;}; 

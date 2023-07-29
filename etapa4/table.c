@@ -1,6 +1,7 @@
 #include "table.h"
 
-Pile *global_pilha_hash = NULL;
+Stack *global_stack_hash = NULL;
+char *global_last_func = NULL;
 
 void _inicializa_entrada(TableItem *entrada) {
     entrada->key = NULL;
@@ -14,30 +15,30 @@ void _inicializa_entrada(TableItem *entrada) {
 //cria escopo
 void empilha()
 {
-    Pile *pilha_aux;
-    pilha_aux = malloc(sizeof(Pile));
+    Stack *pilha_aux;
+    pilha_aux = malloc(sizeof(Stack));
 
     pilha_aux->n_table_nodes = 0;
     pilha_aux->table_size = INIT_TABLE_SIZE;
 
     TableItem *table = _malloc_table(); //criei tabela sem preencher
     pilha_aux->top = table;
-    pilha_aux->the_rest = global_pilha_hash;
+    pilha_aux->the_rest = global_stack_hash;
 
-    global_pilha_hash = pilha_aux;
+    global_stack_hash = pilha_aux;
      printf("empilhou!\n");
 }
 
 void desempilha()
 {
-    if (global_pilha_hash == NULL) {
+    if (global_stack_hash == NULL) {
         printf("Error: Stack underflow\n");
         return;
     }
 
-    Pile *old_top = global_pilha_hash; //current scope
+    Stack *old_top = global_stack_hash; //current scope
 
-    global_pilha_hash = global_pilha_hash->the_rest; //remove top pile
+    global_stack_hash = global_stack_hash->the_rest; //remove top pile
 
     free(old_top->top);
     free(old_top);
