@@ -80,7 +80,7 @@ extern void *arvore;
 
 //%type<node> func_body %type<node> head
 
-new_start: create_scope program close_scope
+//new_start: create_scope program close_scope
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
         | list {$$ = $1; arvore = $$;};
@@ -107,8 +107,15 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type TK_IDENTIFICADOR {$$ = NULL;};
 
+/*
 command_block: '{' '}' {$$ = NULL;}
-             | {empilha();} '{' command_list '}' {desempilha();} {$$ = $2;};
+             | {empilha();} '{' command_list '}' {desempilha();} {$$ = $2;};*/
+
+command_block: '{' '}' {$$ = NULL;}
+            | begin_command_block command_list end_command_block {$$ = $2;};
+
+begin_command_block: '{' {empilha();};
+end_command_block: '}' {desempilha();};
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
 	    | command ';' { $$ = $1;};
@@ -122,6 +129,7 @@ command: var_declaration {$$ = $1;}
 
 /* Commands */
 
+/*
 var_declaration: type var_in_func {
     $$ = $2;
     // Verificar se o identificador já foi declarado
@@ -130,9 +138,21 @@ var_declaration: type var_in_func {
         $$ = NULL;
     }
 };
+*/
 
+var_declaration: type var_in_func {$$ = $2; };
 
-var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5);
+var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func 
+    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
+ | TK_IDENTIFICADOR TK_OC_LE literal 
+    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
+ | TK_IDENTIFICADOR ',' var_in_func 
+    {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
+ | TK_IDENTIFICADOR 
+    {$$ = NULL; free_lexical_value($1); printf("entrou aqui");}
+;
+
+/*var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5);
     // Cria uma variável do tipo valorLexico para armazenar informações do identificador encontrado
     valorLexico identificador;
     identificador.linha = $1->valor_lexico.linha;
@@ -162,8 +182,7 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node
 }
 | TK_IDENTIFICADOR ',' var_in_func {$$ = $3; free_lexical_value($1); free_lexical_value($2);}  // O identificador já foi verificado ao ser declarado, não é necessário verificar novamente aqui.
 | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};  // O identificador já foi verificado ao ser declarado, não é necessário verificar novamente aqui.
-
-
+*/
 
 assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
 
@@ -219,7 +238,7 @@ expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
 
-expression_1: TK_IDENTIFICADOR {$$ = create_node($1);
+/*expression_1: TK_IDENTIFICADOR {$$ = create_node($1);
     valorLexico valor_lexico;
     valor_lexico.linha = $1->valor_lexico.linha; //pega a linha do token
     valor_lexico.tipo = $1->valor_lexico.tipo; //copia o tipo
@@ -233,7 +252,7 @@ expression_1: TK_IDENTIFICADOR {$$ = create_node($1);
         | literal {$$ = $1;}
         | function_call {$$ = $1;}
         | '(' expression ')' { $$ = $2; };
-
+*/
 
 /* Literals */ 
 

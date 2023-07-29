@@ -25,7 +25,7 @@ void empilha()
     pilha_aux->the_rest = global_pilha_hash;
 
     global_pilha_hash = pilha_aux;
-    printf("%f", global_pilha_hash->table_size);
+     printf("empilhou!\n");
 }
 
 void desempilha()
@@ -35,19 +35,15 @@ void desempilha()
         return;
     }
 
-    // Keep the pointer to the old top of the stack.
     Pile *old_top = global_pilha_hash; //current scope
 
-    // Change the top of the stack to the next element.
     global_pilha_hash = global_pilha_hash->the_rest; //remove top pile
 
-    // Free the old top of the stack.
     free(old_top->top);
     free(old_top);
 
     printf("desempilhou!\n");
 }
-//teste
 
 TableItem *_malloc_table() {
 
@@ -60,7 +56,7 @@ TableItem *_malloc_table() {
 
     return table;
 }
-
+/*
 //declara_literal_em_escopo
 TableItem *push_to_hash(Nature nature, valorLexico valor_lexico)
 {
@@ -108,4 +104,4 @@ int validate_declaration(valorLexico valor_lexico) {
     // Identificador ainda não foi declarado em nenhum escopo
     return 1;
 }
-
+*/

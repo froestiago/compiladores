@@ -7,12 +7,14 @@
 
 #define INIT_TABLE_SIZE 512
 
+/*
 typedef enum Nature
 {
     NAT_LIT,
     NAT_VAR,
     NAT_FUNC
 } Nature;
+*/
 
 typedef struct Cell {
     int line;
