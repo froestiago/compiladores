@@ -14,4 +14,4 @@ clean:
 	rm -rf lex.yy.* parser.tab.* main.o ast.o etapa4
 
 entrega:
-	tar cvzf etapa4.tgz ast.c ast.h main.c Makefile parser.y scanner.l
+	tar cvzf etapa4.tgz ast.c ast.h main.c Makefile parser.y scanner.l table.c table.h

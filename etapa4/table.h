@@ -46,8 +46,7 @@ typedef struct ValidationResult{
 } ValidationResult;
 
 ValidationResult validateDeclaration(const char* chave);
-
-#include <string.h>
+void insertSymbolInTable(Node * node, Nature nature);
 
 /*TableItem *push_to_hash(Nature nature, valorLexico valor_lexico);
 char *get_chave(valorLexico valor_lexico);

@@ -1,4 +1,5 @@
 #include "table.h"
+int TOP = -1;
 
 Stack *global_stack_hash = NULL;
 
@@ -79,16 +80,19 @@ ValidationResult validateDeclaration(const char* chave) {
     return result; // Chave não encontrada em nenhum escopo
 }
 
-void insertSymbolInTable(const char* chave, Tipo tipo, Nature nature, int linha, int size) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior
-    ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
-    if (!result.foundSameScope && !result.foundPreviousScope) {
+void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior
+    // ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
+    // if (!result.foundSameScope && !result.foundPreviousScope) {
         // Insere o símbolo na tabela de símbolos
+        
+        // cria chave
+        
         TableItem* newEntry = malloc(sizeof(TableItem));
-        newEntry->key = strdup(chave);
-        newEntry->item_atr.tipo = tipo;
+        // newEntry->key = strdup(chave);
+        newEntry->item_atr.tipo = node->valor_lexico.tipo_inf; //tipo;
         newEntry->item_atr.nature = nature;
-        newEntry->item_atr.line = linha;
-        newEntry->item_atr.size = size;
+        newEntry->item_atr.line = node->valor_lexico.linha;
+        // newEntry->item_atr.size = size;
 
         // Adicione a nova entrada à tabela no topo da pilha
         Stack* currentScope = global_stack_hash;
@@ -96,10 +100,11 @@ void insertSymbolInTable(const char* chave, Tipo tipo, Nature nature, int linha,
         currentScope->top[positionInsert] = *newEntry;
         currentScope->n_table_nodes++;
 
-        printf("Inseriu o símbolo '%s' na tabela de símbolos.\n", chave);
-    } else {
-        printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
-    }
+        printf("%d", global_stack_hash);
+        printf("Inseriu o símbolo %s na tabela de símbolos.\n", currentScope[0]);
+    // } else {
+        // printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
+    // }
 }
 
 /*
