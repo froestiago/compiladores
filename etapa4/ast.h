@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
+#include <stdbool.h>
 
 typedef enum tipo {
     CARACTERE_ESPECIAL,
@@ -22,6 +23,9 @@ typedef struct valor_lexico {
     Tipo tipo;
 	TipoInf tipo_inf;
     char *valor;
+    int valor_int;
+    float valor_float;
+    bool valor_bool;
 } valorLexico;
 
 typedef struct Node {

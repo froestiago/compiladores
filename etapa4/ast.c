@@ -15,13 +15,16 @@ valorLexico get_yylval(int num_line, Tipo tipo, TipoInf tipo_inf, char* yytext) 
 
     switch(valor_lexico.tipo_inf){
       case INF_INT:
-        printf("aloca size int");
+        valor_lexico.valor_int=atoi(yytext);
+        // printf("\t\t%d", valor_lexico.valor_int);
         break;
       case INF_FLOAT:
-        printf("aloca size float");
+        valor_lexico.valor_float=atof(yytext);
+        // printf("\t\t%f", valor_lexico.valor_float);
         break;
       case INF_BOOL:
-        printf("aloca size bool");
+        if(strcmp (yytext,"true") == 0){valor_lexico.valor_bool = true;}else{valor_lexico.valor_bool = false;}
+        // printf("\t\t%d", valor_lexico.valor_bool);
         break;
     }
 
