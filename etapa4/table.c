@@ -8,7 +8,6 @@ void initialize_table_entry(TableItem *entry) {
     entry->item_atr.tipo = -1;
     entry->item_atr.nature = -1;
     entry->item_atr.line = -1;
-    entry->item_atr.size = -1;
     // entry->item_atr.argumentos = NULL;
 }
 
@@ -88,7 +87,7 @@ void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabe
         // cria chave
         
         TableItem* newEntry = malloc(sizeof(TableItem));
-        // newEntry->key = strdup(chave);
+        newEntry->key = node->valor_lexico.valor;
         newEntry->item_atr.tipo = node->valor_lexico.tipo_inf; //tipo;
         newEntry->item_atr.nature = nature;
         newEntry->item_atr.line = node->valor_lexico.linha;
@@ -101,7 +100,7 @@ void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabe
         currentScope->n_table_nodes++;
 
         printf("%d", global_stack_hash);
-        printf("Inseriu o símbolo %s na tabela de símbolos.\n", currentScope[0]);
+        printf("Inseriu o símbolo na tabela de símbolos. //queria imprimir o topo da pilha para ter certeza de que o item foi inserido\n");
     // } else {
         // printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
     // }

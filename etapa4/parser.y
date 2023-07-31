@@ -259,9 +259,9 @@ expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
 /* Literals */ 
 
 literal: TK_LIT_INT    {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
-        | TK_LIT_FLOAT {$$ = create_node($1);}
-        | TK_LIT_TRUE  {$$ = create_node($1);}
-        | TK_LIT_FALSE {$$ = create_node($1);};
+        | TK_LIT_FLOAT {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
+        | TK_LIT_TRUE  {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
+        | TK_LIT_FALSE {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);};
 
 // /* Types */
 

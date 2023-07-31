@@ -17,7 +17,6 @@ typedef enum Nature{
 
 typedef struct Content {
     int line;
-    int size;
     Tipo tipo;
     Nature nature;
     valorLexico valor_lexico;
