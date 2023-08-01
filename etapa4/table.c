@@ -130,17 +130,27 @@ void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabe
         currentScope->top[positionInsert] = *newEntry;
         currentScope->n_table_nodes++;
 
-       /* printf("%d", global_stack_hash);
-        printf("Inseriu o símbolo na tabela de símbolos.");
-        printf("Top of the stack:\n");
-        printf("Key: %s\n", global_stack_hash->top->key);
-        printf("Line: %d\n", global_stack_hash->top->item_atr.line);*/
-         printTopOfStack(currentScope);
+        printTopOfStack(currentScope);
         printLastInsertedItem(currentScope);
+        free(newEntry);
     // } else {
         // printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
     // }
 }
+
+void insertSymbolIfNotDeclared(Node* node) {//insere símbolo na tabela caso não tenha sido declarado previamente
+    const char* chave = node->valor_lexico.valor;
+
+    ValidationResult result = validateDeclaration(chave);
+
+    if (!result.foundSameScope && !result.foundPreviousScope) {//caso não tenha sido declarado previamente
+        insertSymbolInTable(node, node->valor_lexico.tipo_inf);
+    } else {
+        // The symbol is already declared in the same or previous scope
+        printf("The symbol '%s' is already declared in the same or a previous scope.\n", chave);
+    }
+}
+
 
 /*
 //declara_literal_em_escopo

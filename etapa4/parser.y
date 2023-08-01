@@ -142,16 +142,20 @@ var_declaration: type var_in_func {
 };
 */
 
-var_declaration: type var_in_func {$$ = $2; };
+var_declaration: type var_in_func {$$ = $2;};
 
 var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func 
-    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
+    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);
+    insertSymbolIfNotDeclared($1);}
  | TK_IDENTIFICADOR TK_OC_LE literal 
-    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
+    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);
+    insertSymbolIfNotDeclared($1);}
  | TK_IDENTIFICADOR ',' var_in_func 
-    {$$ = $3; free_lexical_value($1); free_lexical_value($2);}
+    {$$ = $3; free_lexical_value($1); free_lexical_value($2);
+    insertSymbolIfNotDeclared($1);}
  | TK_IDENTIFICADOR 
-    {$$ = NULL; free_lexical_value($1);}
+    {$$ = NULL; free_lexical_value($1);
+    insertSymbolIfNotDeclared($1);}
 ;
 
 /*var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5);
