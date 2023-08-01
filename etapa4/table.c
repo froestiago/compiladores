@@ -79,6 +79,37 @@ ValidationResult validateDeclaration(const char* chave) {
     return result; // Chave não encontrada em nenhum escopo
 }
 
+void printTopOfStack(Stack* stack) {
+    if (stack == NULL) {
+        printf("Stack is empty.\n");
+        return;
+    }
+
+    TableItem* topItem = stack->top;
+    if (topItem == NULL) {
+        printf("Top of stack is empty.\n");
+    } else {
+        printf("Top of stack: Key: %s, Line: %d\n", topItem->key, topItem->item_atr.line);
+        // Print other attributes as needed
+    }
+}
+
+void printLastInsertedItem(Stack* stack) {
+    if (stack == NULL) {
+        printf("Stack is empty.\n");
+        return;
+    }
+
+    if (stack->n_table_nodes == 0) {
+        printf("Table is empty.\n");
+    } else {
+        printf("Last inserted item in the table: ");
+        TableItem* lastItem = &(stack->top[stack->n_table_nodes - 1]);
+        printf("Key: %s, Line: %d\n", lastItem->key, lastItem->item_atr.line);
+        // Print other attributes as needed
+    }
+}
+
 void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior
     // ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
     // if (!result.foundSameScope && !result.foundPreviousScope) {
@@ -99,8 +130,13 @@ void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabe
         currentScope->top[positionInsert] = *newEntry;
         currentScope->n_table_nodes++;
 
-        printf("%d", global_stack_hash);
-        printf("Inseriu o símbolo na tabela de símbolos. //queria imprimir o topo da pilha para ter certeza de que o item foi inserido\n");
+       /* printf("%d", global_stack_hash);
+        printf("Inseriu o símbolo na tabela de símbolos.");
+        printf("Top of the stack:\n");
+        printf("Key: %s\n", global_stack_hash->top->key);
+        printf("Line: %d\n", global_stack_hash->top->item_atr.line);*/
+         printTopOfStack(currentScope);
+        printLastInsertedItem(currentScope);
     // } else {
         // printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
     // }
