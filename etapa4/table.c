@@ -105,24 +105,18 @@ void printLastInsertedItem(Stack* stack) {
     } else {
         printf("Last inserted item in the table: ");
         TableItem* lastItem = &(stack->top[stack->n_table_nodes - 1]);
-        printf("Key: %s, Line: %d\n", lastItem->key, lastItem->item_atr.line);
+        printf("Key: %s, Line: %d, TotalItems: %d\n", lastItem->key, lastItem->item_atr.line, stack->n_table_nodes);
+        printf("Nature: %s, Type: %d\n", lastItem->item_atr.nature, lastItem->item_atr.tipo);
         // Print other attributes as needed
     }
 }
 
-void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior
-    // ValidationResult result = validateDeclaration(chave);// Verifica se o símbolo não foi encontrado antes ou não foi encontrado no mesmo escopo
-    // if (!result.foundSameScope && !result.foundPreviousScope) {
-        // Insere o símbolo na tabela de símbolos
-        
-        // cria chave
-        
+void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabela se ele não tiver sido encontrado no mesmo escopo ou em escopo anterior     
         TableItem* newEntry = malloc(sizeof(TableItem));
         newEntry->key = node->valor_lexico.valor;
         newEntry->item_atr.tipo = node->valor_lexico.tipo_inf; //tipo;
         newEntry->item_atr.nature = nature;
         newEntry->item_atr.line = node->valor_lexico.linha;
-        // newEntry->item_atr.size = size;
 
         // Adicione a nova entrada à tabela no topo da pilha
         Stack* currentScope = global_stack_hash;
@@ -132,19 +126,18 @@ void insertSymbolInTable(Node * node, Nature nature) { //Insere símbolo na tabe
 
         printTopOfStack(currentScope);
         printLastInsertedItem(currentScope);
-        free(newEntry);
     // } else {
         // printf("O símbolo '%s' já foi declarado anteriormente ou já existe no mesmo escopo.\n", chave);
     // }
 }
 
-void insertSymbolIfNotDeclared(Node* node) {//insere símbolo na tabela caso não tenha sido declarado previamente
+void insertSymbolIfNotDeclared(Node* node, Nature nature) {//insere símbolo na tabela caso não tenha sido declarado previamente
     const char* chave = node->valor_lexico.valor;
 
     ValidationResult result = validateDeclaration(chave);
 
     if (!result.foundSameScope && !result.foundPreviousScope) {//caso não tenha sido declarado previamente
-        insertSymbolInTable(node, node->valor_lexico.tipo_inf);
+        insertSymbolInTable(node, nature);
     } else {
         // The symbol is already declared in the same or previous scope
         printf("The symbol '%s' is already declared in the same or a previous scope.\n", chave);
