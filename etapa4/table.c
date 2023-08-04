@@ -106,6 +106,7 @@ void printLastInsertedItem(Stack* stack) {
         printf("Last inserted item in the table: ");
         TableItem* lastItem = &(stack->top[stack->n_table_nodes - 1]);
         printf("Key: %s, Line: %d\n", lastItem->key, lastItem->item_atr.line);
+        printf("\tnumber o stuff in table = %d\t", stack->n_table_nodes);
         // Print other attributes as needed
     }
 }

@@ -1679,13 +1679,13 @@ yyreduce:
 
   case 33: /* var_in_func: TK_IDENTIFICADOR ',' var_in_func  */
 #line 152 "parser.y"
-    {(yyval.node) = (yyvsp[0].node); free_lexical_value((yyvsp[-2].valor_lexico)); free_lexical_value((yyvsp[-1].valor_lexico));}
+    {(yyval.node) = (yyvsp[0].node); insertSymbolInTable(create_node((yyvsp[-2].valor_lexico)), NAT_VAR); free_lexical_value((yyvsp[-2].valor_lexico)); free_lexical_value((yyvsp[-1].valor_lexico));}
 #line 1684 "parser.tab.c"
     break;
 
   case 34: /* var_in_func: TK_IDENTIFICADOR  */
 #line 154 "parser.y"
-    {(yyval.node) = NULL; free_lexical_value((yyvsp[0].valor_lexico));}
+    {(yyval.node) = NULL; insertSymbolInTable(create_node((yyvsp[0].valor_lexico)), NAT_VAR); free_lexical_value((yyvsp[0].valor_lexico));}
 #line 1690 "parser.tab.c"
     break;
 
@@ -1919,19 +1919,19 @@ yyreduce:
 
   case 73: /* literal: TK_LIT_FLOAT  */
 #line 262 "parser.y"
-                       {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
+                       {(yyval.node) = create_node((yyvsp[0].valor_lexico)); insertSymbolInTable((yyval.node), NAT_LIT);}
 #line 1924 "parser.tab.c"
     break;
 
   case 74: /* literal: TK_LIT_TRUE  */
 #line 263 "parser.y"
-                       {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
+                       {(yyval.node) = create_node((yyvsp[0].valor_lexico)); insertSymbolInTable((yyval.node), NAT_LIT);}
 #line 1930 "parser.tab.c"
     break;
 
   case 75: /* literal: TK_LIT_FALSE  */
 #line 264 "parser.y"
-                       {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
+                       {(yyval.node) = create_node((yyvsp[0].valor_lexico)); insertSymbolInTable((yyval.node), NAT_LIT);}
 #line 1936 "parser.tab.c"
     break;
 
