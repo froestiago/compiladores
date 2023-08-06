@@ -86,6 +86,35 @@ void notInTable(struct Symbol* table, Node *node) {
     }
 }
 
+void err_declared(struct Symbol* table, Node *node) {
+    struct Symbol* current = table;
+    while (current != NULL) {
+        printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
+        if (strcmp(current->chave, node->valor_lexico.valor) == 0){
+            fprintf(stderr, "ERR_DECLARED\n");
+            exit(EXIT_FAILURE);
+        }
+        current = current->next;
+    }
+    printf("tudo joia\n");
+}
+
+void err_undeclared(struct Symbol* table, Node *node) {
+    int flag = 0;
+    struct Symbol* current = table;
+    while (current != NULL) {
+        printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
+        if (strcmp(current->chave, node->valor_lexico.valor) == 0){
+            flag = 1;
+        }
+        current = current->next;
+    }
+    if(flag == 0){
+        fprintf(stderr, "ERR_UNDECLARED\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
 void abre_escopo(List **lista, Symbol *tabela){
     if(tabela!=NULL){
         // push to list
