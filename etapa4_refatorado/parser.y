@@ -240,7 +240,7 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
             |'!' expression_1 {$$ = create_node($1); add_children($$, $2);}
             | expression_1 {$$ = $1;};
 
-expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
+expression_1: TK_IDENTIFICADOR {Node *node = create_node($1); $$ = node; verifyCorrectUsage(tabela_atual, node, VARIAVEL);}
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };

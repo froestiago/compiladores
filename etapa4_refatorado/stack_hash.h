@@ -6,7 +6,10 @@
 
 #define MAX_SYMBOLS 100
 
-#define ERR_DECLARED
+#define ERR_UNDECLARED 10 //2.2
+#define ERR_DECLARED 11 //2.2
+#define ERR_VARIABLE 20 //2.3
+#define ERR_FUNCTION 21 //2.3
 
 typedef struct Symbol {
     char *chave;
@@ -43,6 +46,7 @@ void notInTable(struct Symbol* table, Node *node);
 void err_declared(struct Symbol* table, Node *node);
 void err_undeclared(struct Symbol* table, Node *node);
 
+void verifyCorrectUsage(Symbol *table, Node *node, Natureza expected_natureza);
 
 // pega o escopo atual e joga pra list
 void abre_escopo(List **lista, Symbol *tabela);

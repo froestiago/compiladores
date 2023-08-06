@@ -54,21 +54,19 @@ void displayTable(struct Symbol* table) {
         printf("chave: %s - tipo: %d - natureza: %d\n", current-> chave, current->tipo, current->natureza);
         current = current->next;
     }
-    // printf("NULL\n");
 }
 
 void isInTable(struct Symbol* table, Node *node) {
     struct Symbol* current = table;
     while (current != NULL) {
-        printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
-        if (strcmp(current->chave, node->valor_lexico.valor) == 0){
-            fprintf(stderr, "Error: Duplicate entry found.\n");
-            exit(EXIT_FAILURE);
+        if (strcmp(current->chave, node->valor_lexico.valor) == 0) {
+            printf("ERRO na linha %d: Identificador declarado previamente: '%s'\n", node->valor_lexico.linha, node->valor_lexico.valor);
+            exit(ERR_DECLARED);
         }
         current = current->next;
     }
-    printf("tudo joia\n");
 }
+
 
 void notInTable(struct Symbol* table, Node *node) {
     int flag = 0;
@@ -86,32 +84,29 @@ void notInTable(struct Symbol* table, Node *node) {
     }
 }
 
-void err_declared(struct Symbol* table, Node *node) {
-    struct Symbol* current = table;
-    while (current != NULL) {
-        printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
-        if (strcmp(current->chave, node->valor_lexico.valor) == 0){
-            fprintf(stderr, "ERR_DECLARED\n");
-            exit(EXIT_FAILURE);
-        }
-        current = current->next;
-    }
-    printf("tudo joia\n");
-}
+void verifyCorrectUsage(Symbol *table, Node *node, Natureza expected_natureza) {
+    struct Symbol *current = table;
+    int found = 0;
 
-void err_undeclared(struct Symbol* table, Node *node) {
-    int flag = 0;
-    struct Symbol* current = table;
     while (current != NULL) {
-        printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
-        if (strcmp(current->chave, node->valor_lexico.valor) == 0){
-            flag = 1;
+        if (strcmp(node->valor_lexico.valor, current->chave) == 0) {
+            found = 1;
+            if (current->natureza != expected_natureza) {
+                if (current->natureza == DEF_FUNCAO) {
+                    printf("ERRO na linha %d: Identificador '%s' declarado como função sendo usada como variável\n", node->valor_lexico.linha, node->valor_lexico.valor);
+                    exit(ERR_FUNCTION);
+                } else if (current->natureza == VARIAVEL) {
+                    printf("ERRO na linha %d: Identificador '%s' declarado como variável sendo usado como função\n", node->valor_lexico.linha, node->valor_lexico.valor);
+                    exit(ERR_VARIABLE);
+                }
+            }
         }
         current = current->next;
     }
-    if(flag == 0){
-        fprintf(stderr, "ERR_UNDECLARED\n");
-        exit(EXIT_FAILURE);
+
+    if (found == 0) {
+        printf("ERRO na linha %d: Identificador '%s' não declarado\n", node->valor_lexico.linha, node->valor_lexico.valor);
+        exit(ERR_UNDECLARED);
     }
 }
 
