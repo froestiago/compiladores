@@ -245,6 +245,7 @@ expression_1: TK_IDENTIFICADOR {Node *node = create_node($1); $$ = node; verifyC
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
 
+
 /* Literals */ 
 
 literal: TK_LIT_INT    {$$ = create_node($1); displayTable(tabela_global);}
