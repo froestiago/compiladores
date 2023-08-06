@@ -127,6 +127,7 @@ void abre_escopo(List **lista, Symbol *tabela){
         while (atual->next != NULL)
             atual = atual->next;
         atual->next = novo;
+        
         novo->prev = atual;
     }
 
