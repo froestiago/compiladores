@@ -5,7 +5,8 @@
 typedef enum tipo {
     INT,	// 0
 	FLOAT,	// 1
-	BOOL	// 2
+	BOOL,	// 2
+	ND		// 3
 } Tipo;
 
 typedef enum Natureza {
