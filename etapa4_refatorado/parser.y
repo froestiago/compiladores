@@ -206,12 +206,13 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
 assignment: TK_IDENTIFICADOR '=' expression {
                 $$ = create_node($2);
                 add_children($$, create_node($1));
-                add_children($$, $3);};
+                add_children($$, $3);
+                verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);};
 
 function_call: TK_IDENTIFICADOR '(' args ')' {
                 $$ = create_node($1);
                 add_children($$, $3);
-                notInTable(tabela_global, $$);};
+                verifyCorrectUsage(tabela_global, $$, DEF_FUNCAO);};
 
 args: %empty {$$ = NULL;}
         | expression ',' args {$$ = $1; add_children($$, $3);}

@@ -1,8 +1,8 @@
 etapa4: lex.yy.o parser.tab.o main.o ast.o
-	gcc -g -o etapa4 lex.yy.o parser.tab.o main.o ast.o utils.o stack_hash.o
+	gcc -g -o etapa4 lex.yy.o parser.tab.o main.o ast.o utils.o table.o
 
 lex.yy.o parser.tab.o main.o ast.o: lex.yy.c parser.tab.c ast.c main.c
-	gcc -g -c lex.yy.c main.c ast.c parser.tab.c utils.c stack_hash.c
+	gcc -g -c lex.yy.c main.c ast.c parser.tab.c utils.c table.c
 
 lex.yy.c: scanner.l
 	flex scanner.l
