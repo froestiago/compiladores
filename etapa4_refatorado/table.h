@@ -48,5 +48,7 @@ void err_undeclared(struct Symbol* table, Node *node);
 
 void verifyCorrectUsage(Symbol *table, Node *node, Natureza expected_natureza);
 
+void clearTable(Symbol **table);
+
 // pega o escopo atual e joga pra list
 void abre_escopo(List **lista, Symbol *tabela);

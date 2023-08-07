@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 #include "ast.h"
-#include "stack_hash.h"
+#include "table.h"
 #include "utils.h"
 extern void* arvore;
 int yylex(void);
@@ -109,6 +109,27 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{
 
 /* Function */
 
+/*
+
+function: header command_block {if($2 != NULL){add_children($$, $2); end_scope();}}
+
+header: TK_IDENTIFICADOR open_parenthesis ')' TK_OC_MAP type {$$ = create_node($1);}
+       | TK_IDENTIFICADOR open_parenthesis parameter_list ')' TK_OC_MAP type  {$$ = create_node($1);};
+
+open_parenthesis: '(' {create_scope();};
+
+parameter_list: parameter {$$ = NULL;}
+	        | parameter_list ',' parameter  {$$ = NULL;}; 
+
+parameter: type TK_IDENTIFICADOR {$$ = NULL;};
+
+command_block: '{' '}' {$$ = NULL;}
+            | begin_command_block command_list end_command_block {$$ = $2;};
+
+begin_command_block: '{' {create_scope();};
+end_command_block: '}' {end_scope();};
+*/
+
 function: TK_IDENTIFICADOR '(' ')' function_type command_block {
                 $$ = create_node($1);
                 if($5 != NULL){add_children($$, $5);}
@@ -117,18 +138,15 @@ function: TK_IDENTIFICADOR '(' ')' function_type command_block {
                 displayTable(tabela_global);
                 }
         
-        | TK_IDENTIFICADOR abre_escopo_parametros parameter_list fecha_escopo_parametros function_type command_block {
+        | TK_IDENTIFICADOR '(' parameter_list ')' function_type command_block {
                 $$ = create_node($1); 
                 if($6 != NULL) {add_children($$, $6);}
                 isInTable(tabela_global, create_node($1));
                 addDefFuncSymbol(&tabela_global, create_node($1));
+                displayTable(tabela_atual);
                 };
 
 function_type: TK_OC_MAP type{set_tipo_atual($2);};
-
-abre_escopo_parametros: '(' {};
-fecha_escopo_parametros: ')' {displayTable(tabela_atual);}
-
 
 parameter_list: parameter {$$ = NULL;}
 	        | parameter_list ',' parameter  {$$ = NULL;}; 

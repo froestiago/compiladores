@@ -1,6 +1,6 @@
 #pragma once
 #include "ast.h"
-#include "stack_hash.h"
+#include "table.h"
 
 static void _print_tree (FILE *foutput, Node *tree, int profundidade);
 void print_tree(Node *tree);

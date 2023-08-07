@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "stack_hash.h"
+#include "table.h"
 #include "ast.h"
 #include "utils.h"
 
@@ -88,14 +88,14 @@ void verifyCorrectUsage(Symbol *table, Node *node, Natureza expected_natureza) {
     struct Symbol *current = table;
     int found = 0;
 
-    while (current != NULL) {
+    while (current != NULL) { 
         if (strcmp(node->valor_lexico.valor, current->chave) == 0) {
-            found = 1;
-            if (current->natureza != expected_natureza) {
+            found = 1; //Símbolo encontrado na tabela
+            if (current->natureza != expected_natureza) { //ERR_FUNCTION 
                 if (current->natureza == DEF_FUNCAO) {
                     printf("ERRO na linha %d: Identificador '%s' declarado como função sendo usada como variável\n", node->valor_lexico.linha, node->valor_lexico.valor);
                     exit(ERR_FUNCTION);
-                } else if (current->natureza == VARIAVEL) {
+                } else if (current->natureza == VARIAVEL) { //ERR_VARIABLE
                     printf("ERRO na linha %d: Identificador '%s' declarado como variável sendo usado como função\n", node->valor_lexico.linha, node->valor_lexico.valor);
                     exit(ERR_VARIABLE);
                 }
@@ -104,10 +104,23 @@ void verifyCorrectUsage(Symbol *table, Node *node, Natureza expected_natureza) {
         current = current->next;
     }
 
-    if (found == 0) {
+    if (found == 0) { //Símbolo não encontrado na tabela
         printf("ERRO na linha %d: Identificador '%s' não declarado\n", node->valor_lexico.linha, node->valor_lexico.valor);
         exit(ERR_UNDECLARED);
     }
+}
+
+void clearTable(Symbol **table) {
+    Symbol *current = *table;
+    Symbol *next;
+
+    while (current != NULL) {
+        next = current->next;
+        free(current);
+        current = next;
+    }
+
+    *table = NULL;
 }
 
 void abre_escopo(List **lista, Symbol *tabela){
