@@ -25,12 +25,18 @@ typedef struct valorLexico {
     Tipo tipo;
 	Natureza natureza;
     char *valor;
+
+	Code code;
+	int disp;
+	int temp;
 } valorLexico;
 
 typedef struct Node {
   int num_children;
   struct Node** children;
   valorLexico valor_lexico;
+
+  int current_adress;
 } Node;
 
 
