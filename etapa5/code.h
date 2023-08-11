@@ -1,3 +1,9 @@
+#pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "ast.h"
+
 typedef struct Instruction
 {
     char parameter_1[16];
@@ -9,7 +15,7 @@ typedef struct Instruction
 typedef struct Code
 {
     Instruction *instruction;
-    Code *next_instruction;
+    struct Code *next_instruction;
 } Code;
 
 

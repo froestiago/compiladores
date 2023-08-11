@@ -2,6 +2,8 @@
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
 
+#include "code.h"
+
 typedef enum tipo {
     INT,	// 0
 	FLOAT,	// 1

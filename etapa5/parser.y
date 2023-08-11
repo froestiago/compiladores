@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "table.h"
 #include "utils.h"
+#include "code.h"
 extern void* arvore;
 int yylex(void);
 void yyerror (char const *s);
@@ -91,7 +92,7 @@ extern List *nodo_atual;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$;};
+        | list {$$ = $1; arvore = $$; imprime_lista();};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -155,13 +156,13 @@ command_block: '{' '}' {$$ = NULL;}
                 | abre_escopo command_list fecha_escopo {$$ = $2;};
 
 abre_escopo:     '{' {adicionarNodo();};
-fecha_escopo:   '}' {retrocederNodo(); imprime_lista();};
+fecha_escopo:   '}' {retrocederNodo();};
 
 command_block_func: '{' '}' {$$ = NULL;}
                 | abre_escopo_func command_list fecha_escopo_func;
 
 abre_escopo_func: '{' {};
-fecha_escopo_func: '}' {nodo_atual = nodo_inicial; imprime_lista();};
+fecha_escopo_func: '}' {nodo_atual = nodo_inicial;};
 
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}

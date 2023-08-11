@@ -3,6 +3,7 @@
     #include<string.h>
     #include "ast.h"
     #include "parser.tab.h"
+    #include "code.h"
 %}
 
 %option noyywrap

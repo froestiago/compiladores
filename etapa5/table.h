@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
+#include "code.h"
 
 #define MAX_SYMBOLS 100
 

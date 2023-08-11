@@ -2,6 +2,7 @@
 #include <string.h>
 #include "ast.h"
 #include "table.h"
+#include "code.h"
 
 extern int yyparse(void);
 extern int yylex_destroy(void);

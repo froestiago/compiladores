@@ -4,6 +4,7 @@
 #include "table.h"
 #include "ast.h"
 #include "utils.h"
+#include "code.h"
 
 extern Tipo tipo_atual;
 extern int list_index;

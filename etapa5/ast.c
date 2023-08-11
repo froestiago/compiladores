@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "ast.h"
 #include "utils.h"
-#include "code.h"
 
 #define ARQUIVO_SAIDA "saida.dot" //assim sempre fica no diretorio
 
