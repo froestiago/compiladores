@@ -15,6 +15,9 @@ Symbol *tabela_atual = NULL;
 List *nodo_inicial = NULL;
 List *nodo_atual = NULL;
 
+int current_temp = 1;
+int current_disp = 0;
+
 // List *list = NULL;
 
 int list_index = 0;

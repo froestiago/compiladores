@@ -17,6 +17,9 @@ extern Tipo tipo_atual;
 extern List *nodo_inicial;
 extern List *nodo_atual;
 
+extern int current_temp;
+extern int current_disp;
+
 %}
 
 %union {
@@ -254,29 +257,113 @@ iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); a
 
 /* Expressions */
 /* regressão a direita ate aqui */
-expression: expression TK_OC_OR expression_7 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression: expression TK_OC_OR expression_7 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("or", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
             | expression_7 {$$ = $1;};
 
-expression_7: expression_7 TK_OC_AND expression_6 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_7: expression_7 TK_OC_AND expression_6 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("and", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
              | expression_6 {$$ = $1;};
 
-expression_6: expression_6 TK_OC_EQ expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_6 TK_OC_NE expression_5 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_6: expression_6 TK_OC_EQ expression_5 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_EQ", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
+            | expression_6 TK_OC_NE expression_5 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_NE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
             | expression_5 {$$ = $1;};
 
-expression_5: expression_5 '<' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_5 '>' expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);};
-            | expression_5 TK_OC_LE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_5 TK_OC_GE expression_4 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_5: expression_5 '<' expression_4 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_LT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
+            | expression_5 '>' expression_4 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_GT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                };
+            
+            
+            | expression_5 TK_OC_LE expression_4 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_LE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
+            
+            
+            | expression_5 TK_OC_GE expression_4 {
+                $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                
+                $$->valor_lexico.temp = current_temp;
+                current_temp++;
+                Instruction *instruction = add_custom_instruction("cmp_GE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                }
+            
             | expression_4 {$$ = $1;};
 
-expression_4: expression_4 '+' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_4 '-' expression_3 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_4: expression_4 '+' expression_3 {
+                        // add node
+                        $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                        
+                        // add code
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp++;
+                        Instruction *instruction = add_custom_instruction("add", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        }
+            
+            | expression_4 '-' expression_3 {
+                        $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                        
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp++;
+                        Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);}
+
             | expression_3 {$$ = $1;};
 
-expression_3: expression_3 '*' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_3 '/' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
-            | expression_3 '%' expression_2 {$$ = create_node($2);add_children($$, $1);add_children($$, $3);}
+expression_3: expression_3 '*' expression_2 {
+                        $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                        
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp++;
+                        Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        }
+            
+            | expression_3 '/' expression_2 {
+                        $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                        
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp++;
+                        Instruction *instruction = add_custom_instruction("div", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        }
+            
+            | expression_3 '%' expression_2 {
+                        $$ = create_node($2);add_children($$, $1);add_children($$, $3);
+                        }
             | expression_2 {$$ = $1;};
 
 expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
@@ -286,7 +373,11 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
 expression_1: TK_IDENTIFICADOR {
                         Node *node = create_node($1);
                         $$ = node;
+
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp++;
                         // verifyCorrectUsage(tabela_atual, node, VARIAVEL);
+                        // Instruction *instruction = add_loadAI($1->valor_lexico.temp,registrador_escopo,deslocamento_atual);                        
                         }
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
