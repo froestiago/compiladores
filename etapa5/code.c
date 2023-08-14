@@ -7,7 +7,9 @@
 #include "table.h"
 #include "code.h"
 
-Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2, int result)
+extern Code *complete_code;
+
+Instruction* create_custom_instruction(char *oper, int parameter_1, int parameter_2, int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
     strcpy(instruction->oper, oper);
@@ -27,4 +29,8 @@ Instruction* add_loadAI(int parameter_1, char *parameter_2, int result)
     sprintf(instruction->result, "%d", result);
     printf("%s\t%s, %s => %s\n", instruction->oper, instruction->parameter_2, instruction->result, instruction->parameter_1);
     return instruction;
+}
+
+void add_to_code(Instruction *instruction){
+
 }

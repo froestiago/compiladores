@@ -133,6 +133,7 @@ void inicializarLista() {
     nodo_inicial->prev = NULL;
     nodo_inicial->current = NULL;
     nodo_inicial->index = 0;
+    nodo_inicial->n_symbols = 0;
     nodo_atual = nodo_inicial;
 }
 
@@ -163,6 +164,13 @@ void adicionarSymbol(List *lista, Node *node) {
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = node->valor_lexico.natureza;
+    newSymbol->local_disp = lista->n_symbols * 4;
+    newSymbol->scope_disp = lista->index * 4;
+    newSymbol->total_disp = newSymbol->local_disp + newSymbol->scope_disp;
+    lista->n_symbols++;
+    ////////
+
+
     if (lista != NULL && newSymbol != NULL) {
         if (lista->current == NULL) {
             lista->current = newSymbol;
@@ -183,6 +191,7 @@ void adicionarSymbol_DefFunc(List *lista, Node *node) {
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = 7;
+    newSymbol->local_disp = lista->n_symbols * 4;
     if (lista != NULL && newSymbol != NULL) {
         if (lista->current == NULL) {
             lista->current = newSymbol;
@@ -201,7 +210,7 @@ void imprime_nodo(List *nodo) {
         printf("Nodo Index: %d\n", nodo->index);
         Symbol *symbol = nodo->current;
         while (symbol != NULL) {
-            printf("Chave: %s, Linha: %d\n", symbol->chave, symbol->linha);
+            printf("Chave: %s, Linha: %d\n\tlocal_disp = %d, scope_disp = %d, total_disp = %d\n", symbol->chave, symbol->linha, symbol->local_disp, symbol->scope_disp, symbol->total_disp);
             symbol = symbol->next;
         }
         printf("----------------\n");

@@ -23,6 +23,10 @@ typedef struct Symbol {
 
     /* - - - - - - - - - - - */
     struct Symbol *next;
+
+    int scope_disp;
+    int local_disp;
+    int total_disp;
 } Symbol;
 
 typedef struct List {
@@ -30,6 +34,7 @@ typedef struct List {
     struct List *prev;
     struct Symbol *current;
     int index;
+    int n_symbols;
 } List;
 
 void addVarSymbol(Symbol **table, Node *node);

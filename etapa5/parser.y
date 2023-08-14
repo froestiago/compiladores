@@ -20,6 +20,8 @@ extern List *nodo_atual;
 extern int current_temp;
 extern int current_disp;
 
+extern Code *complete_code;
+
 %}
 
 %union {
@@ -262,7 +264,7 @@ expression: expression TK_OC_OR expression_7 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("or", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("or", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             | expression_7 {$$ = $1;};
 
@@ -271,7 +273,7 @@ expression_7: expression_7 TK_OC_AND expression_6 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("and", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("and", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
              | expression_6 {$$ = $1;};
 
@@ -280,14 +282,14 @@ expression_6: expression_6 TK_OC_EQ expression_5 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_EQ", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_EQ", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             | expression_6 TK_OC_NE expression_5 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_NE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_NE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             | expression_5 {$$ = $1;};
 
@@ -296,14 +298,14 @@ expression_5: expression_5 '<' expression_4 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_LT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_LT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             | expression_5 '>' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_GT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_GT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 };
             
             
@@ -312,7 +314,7 @@ expression_5: expression_5 '<' expression_4 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_LE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_LE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             
             
@@ -321,19 +323,22 @@ expression_5: expression_5 '<' expression_4 {
                 
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
-                Instruction *instruction = add_custom_instruction("cmp_GE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                Instruction *instruction = create_custom_instruction("cmp_GE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 }
             
             | expression_4 {$$ = $1;};
 
-expression_4: expression_4 '+' expression_3 {
+expression_4: expression_4 '+' expression_3 { //a + b
                         // add node
                         $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                         
                         // add code
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
-                        Instruction *instruction = add_custom_instruction("add", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        printf("-> %s + %s | ", $1->valor_lexico.valor, $3->valor_lexico.valor);
+                        
+                        
+                        Instruction *instruction = create_custom_instruction("add", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         }
             
             | expression_4 '-' expression_3 {
@@ -341,7 +346,7 @@ expression_4: expression_4 '+' expression_3 {
                         
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
-                        Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);}
+                        Instruction *instruction = create_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);}
 
             | expression_3 {$$ = $1;};
 
@@ -350,7 +355,7 @@ expression_3: expression_3 '*' expression_2 {
                         
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
-                        Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        Instruction *instruction = create_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         }
             
             | expression_3 '/' expression_2 {
@@ -358,7 +363,7 @@ expression_3: expression_3 '*' expression_2 {
                         
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
-                        Instruction *instruction = add_custom_instruction("div", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        Instruction *instruction = create_custom_instruction("div", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         }
             
             | expression_3 '%' expression_2 {

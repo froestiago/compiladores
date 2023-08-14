@@ -15,6 +15,8 @@ Symbol *tabela_atual = NULL;
 List *nodo_inicial = NULL;
 List *nodo_atual = NULL;
 
+Code *complete_code = NULL;
+
 int current_temp = 1;
 int current_disp = 0;
 
@@ -30,4 +32,3 @@ int main (int argc, char **argv)
   yylex_destroy();
   return ret;
 }
-
