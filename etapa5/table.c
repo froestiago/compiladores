@@ -13,8 +13,6 @@ extern int list_index;
 extern List *nodo_inicial;
 extern List *nodo_atual;
 
-extern int current_disp;
-
 void addVarSymbol(Symbol **table, Node *node) {
     Symbol *newSymbol = (Symbol *)malloc(sizeof(Symbol));
     if (newSymbol == NULL) {
@@ -146,8 +144,6 @@ void adicionarNodo() {
     novo_nodo->current = NULL;
     novo_nodo->index = nodo_atual->index + 1;   // O índice será atualizado quando adicionado à lista
 
-    novo_nodo->disp = current_disp;
-
     // Encontrar o último nodo
     List *ultimo_nodo = nodo_inicial;
     while (ultimo_nodo->next != NULL) {
@@ -169,8 +165,8 @@ void adicionarSymbol(List *lista, Node *node) {
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = node->valor_lexico.natureza;
     newSymbol->local_disp = lista->n_symbols * 4;
-    newSymbol->scope_disp = current_disp;
-    newSymbol->total_disp = 0;/*newSymbol->local_disp + newSymbol->scope_disp;*/
+    newSymbol->scope_disp = lista->index * 4;
+    newSymbol->total_disp = newSymbol->local_disp + newSymbol->scope_disp;
     lista->n_symbols++;
     ////////
 
@@ -196,7 +192,6 @@ void adicionarSymbol_DefFunc(List *lista, Node *node) {
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = 7;
     newSymbol->local_disp = lista->n_symbols * 4;
-    newSymbol->scope_disp = current_disp;
     if (lista != NULL && newSymbol != NULL) {
         if (lista->current == NULL) {
             lista->current = newSymbol;
