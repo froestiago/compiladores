@@ -13,6 +13,9 @@ extern int list_index;
 extern List *nodo_inicial;
 extern List *nodo_atual;
 
+extern int disp_rpf;
+extern int disp_rbss;
+
 void addVarSymbol(Symbol **table, Node *node) {
     Symbol *newSymbol = (Symbol *)malloc(sizeof(Symbol));
     if (newSymbol == NULL) {
@@ -142,7 +145,6 @@ void adicionarNodo() {
     novo_nodo->prev = NULL;  // Não é mais necessário apontar para o nodo_atual
     novo_nodo->current = NULL;
     novo_nodo->index = nodo_atual->index + 1;   // O índice será atualizado quando adicionado à lista
-
     // Encontrar o último nodo
     List *ultimo_nodo = nodo_inicial;
     while (ultimo_nodo->next != NULL) {
@@ -163,6 +165,18 @@ void adicionarSymbol(List *lista, Node *node) {
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = node->valor_lexico.natureza;
+
+    if(lista->index == 0){
+        newSymbol->base = "rbss";
+        newSymbol->disp = disp_rbss;
+        disp_rbss += 4;
+    } else if(lista->index > 0){
+        newSymbol->base = "rpf";
+        newSymbol->disp = disp_rpf;
+        disp_rpf += 4;
+    }
+
+
     if (lista != NULL && newSymbol != NULL) {
         if (lista->current == NULL) {
             lista->current = newSymbol;
@@ -183,6 +197,11 @@ void adicionarSymbol_DefFunc(List *lista, Node *node) {
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = 7;
+
+    newSymbol->base = "rbss";
+    newSymbol->disp = disp_rbss;
+    disp_rbss += 4;
+
     if (lista != NULL && newSymbol != NULL) {
         if (lista->current == NULL) {
             lista->current = newSymbol;
@@ -201,7 +220,7 @@ void imprime_nodo(List *nodo) {
         printf("Nodo Index: %d\n", nodo->index);
         Symbol *symbol = nodo->current;
         while (symbol != NULL) {
-            printf("Chave: %s, Linha: %d\n", symbol->chave, symbol->linha);
+            printf("Chave: %s, Linha: %d Base: %s, Disp: %d\n", symbol->chave, symbol->linha, symbol->base, symbol->disp);
             symbol = symbol->next;
         }
         printf("----------------\n");

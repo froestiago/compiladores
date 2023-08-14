@@ -16,7 +16,9 @@ List *nodo_inicial = NULL;
 List *nodo_atual = NULL;
 
 int current_temp = 1;
-int current_disp = 0;
+
+int disp_rpf = 0;
+int disp_rbss = 0;
 
 // List *list = NULL;
 

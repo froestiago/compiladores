@@ -18,7 +18,6 @@ extern List *nodo_inicial;
 extern List *nodo_atual;
 
 extern int current_temp;
-extern int current_disp;
 
 %}
 

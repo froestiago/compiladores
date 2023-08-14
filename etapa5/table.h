@@ -23,6 +23,9 @@ typedef struct Symbol {
 
     /* - - - - - - - - - - - */
     struct Symbol *next;
+
+    int disp;
+    char *base;
 } Symbol;
 
 typedef struct List {
