@@ -35,6 +35,8 @@ typedef struct List {
     struct Symbol *current;
     int index;
     int n_symbols;
+
+    int disp;
 } List;
 
 void addVarSymbol(Symbol **table, Node *node);

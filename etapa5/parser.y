@@ -141,7 +141,8 @@ function: new_node TK_IDENTIFICADOR '(' ')' function_type command_block_func {
                 // displayTable(tabela_atual);
                 };
 
-new_node: {adicionarNodo();};
+new_node: {     current_disp = current_disp + 4;
+                adicionarNodo();};
 
 function_type: TK_OC_MAP type{set_tipo_atual($2);};
 
@@ -160,14 +161,23 @@ type_aux: type {set_tipo_atual($1);}
 command_block: '{' '}' {$$ = NULL;}
                 | abre_escopo command_list fecha_escopo {$$ = $2;};
 
-abre_escopo:     '{' {adicionarNodo();};
-fecha_escopo:   '}' {retrocederNodo();};
+abre_escopo:     '{' {
+                current_disp = current_disp + 4;
+                adicionarNodo();
+                };
+
+fecha_escopo:   '}' {
+                retrocederNodo();
+                current_disp = nodo_atual->disp;
+                };
 
 command_block_func: '{' '}' {$$ = NULL;}
                 | abre_escopo_func command_list fecha_escopo_func;
 
 abre_escopo_func: '{' {};
-fecha_escopo_func: '}' {nodo_atual = nodo_inicial;};
+fecha_escopo_func: '}' {
+                current_disp = 0;
+                nodo_atual = nodo_inicial;};
 
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
