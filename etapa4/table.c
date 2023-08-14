@@ -105,8 +105,13 @@ void printLastInsertedItem(Stack* stack) {
     } else {
         printf("Last inserted item in the table: ");
         TableItem* lastItem = &(stack->top[stack->n_table_nodes - 1]);
+<<<<<<< HEAD
         printf("Key: %s, Line: %d, TotalItems: %d\n", lastItem->key, lastItem->item_atr.line, stack->n_table_nodes);
         printf("Nature: %s, Type: %d\n", lastItem->item_atr.nature, lastItem->item_atr.tipo);
+=======
+        printf("Key: %s, Line: %d\n", lastItem->key, lastItem->item_atr.line);
+        printf("\tnumber o stuff in table = %d\t", stack->n_table_nodes);
+>>>>>>> etapa5_pre_disp
         // Print other attributes as needed
     }
 }

@@ -3,17 +3,18 @@
 #include<string.h>
 #include "ast.h"
 #include "table.h"
+#include "utils.h"
 extern void* arvore;
 int yylex(void);
 void yyerror (char const *s);
 extern int yylineno;
-extern void *arvore;
-%}
 
-%code requires { 
-    #include "ast.h" 
-    #include "table.h"
-}
+extern Symbol *tabela_global;
+extern Symbol *tabela_atual;
+extern Tipo tipo_atual;
+extern List list;
+
+%}
 
 %union {
     Node* node;
@@ -44,13 +45,12 @@ extern void *arvore;
 %token<valor_lexico> TK_ERRO
 %token<valor_lexico> '(' ')' '!' '-' '*' '/' '%' '+' '<' '>' '=' ';' ','
 
+%type<valor_lexico> type
 %type<node> program
 %type<node> list
 %type<node> global_var
 %type<node> list_global_var
 %type<node> function
-%type<node> header
-%type<node> open_parenthesis
 %type<node> parameter_list
 %type<node> parameter
 %type<node> command_block
@@ -74,15 +74,16 @@ extern void *arvore;
 %type<node> expression_6
 %type<node> expression_7
 %type<node> literal
+%type<node> function_type
 
 
-%start program
+%start init
 
 %%
 
 //%type<node> func_body %type<node> head
 
-//new_start: create_scope program close_scope
+init: {} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
         | list {$$ = $1; arvore = $$;};
@@ -94,12 +95,21 @@ list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
 
 /* Global variables */
 
-global_var: type list_global_var ';' {$$ = NULL; free_node($2); free_lexical_value($3);};
+global_var: type {set_tipo_atual($1);} list_global_var ';' {$$ = NULL; };
 
-list_global_var: TK_IDENTIFICADOR ',' list_global_var{$$ = NULL; free_node($3); free_lexical_value($1);}
-                | TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};
+list_global_var: TK_IDENTIFICADOR ',' list_global_var{
+                        $$ = NULL;
+                        isInTable(tabela_global, create_node($1));
+                        addVarSymbol(&tabela_global, create_node($1));}
+
+                | TK_IDENTIFICADOR {
+                        $$ = NULL;
+                        isInTable(tabela_global, create_node($1));
+                        addVarSymbol(&tabela_global, create_node($1));}
 
 /* Function */
+
+/*
 
 function: header command_block {if($2 != NULL){add_children($$, $2); end_scope();}}
 
@@ -118,6 +128,35 @@ command_block: '{' '}' {$$ = NULL;}
 
 begin_command_block: '{' {create_scope();};
 end_command_block: '}' {end_scope();};
+*/
+
+function: TK_IDENTIFICADOR '(' ')' function_type command_block {
+                $$ = create_node($1);
+                if($5 != NULL){add_children($$, $5);}
+                isInTable(tabela_global, create_node($1));
+                addDefFuncSymbol(&tabela_global, create_node($1));
+                displayTable(tabela_global);
+                }
+        
+        | TK_IDENTIFICADOR '(' parameter_list ')' function_type command_block {
+                $$ = create_node($1); 
+                if($6 != NULL) {add_children($$, $6);}
+                isInTable(tabela_global, create_node($1));
+                addDefFuncSymbol(&tabela_global, create_node($1));
+                displayTable(tabela_atual);
+                };
+
+function_type: TK_OC_MAP type{set_tipo_atual($2);};
+
+parameter_list: parameter {$$ = NULL;}
+	        | parameter_list ',' parameter  {$$ = NULL;}; 
+
+parameter: type_aux TK_IDENTIFICADOR {$$ = NULL; isInTable(tabela_atual, create_node($2));addVarSymbol(&tabela_atual, create_node($2));};
+
+type_aux: type {set_tipo_atual($1);}
+
+command_block: '{' '}' {$$ = NULL;}
+             | '{' command_list '}' {$$ = $2;};
 
 command_list: command ';' command_list {if($1 == NULL) {$$ = $3;}else{add_children($1, $3); $$ = $1;}}
 	    | command ';' { $$ = $1;};
@@ -131,68 +170,49 @@ command: var_declaration {$$ = $1;}
 
 /* Commands */
 
-/*
-var_declaration: type var_in_func {
-    $$ = $2;
-    // Verificar se o identificador já foi declarado
-    if (!validate_declaration($2->valor_lexico)) {
-        yyerror("throw ERR_DECLARED");
-        $$ = NULL;
-    }
-};
-*/
+var_declaration: type_aux var_in_func {
+                $$ = $2;};
 
-var_declaration: type var_in_func {$$ = $2;};
+var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
+                $$ = create_node($2);
+                add_children($$, create_node($1)); 
+                add_children($$, $3);
+                add_children($$, $5);
+                isInTable(tabela_atual, create_node($1));
+                addVarSymbol(&tabela_atual, create_node($1));}
+ 
+        | TK_IDENTIFICADOR TK_OC_LE literal {
+                $$ = create_node($2);
+                add_children($$, create_node($1));
+                add_children($$, $3);
+                isInTable(tabela_atual, create_node($1));
+                addVarSymbol(&tabela_atual, create_node($1));
+                }
 
-var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func 
-    {$$ = create_node($2);  add_children($$, create_node($1));  add_children($$, $3); add_children($$, $5);}
- | TK_IDENTIFICADOR TK_OC_LE literal 
-    {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);}
- | TK_IDENTIFICADOR ',' var_in_func 
-    {$$ = $3; insertSymbolInTable(create_node($1), NAT_VAR); free_lexical_value($1); free_lexical_value($2);}
- | TK_IDENTIFICADOR 
-<<<<<<< HEAD
-    {$$ = NULL; free_lexical_value($1); insertSymbolIfNotDeclared(create_node($1), NAT_VAR);}
-=======
-    {$$ = NULL; insertSymbolInTable(create_node($1), NAT_VAR); free_lexical_value($1);}
->>>>>>> etapa5_pre_disp
-;
+        | TK_IDENTIFICADOR ',' var_in_func {
+                $$ = $3;
+                // free_lexical_value($1);
+                // free_lexical_value($2);
+                isInTable(tabela_atual, create_node($1));
+                addVarSymbol(&tabela_atual, create_node($1));}
+ 
+        | TK_IDENTIFICADOR {
+                $$ = NULL;
+                // free_lexical_value($1);
+                isInTable(tabela_atual, create_node($1));
+                addVarSymbol(&tabela_atual, create_node($1));
+                };
 
-/*var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3); add_children($$, $5);
-    // Cria uma variável do tipo valorLexico para armazenar informações do identificador encontrado
-    valorLexico identificador;
-    identificador.linha = $1->valor_lexico.linha;
-    identificador.tipo = $1->valor_lexico.tipo;
-    identificador.valor = strdup($1->valor_lexico.valor);
+assignment: TK_IDENTIFICADOR '=' expression {
+                $$ = create_node($2);
+                add_children($$, create_node($1));
+                add_children($$, $3);
+                verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);};
 
-    // Verificar se o identificador já foi declarado
-    if (!verificar_declaracao(identificador)) {
-        yyerror("Undeclared variable");
-        free_node($$);
-        $$ = NULL;
-    }
-}
-| TK_IDENTIFICADOR TK_OC_LE literal { $$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);
-    // Cria uma variável do tipo valorLexico para armazenar informações do identificador encontrado
-    valorLexico identificador;
-    identificador.linha = $1->valor_lexico.linha;
-    identificador.tipo = $1->valor_lexico.tipo;
-    identificador.valor = strdup($1->valor_lexico.valor);
-
-    // Verificar se o identificador já foi declarado
-    if (!verificar_declaracao(identificador)) {
-        yyerror("Undeclared variable");
-        free_node($$);
-        $$ = NULL;
-    }
-}
-| TK_IDENTIFICADOR ',' var_in_func {$$ = $3; free_lexical_value($1); free_lexical_value($2);}  // O identificador já foi verificado ao ser declarado, não é necessário verificar novamente aqui.
-| TK_IDENTIFICADOR {$$ = NULL; free_lexical_value($1);};  // O identificador já foi verificado ao ser declarado, não é necessário verificar novamente aqui.
-*/
-
-assignment: TK_IDENTIFICADOR '=' expression {$$ = create_node($2); add_children($$, create_node($1)); add_children($$, $3);};
-
-function_call: TK_IDENTIFICADOR '(' args ')' {$$ = create_node($1); add_children($$, $3);};
+function_call: TK_IDENTIFICADOR '(' args ')' {
+                $$ = create_node($1);
+                add_children($$, $3);
+                verifyCorrectUsage(tabela_global, $$, DEF_FUNCAO);};
 
 args: %empty {$$ = NULL;}
         | expression ',' args {$$ = $1; add_children($$, $3);}
@@ -239,39 +259,24 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
             |'!' expression_1 {$$ = create_node($1); add_children($$, $2);}
             | expression_1 {$$ = $1;};
 
-expression_1: TK_IDENTIFICADOR {$$ = create_node($1);}
+expression_1: TK_IDENTIFICADOR {Node *node = create_node($1); $$ = node; verifyCorrectUsage(tabela_atual, node, VARIAVEL);}
             | literal {$$ = $1;}
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
 
-/*expression_1: TK_IDENTIFICADOR {$$ = create_node($1);
-    valorLexico valor_lexico;
-    valor_lexico.linha = $1->valor_lexico.linha; //pega a linha do token
-    valor_lexico.tipo = $1->valor_lexico.tipo; //copia o tipo
-    valor_lexico.valor = strdup($1->valor_lexico.valor); //copia o valor
-    // Verifica se o identificador já foi declarado
-    if (!validate_declaration(valor_lexico)) {
-        yyerror("throw ERR_UNDECLARED");//UPDATE: aqui precisa lançar mensagem de erro com função especifica
-        free_node($$);
-        $$ = NULL;
-    }}
-        | literal {$$ = $1;}
-        | function_call {$$ = $1;}
-        | '(' expression ')' { $$ = $2; };
-*/
 
 /* Literals */ 
 
-literal: TK_LIT_INT    {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
-        | TK_LIT_FLOAT {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
-        | TK_LIT_TRUE  {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);}
-        | TK_LIT_FALSE {$$ = create_node($1); insertSymbolInTable($$, NAT_LIT);};
+literal: TK_LIT_INT    {$$ = create_node($1); displayTable(tabela_global);}
+        | TK_LIT_FLOAT {$$ = create_node($1); displayTable(tabela_atual);}
+        | TK_LIT_TRUE  {$$ = create_node($1);}
+        | TK_LIT_FALSE {$$ = create_node($1);};
 
 // /* Types */
 
-type:   TK_PR_INT
-        |TK_PR_FLOAT
-        |TK_PR_BOOL;
+type:   TK_PR_INT       { $$ = $1; }
+        |TK_PR_FLOAT    { $$ = $1; }
+        |TK_PR_BOOL     { $$ = $1; };
 
 %%
 
