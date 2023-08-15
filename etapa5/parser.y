@@ -94,7 +94,7 @@ extern int current_temp;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; imprime_lista();};
+        | list {$$ = $1; arvore = $$;};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -161,7 +161,7 @@ abre_escopo:     '{' {adicionarNodo();};
 fecha_escopo:   '}' {retrocederNodo();};
 
 command_block_func: '{' '}' {$$ = NULL;}
-                | abre_escopo_func command_list fecha_escopo_func;
+                | abre_escopo_func command_list fecha_escopo_func {$$ = $2;};
 
 abre_escopo_func: '{' {};
 fecha_escopo_func: '}' {nodo_atual = nodo_inicial;};

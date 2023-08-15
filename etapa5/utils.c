@@ -86,5 +86,6 @@ void exporta(void *arvore)
     print_tree(arvore);
     print_node(arvore);
     asd_print_graphviz(arvore);
+    printf("aqui");
     return;
 }
