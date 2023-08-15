@@ -29,16 +29,15 @@ typedef struct valorLexico {
     char *valor;
 
 	Code code;
-	int disp;
 	int temp;
+	int disp;
+    char *base;
 } valorLexico;
 
 typedef struct Node {
-  int num_children;
-  struct Node** children;
-  valorLexico valor_lexico;
-
-  int current_adress;
+  	int num_children;
+  	struct Node** children;
+  	valorLexico valor_lexico;
 } Node;
 
 

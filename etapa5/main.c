@@ -17,7 +17,7 @@ List *nodo_atual = NULL;
 
 int current_temp = 1;
 
-int disp_rpf = 0;
+int disp_rfp = 0;
 int disp_rbss = 0;
 
 // List *list = NULL;
@@ -28,7 +28,7 @@ Tipo tipo_atual = -1;
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 
-  exporta (arvore);
+  // exporta (arvore);
   yylex_destroy();
   return ret;
 }

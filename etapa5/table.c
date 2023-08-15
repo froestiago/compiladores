@@ -13,7 +13,7 @@ extern int list_index;
 extern List *nodo_inicial;
 extern List *nodo_atual;
 
-extern int disp_rpf;
+extern int disp_rfp;
 extern int disp_rbss;
 
 void addVarSymbol(Symbol **table, Node *node) {
@@ -171,9 +171,9 @@ void adicionarSymbol(List *lista, Node *node) {
         newSymbol->disp = disp_rbss;
         disp_rbss += 4;
     } else if(lista->index > 0){
-        newSymbol->base = "rpf";
-        newSymbol->disp = disp_rpf;
-        disp_rpf += 4;
+        newSymbol->base = "rfp";
+        newSymbol->disp = disp_rfp;
+        disp_rfp += 4;
     }
 
 
@@ -242,3 +242,31 @@ void retrocederNodo() {
         nodo_atual = nodo_atual->prev;
     }
 }
+
+int traverseListFromNode(struct List *startNode, char *key) {
+    if (startNode == NULL) {
+        printf("Start node is NULL.\n");
+        // return NULL;
+    }
+    
+    struct List *currentNode = startNode;
+    
+    while (currentNode != NULL) {
+        // Process the current node's Symbol data if needed
+        struct Symbol *currentSymbol = currentNode->current;
+        while(currentSymbol != NULL){
+        // Do something with currentSymbol
+        if(!(strcmp(key,currentSymbol->chave))){
+            return currentSymbol->disp;
+        }
+        currentSymbol = currentSymbol->next;
+        }
+        // Move to the next node
+        currentNode = currentNode->prev;
+    }
+    // return NULL;
+}
+
+
+
+

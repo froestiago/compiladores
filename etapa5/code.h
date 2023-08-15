@@ -19,5 +19,5 @@ typedef struct Code
 } Code;
 
 Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2, int result);
-Instruction* add_loadAI(int parameter_1, char *parameter_2, int result);
+Instruction* add_loadAI(int parameter_1, int result);
 

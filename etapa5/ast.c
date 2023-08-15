@@ -6,6 +6,9 @@
 
 #define ARQUIVO_SAIDA "saida.dot" //assim sempre fica no diretorio
 
+extern int disp_rfp;
+extern int disp_rbss;
+
 valorLexico get_yylval(int num_line, Tipo tipo, Natureza natureza, char* yytext) {
     
     valorLexico valor_lexico;
@@ -13,7 +16,6 @@ valorLexico get_yylval(int num_line, Tipo tipo, Natureza natureza, char* yytext)
     valor_lexico.tipo = tipo;
     valor_lexico.natureza = natureza;
     valor_lexico.valor = strdup(yytext);
-
     return valor_lexico;
 }
 

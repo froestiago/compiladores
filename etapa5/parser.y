@@ -19,6 +19,9 @@ extern List *nodo_atual;
 
 extern int current_temp;
 
+extern int disp_rfp;
+extern int disp_rbss;
+
 %}
 
 %union {
@@ -94,7 +97,7 @@ extern int current_temp;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$;};
+        | list {$$ = $1; arvore = $$; imprime_lista();};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -143,7 +146,7 @@ new_node: {adicionarNodo();};
 function_type: TK_OC_MAP type{set_tipo_atual($2);};
 
 parameter_list: parameter {$$ = NULL;}
-	        | parameter_list ',' parameter  {$$ = NULL;}; 
+	        | parameter ',' parameter_list {$$ = NULL;}; 
 
 parameter: type_aux TK_IDENTIFICADOR {
                 $$ = NULL;
@@ -374,9 +377,10 @@ expression_1: TK_IDENTIFICADOR {
                         $$ = node;
 
                         $$->valor_lexico.temp = current_temp;
-                        current_temp++;
-                        // verifyCorrectUsage(tabela_atual, node, VARIAVEL);
-                        // Instruction *instruction = add_loadAI($1->valor_lexico.temp,registrador_escopo,deslocamento_atual);                        
+                        // achar disp, percorer lista de tabelas da atual para tras
+                        int disp = traverseListFromNode(nodo_atual, $$->valor_lexico.valor);
+                        Instruction *instruction = add_loadAI(current_temp, disp);
+                        current_temp++;                        
                         }
             | literal {$$ = $1;}
             | function_call {$$ = $1;}

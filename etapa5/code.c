@@ -18,12 +18,12 @@ Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2
     return instruction;
 }
 
-Instruction* add_loadAI(int parameter_1, char *parameter_2, int result)
+Instruction* add_loadAI(int parameter_1, int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
     strcpy(instruction->oper, "loadAI");
     sprintf(instruction->parameter_1, "r%d", parameter_1);
-    strcpy(instruction->parameter_2, parameter_2);
+    strcpy(instruction->parameter_2, "rfp");
     sprintf(instruction->result, "%d", result);
     printf("%s\t%s, %s => %s\n", instruction->oper, instruction->parameter_2, instruction->result, instruction->parameter_1);
     return instruction;

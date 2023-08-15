@@ -66,3 +66,5 @@ void imprime_nodo(List *nodo);
 void imprime_lista();
 
 void retrocederNodo();
+
+int traverseListFromNode(struct List *startNode, char *key);
