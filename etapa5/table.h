@@ -19,7 +19,7 @@ typedef struct Symbol {
     int linha;
     Tipo tipo;
     Natureza natureza;
-    // char *valor;
+    char *valor;
 
     /* - - - - - - - - - - - */
     struct Symbol *next;
@@ -67,4 +67,4 @@ void imprime_lista();
 
 void retrocederNodo();
 
-int traverseListFromNode(struct List *startNode, char *key);
+int find_disp(struct List *startNode, char *key);

@@ -19,5 +19,14 @@ typedef struct Code
 } Code;
 
 Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2, int result);
-Instruction* add_loadAI(int parameter_1, int result);
+Instruction* add_loadAI(int parameter_1, char *disp_base,int result);
+Instruction* add_storeAI (int parameter_1, char *parameter_2, int result);
+Instruction* add_loadI (char *parameter_1, int parameter_2);
 
+
+void insereInstrucao(Code **inicio_codigo, Instruction *instrucao); //---
+Instruction *addInstruction(Instruction *newInstruction);
+Instruction *insertInstruction(Instruction *newInstruction); //---
+void printCodeList();
+
+void printListFromNode(Code *startNode); //---

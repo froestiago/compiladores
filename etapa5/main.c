@@ -25,6 +25,8 @@ int disp_rbss = 0;
 int list_index = 0;
 Tipo tipo_atual = -1;
 
+Code *code = NULL;
+
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 

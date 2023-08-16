@@ -22,6 +22,8 @@ extern int current_temp;
 extern int disp_rfp;
 extern int disp_rbss;
 
+extern Code *code;
+
 %}
 
 %union {
@@ -97,7 +99,7 @@ extern int disp_rbss;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; imprime_lista();};
+        | list {$$ = $1; arvore = $$; imprime_lista(); printf("\n\n\n\n"); printCodeList($$->valor_lexico.code);};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -193,6 +195,12 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 // isInTable(tabela_atual, create_node($1));
                 // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
+
+                Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction_load);
+                int disp = find_disp(nodo_atual, $1.valor);
+                Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                $$->valor_lexico.code = addInstruction(instruction_store);
                 }
  
         | TK_IDENTIFICADOR TK_OC_LE literal {
@@ -202,6 +210,11 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 // isInTable(tabela_atual, create_node($1));
                 // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
+                Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction_load);
+                int disp = find_disp(nodo_atual, $1.valor);
+                Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                $$->valor_lexico.code = addInstruction(instruction_store);
                 }
 
         | TK_IDENTIFICADOR ',' var_in_func {
@@ -226,6 +239,9 @@ assignment: TK_IDENTIFICADOR '=' expression {
                 add_children($$, create_node($1));
                 add_children($$, $3);
                 // verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);
+                int disp = find_disp(nodo_atual, $1.valor);
+                Instruction *instruction = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 };
 
 function_call: TK_IDENTIFICADOR '(' args ')' {
@@ -265,6 +281,7 @@ expression: expression TK_OC_OR expression_7 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("or", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             | expression_7 {$$ = $1;};
 
@@ -274,6 +291,7 @@ expression_7: expression_7 TK_OC_AND expression_6 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("and", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
              | expression_6 {$$ = $1;};
 
@@ -283,6 +301,7 @@ expression_6: expression_6 TK_OC_EQ expression_5 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_EQ", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             | expression_6 TK_OC_NE expression_5 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
@@ -290,6 +309,7 @@ expression_6: expression_6 TK_OC_EQ expression_5 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_NE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             | expression_5 {$$ = $1;};
 
@@ -299,6 +319,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_LT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             | expression_5 '>' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
@@ -306,6 +327,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_GT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 };
             
             
@@ -315,6 +337,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_LE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             
             
@@ -324,6 +347,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$->valor_lexico.temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_GE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                $$->valor_lexico.code = addInstruction(instruction);
                 }
             
             | expression_4 {$$ = $1;};
@@ -336,6 +360,7 @@ expression_4: expression_4 '+' expression_3 {
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("add", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        $$->valor_lexico.code = addInstruction(instruction);
                         }
             
             | expression_4 '-' expression_3 {
@@ -343,7 +368,10 @@ expression_4: expression_4 '+' expression_3 {
                         
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
-                        Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);}
+                        Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        $$->valor_lexico.code = addInstruction(instruction);
+                        }
+
 
             | expression_3 {$$ = $1;};
 
@@ -353,6 +381,9 @@ expression_3: expression_3 '*' expression_2 {
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        $$->valor_lexico.code = addInstruction(instruction);
+                        // printCodeList($$->valor_lexico.code);
+                        
                         }
             
             | expression_3 '/' expression_2 {
@@ -361,6 +392,7 @@ expression_3: expression_3 '*' expression_2 {
                         $$->valor_lexico.temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("div", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
+                        $$->valor_lexico.code = addInstruction(instruction);
                         }
             
             | expression_3 '%' expression_2 {
@@ -375,21 +407,29 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
 expression_1: TK_IDENTIFICADOR {
                         Node *node = create_node($1);
                         $$ = node;
-
+                        // printf(" - %s", $$->valor_lexico.linha);
                         $$->valor_lexico.temp = current_temp;
+                        current_temp++;
                         // achar disp, percorer lista de tabelas da atual para tras
-                        int disp = traverseListFromNode(nodo_atual, $$->valor_lexico.valor);
-                        Instruction *instruction = add_loadAI(current_temp, disp);
-                        current_temp++;                        
+                        int disp = find_disp(nodo_atual, $$->valor_lexico.valor);
+                        Instruction *instruction = add_loadAI($$->valor_lexico.temp, "rfp", disp);
+                        $$->valor_lexico.code = addInstruction(instruction);
                         }
-            | literal {$$ = $1;}
+            | literal {$$ = $1;
+                        Instruction *instruction_load = add_loadI($$->valor_lexico.valor,$$->valor_lexico.temp);
+                        $$->valor_lexico.code = addInstruction(instruction_load);
+                        
+            }
             | function_call {$$ = $1;}
             | '(' expression ')' { $$ = $2; };
 
 
 /* Literals */ 
 
-literal: TK_LIT_INT    {$$ = create_node($1);}
+literal: TK_LIT_INT    {$$ = create_node($1);
+                        $1.temp = current_temp;
+	                current_temp++;
+                        }
         | TK_LIT_FLOAT {$$ = create_node($1);}
         | TK_LIT_TRUE  {$$ = create_node($1);}
         | TK_LIT_FALSE {$$ = create_node($1);};

@@ -165,6 +165,7 @@ void adicionarSymbol(List *lista, Node *node) {
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
     newSymbol->natureza = node->valor_lexico.natureza;
+    newSymbol->valor = node->valor_lexico.valor_atri;
 
     if(lista->index == 0){
         newSymbol->base = "rbss";
@@ -243,7 +244,7 @@ void retrocederNodo() {
     }
 }
 
-int traverseListFromNode(struct List *startNode, char *key) {
+int find_disp(struct List *startNode, char *key) {
     if (startNode == NULL) {
         printf("Start node is NULL.\n");
         // return NULL;
