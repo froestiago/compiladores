@@ -103,11 +103,11 @@ init: {inicializarLista();} program
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
         | list {$$ = $1;
                 arvore = $$;
-                imprime_lista();
+                // imprime_lista();
                 // printf("\n\n\n\n");
                 $$->valor_lexico.code = code;
                 // printf("----------------\n"); 
-                printListFromNode($$->valor_lexico.code);
+                // printListFromNode($$->valor_lexico.code);
                 };
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};

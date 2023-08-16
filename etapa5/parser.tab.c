@@ -1543,11 +1543,11 @@ yyreduce:
 #line 104 "parser.y"
                {(yyval.node) = (yyvsp[0].node);
                 arvore = (yyval.node);
-                imprime_lista();
+                // imprime_lista();
                 // printf("\n\n\n\n");
                 (yyval.node)->valor_lexico.code = code;
                 // printf("----------------\n"); 
-                printListFromNode((yyval.node)->valor_lexico.code);
+                // printListFromNode($$->valor_lexico.code);
                 }
 #line 1553 "parser.tab.c"
     break;
