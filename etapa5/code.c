@@ -53,43 +53,7 @@ Instruction* add_loadI (char *parameter_1, int parameter_2)
     return instruction;
 }
 
-// void add_to_code();
-
-void insereInstrucao(Code **inicio_codigo, Instruction *instrucao)
-{
-    printf("entrouuuu");
-    Code *nova_instrucao = (Code*)malloc(sizeof(Code));
-    if (nova_instrucao == NULL)
-        return;
-    nova_instrucao->instruction = instrucao;
-    nova_instrucao->next_instruction = NULL;
-    if (*inicio_codigo == NULL)
-        *inicio_codigo = nova_instrucao;
-    else
-    {
-        Code *ultimo = *inicio_codigo;
-        while (ultimo->next_instruction != NULL)
-            ultimo = ultimo->next_instruction;
-        ultimo->next_instruction = nova_instrucao;
-    }
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-Instruction *insertInstruction(Instruction *newInstruction) {
-    Code *newCode = (Code *)malloc(sizeof(Code));
-    if (newCode == NULL) {
-        // Handle memory allocation error
-        return NULL;
-    }
-
-    newCode->instruction = newInstruction;
-    newCode->next_instruction = code;
-
-    code = newCode; // Update global code pointer
-
-    return newInstruction;
-}
 
 void printCodeList() {
     Code *current = code;
@@ -110,12 +74,10 @@ void printListFromNode(Code *startNode) {
     Code *current = startNode;
 
     while (current != NULL) {
-        printf("AUSHUSAHUSH");
-        printf("%s\n", current->instruction->oper);
-        // printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
-                                //    current->instruction->parameter_1,
-                                //    current->instruction->parameter_2,
-                                //    current->instruction->result);
+        printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
+                                   current->instruction->parameter_1,
+                                   current->instruction->parameter_2,
+                                   current->instruction->result);
         current = current->next_instruction;
     }
 }

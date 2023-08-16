@@ -99,7 +99,7 @@ extern Code *code;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; imprime_lista(); printf("\n\n\n\n"); printCodeList($$->valor_lexico.code);};
+        | list {$$ = $1; arvore = $$; imprime_lista(); printf("\n\n\n\n"); $$->valor_lexico.code = code; printf("----------------\n"); printListFromNode($$->valor_lexico.code);};
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -370,6 +370,7 @@ expression_4: expression_4 '+' expression_3 {
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
+                        // printf("%s", $$->valor_lexico.code.instruction.oper);
                         // printListFromNode($$->valor_lexico.code);
                         }
 
@@ -383,7 +384,8 @@ expression_3: expression_3 '*' expression_2 {
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
-                        // printCodeList($$->valor_lexico.code);
+                        // printListFromNode($$->valor_lexico.code);
+                        // printf("\n\n1 - %s\n\n", $$->valor_lexico.code->next_instruction->instruction->oper);
                         
                         }
             
