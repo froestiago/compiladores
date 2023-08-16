@@ -68,3 +68,4 @@ void imprime_lista();
 void retrocederNodo();
 
 int find_disp(struct List *startNode, char *key);
+char * find_base(struct List *startNode, char *key);

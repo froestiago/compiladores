@@ -268,6 +268,35 @@ int find_disp(struct List *startNode, char *key) {
     // return NULL;
 }
 
+char *find_base(struct List *startNode, char *key) {
+            // printf("LEROLEROLERO");
+    if (startNode == NULL) {
+        // printf("Start node is NULL.\n");
+        // return NULL;
+    }
+    // printf("\nna busca");
+    struct List *currentNode = startNode;
+    
+    while (currentNode != NULL) {
+        // Process the current node's Symbol data if needed
+        struct Symbol *currentSymbol = currentNode->current;
+        // printf("\nindex; %d", currentNode->index);
+        while(currentSymbol != NULL){
+        // printf("\n\tsymbol : %s - key: %s", currentSymbol->chave, key);
+        // printf("\n\tcurrentSymbol: %s", currentSymbol->base);
+        if(!strcmp(key,currentSymbol->chave)){
+            // printf("\nentrou");
+            // printf("\n%s\n", currentSymbol->base);
+            return currentSymbol->base;
+        }
+        currentSymbol = currentSymbol->next;
+        }
+        // Move to the next node
+        currentNode = currentNode->prev;
+    }
+    // return NULL;
+}
+
 
 
 

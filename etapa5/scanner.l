@@ -53,9 +53,7 @@ new_line        [\n]
 "|"                 {yylval.valor_lexico = get_yylval(yylineno, ND, EXPRESSAO, yytext); return TK_OC_OR;}
 "->"                {yylval.valor_lexico = get_yylval(yylineno, ND, SINTAXE, yytext); return TK_OC_MAP;}
 
-
-"//"                        BEGIN(COMMENT_LINE);
-<COMMENT_LINE>{new_line}    BEGIN(INITIAL);
+"//"((.|\t|\r|\v)*)\n?
 
 "/*"                        BEGIN(COMMENT_BLOCK);
 <COMMENT_BLOCK>[^*\n]*

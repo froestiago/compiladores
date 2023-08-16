@@ -24,6 +24,8 @@ extern int disp_rbss;
 
 extern Code *code;
 
+// O codigo é gerado em um passagem só
+
 %}
 
 %union {
@@ -99,7 +101,14 @@ extern Code *code;
 init: {inicializarLista();} program
 
 program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
-        | list {$$ = $1; arvore = $$; imprime_lista(); printf("\n\n\n\n"); $$->valor_lexico.code = code; printf("----------------\n"); printListFromNode($$->valor_lexico.code);};
+        | list {$$ = $1;
+                arvore = $$;
+                imprime_lista();
+                // printf("\n\n\n\n");
+                $$->valor_lexico.code = code;
+                // printf("----------------\n"); 
+                printListFromNode($$->valor_lexico.code);
+                };
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
     | global_var list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -196,11 +205,11 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
 
-                Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
-                $$->valor_lexico.code = addInstruction(instruction_load);
-                int disp = find_disp(nodo_atual, $1.valor);
-                Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
-                $$->valor_lexico.code = addInstruction(instruction_store);
+                // Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
+                // $$->valor_lexico.code = addInstruction(instruction_load);
+                // int disp = find_disp(nodo_atual, $1.valor);
+                // Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                // $$->valor_lexico.code = addInstruction(instruction_store);
                 }
  
         | TK_IDENTIFICADOR TK_OC_LE literal {
@@ -210,10 +219,12 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 // isInTable(tabela_atual, create_node($1));
                 // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
+                // printf("\nUAU UAU UAU UAU");
                 Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction_load);
                 int disp = find_disp(nodo_atual, $1.valor);
-                Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                char *base = find_base(nodo_atual, $1.valor);
+                Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, base, disp);
                 $$->valor_lexico.code = addInstruction(instruction_store);
                 }
 
@@ -238,9 +249,12 @@ assignment: TK_IDENTIFICADOR '=' expression {
                 $$ = create_node($2);
                 add_children($$, create_node($1));
                 add_children($$, $3);
+                // printf("aushuashasuhaushuashush");
                 // verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);
+                char *base = find_base(nodo_atual, $1.valor);
                 int disp = find_disp(nodo_atual, $1.valor);
-                Instruction *instruction = add_storeAI($3->valor_lexico.temp, "rfp", disp);
+                Instruction *instruction = add_storeAI($3->valor_lexico.temp, base, disp);
+                // printf("\t base - %s", instruction->parameter_2);
                 $$->valor_lexico.code = addInstruction(instruction);
                 };
 
@@ -415,12 +429,16 @@ expression_1: TK_IDENTIFICADOR {
                         current_temp++;
                         // achar disp, percorer lista de tabelas da atual para tras
                         int disp = find_disp(nodo_atual, $$->valor_lexico.valor);
-                        Instruction *instruction = add_loadAI($$->valor_lexico.temp, "rfp", disp);
+                        char *base = find_base(nodo_atual, $$->valor_lexico.valor);
+                        Instruction *instruction = add_loadAI($$->valor_lexico.temp, base, disp);
                         $$->valor_lexico.code = addInstruction(instruction);
                         }
             | literal {$$ = $1;
-                        Instruction *instruction_load = add_loadI($$->valor_lexico.valor,$$->valor_lexico.temp);
+                        // printf("um dois tres quatro cinco");
+                        // printf("\n\t\tpra cima - %d\n",$$->valor_lexico.temp);
+                        Instruction *instruction_load = add_loadI($1->valor_lexico.valor,$1->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction_load);
+                        
                         
             }
             | function_call {$$ = $1;}
@@ -430,9 +448,10 @@ expression_1: TK_IDENTIFICADOR {
 /* Literals */ 
 
 literal: TK_LIT_INT    {$$ = create_node($1);
-                        $1.temp = current_temp;
-	                current_temp++;
-                        }
+                        $$->valor_lexico.temp = current_temp;
+                        current_temp = current_temp + 1;
+                        
+                        };
         | TK_LIT_FLOAT {$$ = create_node($1);}
         | TK_LIT_TRUE  {$$ = create_node($1);}
         | TK_LIT_FALSE {$$ = create_node($1);};

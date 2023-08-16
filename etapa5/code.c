@@ -82,29 +82,6 @@ void printListFromNode(Code *startNode) {
     }
 }
 
-// Instruction *addInstruction(Instruction *newInstruction) {
-//     Code *newCodeNode = (Code *)malloc(sizeof(Code));
-//     if (newCodeNode == NULL) {
-//         fprintf(stderr, "Memory allocation failed.\n");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     newCodeNode->instruction = newInstruction;
-//     newCodeNode->next_instruction = NULL;
-
-//     if (code == NULL) {
-//         code = newCodeNode;
-//     } else {
-//         Code *current = code;
-//         while (current->next_instruction != NULL) {
-//             current = current->next_instruction;
-//         }
-//         current->next_instruction = newCodeNode;
-//     }
-
-//     return newInstruction; // Return the added instruction
-// }
-
 Code *addInstruction(Instruction *newInstruction) {
     Code *newCodeNode = (Code *)malloc(sizeof(Code));
     if (newCodeNode == NULL) {
