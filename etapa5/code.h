@@ -24,9 +24,13 @@ Instruction* add_storeAI (int parameter_1, char *parameter_2, int result);
 Instruction* add_loadI (char *parameter_1, int parameter_2);
 
 
-void insereInstrucao(Code **inicio_codigo, Instruction *instrucao); //---
-Instruction *addInstruction(Instruction *newInstruction);
-Instruction *insertInstruction(Instruction *newInstruction); //---
+// void insereInstrucao(Code **inicio_codigo, Instruction *instrucao); //---
+// Instruction *addInstruction(Instruction *newInstruction);
+Code *addInstruction(Instruction *newInstruction);
+// Instruction *insertInstruction(Instruction *newInstruction); //---
 void printCodeList();
 
 void printListFromNode(Code *startNode); //---
+
+
+

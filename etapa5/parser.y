@@ -370,6 +370,7 @@ expression_4: expression_4 '+' expression_3 {
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
+                        // printListFromNode($$->valor_lexico.code);
                         }
 
 

@@ -106,10 +106,44 @@ void printCodeList() {
 
 
 
+void printListFromNode(Code *startNode) {
+    Code *current = startNode;
 
+    while (current != NULL) {
+        printf("AUSHUSAHUSH");
+        printf("%s\n", current->instruction->oper);
+        // printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
+                                //    current->instruction->parameter_1,
+                                //    current->instruction->parameter_2,
+                                //    current->instruction->result);
+        current = current->next_instruction;
+    }
+}
 
+// Instruction *addInstruction(Instruction *newInstruction) {
+//     Code *newCodeNode = (Code *)malloc(sizeof(Code));
+//     if (newCodeNode == NULL) {
+//         fprintf(stderr, "Memory allocation failed.\n");
+//         exit(EXIT_FAILURE);
+//     }
 
-Instruction *addInstruction(Instruction *newInstruction) {
+//     newCodeNode->instruction = newInstruction;
+//     newCodeNode->next_instruction = NULL;
+
+//     if (code == NULL) {
+//         code = newCodeNode;
+//     } else {
+//         Code *current = code;
+//         while (current->next_instruction != NULL) {
+//             current = current->next_instruction;
+//         }
+//         current->next_instruction = newCodeNode;
+//     }
+
+//     return newInstruction; // Return the added instruction
+// }
+
+Code *addInstruction(Instruction *newInstruction) {
     Code *newCodeNode = (Code *)malloc(sizeof(Code));
     if (newCodeNode == NULL) {
         fprintf(stderr, "Memory allocation failed.\n");
@@ -129,18 +163,5 @@ Instruction *addInstruction(Instruction *newInstruction) {
         current->next_instruction = newCodeNode;
     }
 
-    return newInstruction; // Return the added instruction
-}
-
-void printListFromNode(Code *startNode) {
-    Code *current = startNode;
-
-    while (current != NULL) {
-        // printf("%s\n", current->instruction->oper);
-        printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
-                                   current->instruction->parameter_1,
-                                   current->instruction->parameter_2,
-                                   current->instruction->result);
-        current = current->next_instruction;
-    }
+    return newCodeNode;
 }
