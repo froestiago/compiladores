@@ -107,7 +107,7 @@ program: %empty {$$ = NULL; arvore = NULL; printf("arvore vazia");}
                 // printf("\n\n\n\n");
                 $$->valor_lexico.code = code;
                 // printf("----------------\n"); 
-                // printListFromNode($$->valor_lexico.code);
+                printCodeList();
                 };
 
 list: function list{ if($1!=NULL){add_children($1, $2); $$=$1;}else{$$=$2;}};
@@ -229,12 +229,12 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 }
 
         | TK_IDENTIFICADOR ',' var_in_func {
-                $$ = $3;
+                $$ = $3; //$$ = $1
                 // free_lexical_value($1);
                 // free_lexical_value($2);
                 // isInTable(tabela_atual, create_node($1));
                 // addVarSymbol(&tabela_atual, create_node($1));
-                adicionarSymbol(nodo_atual, create_node($1));
+                adicionarSymbol(nodo_atual, create_node($1)); //$3
                 }
  
         | TK_IDENTIFICADOR {
@@ -399,6 +399,7 @@ expression_3: expression_3 '*' expression_2 {
                         Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
                         // printListFromNode($$->valor_lexico.code);
+                        // printf("\n\t\t%u\n", $$->valor_lexico.code);
                         // printf("\n\n1 - %s\n\n", $$->valor_lexico.code->next_instruction->instruction->oper);
                         
                         }

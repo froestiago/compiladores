@@ -12,44 +12,50 @@ extern Code *code;
 Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2, int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
-    strcpy(instruction->oper, oper);
-    sprintf(instruction->parameter_1, "r%d", parameter_1);
-    sprintf(instruction->parameter_2, "r%d", parameter_2);
-    sprintf(instruction->result, "r%d", result);
-    printf("%s\t%s, %s => %s\n", instruction->oper, instruction->parameter_1, instruction->parameter_2, instruction->result);
+    
+    snprintf(instruction->parameter_1, sizeof(instruction->parameter_1), "r%d", parameter_1);
+    snprintf(instruction->parameter_2, sizeof(instruction->parameter_2), "r%d", parameter_2);
+    snprintf(instruction->result, sizeof(instruction->result), "r%d", result);
+    snprintf(instruction->oper, sizeof(instruction->oper), "%s", oper);
+    
     return instruction;
 }
 
 Instruction* add_loadAI(int parameter_1, char *disp_base,int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
-    strcpy(instruction->oper, "loadAI");
-    sprintf(instruction->parameter_1, "r%d", parameter_1);
-    strcpy(instruction->parameter_2, disp_base);
-    sprintf(instruction->result, "%d", result);
-    printf("%s\t%s, %s => %s\n", instruction->oper, instruction->parameter_2, instruction->result, instruction->parameter_1);
+
+    snprintf(instruction->parameter_1, sizeof(instruction->parameter_1), "r%d", parameter_1);
+    snprintf(instruction->parameter_2, sizeof(instruction->parameter_2), "%s", disp_base);
+    snprintf(instruction->result, sizeof(instruction->result), "%d", result);
+    snprintf(instruction->oper, sizeof(instruction->oper), "loadAI");
+    
+    
     return instruction;
 }
 
 Instruction* add_storeAI (int parameter_1, char *disp_base, int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
-    strcpy(instruction->oper, "storeAI");
-    sprintf(instruction->parameter_1, "r%d", parameter_1);
-    strcpy(instruction->parameter_2, disp_base);
-    sprintf(instruction->result, "%d", result);
-    printf("%s\t%s => %s, %s\n", instruction->oper, instruction->parameter_1, instruction->parameter_2, instruction->result);
+
+    snprintf(instruction->parameter_1, sizeof(instruction->parameter_1), "r%d", parameter_1);
+    snprintf(instruction->parameter_2, sizeof(instruction->parameter_2), "%s", disp_base);
+    snprintf(instruction->result, sizeof(instruction->result), "%d", result);
+    snprintf(instruction->oper, sizeof(instruction->oper), "storeAI");
+    
     return instruction;
 }
 
 Instruction* add_loadI (char *parameter_1, int parameter_2)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
-    strcpy(instruction->oper, "loadI");
-    strcpy(instruction->parameter_1, parameter_1);
-    sprintf(instruction->parameter_2, "r%d", parameter_2);
+   
+    snprintf(instruction->parameter_1, sizeof(instruction->parameter_1), "%s", parameter_1);
+    snprintf(instruction->parameter_2, sizeof(instruction->parameter_2), "r%d", parameter_2);
     strcpy(instruction->result, "");
-    printf("%s\t%s => %s\n", instruction->oper, instruction->parameter_1, instruction->parameter_2);
+    snprintf(instruction->oper, sizeof(instruction->oper), "loadI");
+
+
     return instruction;
 }
 
@@ -59,10 +65,28 @@ void printCodeList() {
     Code *current = code;
 
     while (current != NULL) {
-        printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
-                                   current->instruction->parameter_1,
-                                   current->instruction->parameter_2,
-                                   current->instruction->result);
+        char *oper = current->instruction->oper;
+        if (strcmp(oper, "loadAI") == 0){
+            printf("%s %s, %s => %s\n", oper, current->instruction->parameter_2, current->instruction->result, current->instruction->parameter_1);
+        } else if (strcmp(oper, "storeAI") == 0){
+            printf("%s %s => %s, %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+        } else if (strcmp(oper, "loadI") == 0){
+            printf("%s %s => %s\n", current->instruction->oper, current->instruction->parameter_1, current->instruction->parameter_2);
+        } else if (strcmp(oper, "div") == 0 ||
+                  strcmp(oper, "mult") == 0 ||
+                  strcmp(oper, "sub") == 0 ||
+                  strcmp(oper, "add") == 0 ||
+                  strcmp(oper, "cmp_GE") == 0 ||
+                  strcmp(oper, "cmp_LE") == 0 ||
+                  strcmp(oper, "cmp_GT") == 0 ||
+                  strcmp(oper, "cmp_LT") == 0 ||
+                  strcmp(oper, "cmp_NE") == 0 ||
+                  strcmp(oper, "cmp_EQ") == 0 ||
+                  strcmp(oper, "and") == 0 ||
+                  strcmp(oper, "or") == 0 )
+            {
+            printf("%s %s, %s => %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+        }
         
         current = current->next_instruction;
     }
@@ -70,7 +94,7 @@ void printCodeList() {
 
 
 
-void printListFromNode(Code *startNode) {
+void printListFromNode(Code *startNode) {;
     Code *current = startNode;
 
     while (current != NULL) {
