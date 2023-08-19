@@ -2,7 +2,7 @@
 main() -> int {
   int a;
   int b;
-  a = -3;
+  a = 0-3;
   b = 234;
   if (a > 0) {
     b = 393;

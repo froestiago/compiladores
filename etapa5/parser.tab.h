@@ -82,7 +82,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "parser.y"
+#line 33 "parser.y"
 
     Node* node;
     valorLexico valor_lexico;

@@ -22,6 +22,9 @@ Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2
 Instruction* add_loadAI(int parameter_1, char *disp_base,int result);
 Instruction* add_storeAI (int parameter_1, char *parameter_2, int result);
 Instruction* add_loadI (char *parameter_1, int parameter_2);
+Instruction* add_cbr (int temp, int label_1, int label_2);
+Instruction* add_label(int label);
+Instruction* add_jumpI(int label);
 
 
 Code *addInstruction(Instruction *newInstruction);

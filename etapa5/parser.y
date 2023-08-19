@@ -18,6 +18,8 @@ extern List *nodo_inicial;
 extern List *nodo_atual;
 
 extern int current_temp;
+extern int current_label;
+extern int cbr_temp;
 
 extern int disp_rfp;
 extern int disp_rbss;
@@ -273,19 +275,39 @@ op_return: TK_PR_RETURN expression {$$ = create_node($1); add_children($$, $2);}
 flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
-conditional: TK_PR_IF '(' expression ')' command_block TK_PR_ELSE command_block {
+add_label_to_code: {
+            add_label(current_label);
+            current_label+=1;
+        }
+
+add_cbr: {
+            add_cbr(cbr_temp, current_label, current_label+1);
+        }
+
+add_jumpI_else: {
+            /* this jumpI goes at the end of the command_block of the if statement*/
+            /* in case the if statement is true it won't go throught the else ;) */
+            add_jumpI(current_label+1);
+            /* not +2 since it already has a add_label_to_code before it, which gives it the +1  */
+        }
+
+conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_jumpI_else TK_PR_ELSE add_label_to_code command_block add_label_to_code{
                 $$ = create_node($1); 
                 add_children($$, $3);
-                add_children($$, $5);
                 add_children($$, $7);
+                add_children($$, $11);
                 }
-            | TK_PR_IF '(' expression ')' command_block {
+            | TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_label_to_code {
+                $$ = create_node($1);
+                add_children($$, $3);
+                add_children($$, $7);
+                };
+
+iterative: TK_PR_WHILE '(' expression ')' command_block {
                 $$ = create_node($1);
                 add_children($$, $3);
                 add_children($$, $5);
                 };
-
-iterative: TK_PR_WHILE '(' expression ')' command_block {$$ = create_node($1); add_children($$, $3); add_children($$, $5);};
 
 /* Expressions */
 /* regressão a direita ate aqui */
@@ -293,6 +315,7 @@ expression: expression TK_OC_OR expression_7 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("or", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -303,6 +326,7 @@ expression_7: expression_7 TK_OC_AND expression_6 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("and", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -313,6 +337,7 @@ expression_6: expression_6 TK_OC_EQ expression_5 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_EQ", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -321,6 +346,7 @@ expression_6: expression_6 TK_OC_EQ expression_5 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_NE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -331,6 +357,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_LT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -339,6 +366,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_GT", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -349,6 +377,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_LE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -359,6 +388,7 @@ expression_5: expression_5 '<' expression_4 {
                 $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                 
                 $$->valor_lexico.temp = current_temp;
+                cbr_temp = current_temp;
                 current_temp++;
                 Instruction *instruction = add_custom_instruction("cmp_GE", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction);
@@ -372,6 +402,7 @@ expression_4: expression_4 '+' expression_3 {
                         
                         // add code
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("add", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
@@ -381,6 +412,7 @@ expression_4: expression_4 '+' expression_3 {
                         $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                         
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
@@ -395,6 +427,7 @@ expression_3: expression_3 '*' expression_2 {
                         $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                         
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
@@ -408,6 +441,7 @@ expression_3: expression_3 '*' expression_2 {
                         $$ = create_node($2);add_children($$, $1);add_children($$, $3);
                         
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("div", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
@@ -427,6 +461,7 @@ expression_1: TK_IDENTIFICADOR {
                         $$ = node;
                         // printf(" - %s", $$->valor_lexico.linha);
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp++;
                         // achar disp, percorer lista de tabelas da atual para tras
                         int disp = find_disp(nodo_atual, $$->valor_lexico.valor);
@@ -450,6 +485,7 @@ expression_1: TK_IDENTIFICADOR {
 
 literal: TK_LIT_INT    {$$ = create_node($1);
                         $$->valor_lexico.temp = current_temp;
+                        cbr_temp = current_temp;
                         current_temp = current_temp + 1;
                         
                         };

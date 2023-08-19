@@ -34,7 +34,7 @@ Instruction* add_loadAI(int parameter_1, char *disp_base,int result)
     return instruction;
 }
 
-Instruction* add_storeAI (int parameter_1, char *disp_base, int result)
+Instruction* add_storeAI(int parameter_1, char *disp_base, int result)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
 
@@ -46,7 +46,7 @@ Instruction* add_storeAI (int parameter_1, char *disp_base, int result)
     return instruction;
 }
 
-Instruction* add_loadI (char *parameter_1, int parameter_2)
+Instruction* add_loadI(char *parameter_1, int parameter_2)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
    
@@ -58,6 +58,93 @@ Instruction* add_loadI (char *parameter_1, int parameter_2)
 
     return instruction;
 }
+
+Instruction* add_cbr(int temp, int label_1, int label_2)
+{
+    Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
+    snprintf(instruction->oper, sizeof(instruction->oper), "cbr");
+    snprintf(instruction->result, sizeof(instruction->result), "r%d", temp);
+    snprintf(instruction->parameter_1, sizeof(instruction->parameter_1), "L%d", label_1);
+    snprintf(instruction->parameter_2, sizeof(instruction->parameter_2), "L%d", label_2);
+    
+    Code *newCodeNode = (Code *)malloc(sizeof(Code));
+    if (newCodeNode == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    newCodeNode->instruction = instruction;
+    newCodeNode->next_instruction = NULL;
+
+    if (code == NULL) {
+        code = newCodeNode;
+    } else {
+        Code *current = code;
+        while (current->next_instruction != NULL) {
+            current = current->next_instruction;
+        }
+        current->next_instruction = newCodeNode;
+    }
+
+}
+
+Instruction* add_jumpI(int label)
+{
+    Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
+    strcpy(instruction->parameter_1, "");
+    strcpy(instruction->parameter_2, "");
+    snprintf(instruction->oper, sizeof(instruction->oper), "jumpI");
+    snprintf(instruction->result, sizeof(instruction->result), "L%d", label);
+
+    Code *newCodeNode = (Code *)malloc(sizeof(Code));
+    if (newCodeNode == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    newCodeNode->instruction = instruction;
+    newCodeNode->next_instruction = NULL;
+
+    if (code == NULL) {
+        code = newCodeNode;
+    } else {
+        Code *current = code;
+        while (current->next_instruction != NULL) {
+            current = current->next_instruction;
+        }
+        current->next_instruction = newCodeNode;
+    }
+}
+
+Instruction* add_label(int label)
+{
+    Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
+    strcpy(instruction->parameter_1, "");
+    strcpy(instruction->parameter_2, "");
+    snprintf(instruction->result, sizeof(instruction->result), "L%d:", label);
+    snprintf(instruction->oper, sizeof(instruction->oper), "label");
+
+    Code *newCodeNode = (Code *)malloc(sizeof(Code));
+    if (newCodeNode == NULL) {
+        fprintf(stderr, "Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    newCodeNode->instruction = instruction;
+    newCodeNode->next_instruction = NULL;
+
+    if (code == NULL) {
+        code = newCodeNode;
+    } else {
+        Code *current = code;
+        while (current->next_instruction != NULL) {
+            current = current->next_instruction;
+        }
+        current->next_instruction = newCodeNode;
+    }
+
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -86,8 +173,13 @@ void printCodeList() {
                   strcmp(oper, "or") == 0 )
             {
             printf("%s %s, %s => %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+        } else if (strcmp(oper, "label") == 0){
+            printf("%s\n", current->instruction->result);
+        } else if (strcmp(oper, "cbr") == 0){
+            printf("%s %s => %s, %s\n", oper, current->instruction->result, current->instruction->parameter_1, current->instruction->parameter_2);
+        } else if (strcmp(oper, "jumpI") == 0){
+            printf("%s => %s\n", oper, current->instruction->result);
         }
-        
         current = current->next_instruction;
     }
 }
