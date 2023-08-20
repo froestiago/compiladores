@@ -291,6 +291,10 @@ add_jumpI_else: {
             /* not +2 since it already has a add_label_to_code before it, which gives it the +1  */
         }
 
+add_jumpI_while_2: {
+            add_jumpI(current_label-3);
+        }
+
 conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_jumpI_else TK_PR_ELSE add_label_to_code command_block add_label_to_code{
                 $$ = create_node($1); 
                 add_children($$, $3);
@@ -303,10 +307,16 @@ conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block
                 add_children($$, $7);
                 };
 
-iterative: TK_PR_WHILE '(' expression ')' command_block {
+iterative: TK_PR_WHILE '(' expression ')' add_label_to_code add_cbr add_label_to_code add_jumpI_else add_label_to_code command_block add_jumpI_while_2 add_label_to_code {
                 $$ = create_node($1);
                 add_children($$, $3);
-                add_children($$, $5);
+                add_children($$, $10);
+                /* nao ta funcionando pois... */
+                    /* 1 - nos exemplos (17 & 18) o valor salvo no temporario para comparacao no cbr é falso //10>5 = true  */
+                        /* para o cbr ir para a segunda label o valor no registrador deve ser false (da para inverter...) */
+                    /* 2 - as expressoes dentro do command_block do escopo do while nao ta buscando na tabela o temporario*/
+                        /* cria um novo e acaba não usando ele no cbr, assim o temp usado no cbr nunca é atualizado */
+                        /* sempre da o mesmo resultado e acaba sendo um loop infinito*/
                 };
 
 /* Expressions */
