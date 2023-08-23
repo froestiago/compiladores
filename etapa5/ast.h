@@ -28,8 +28,6 @@ typedef struct valorLexico {
 	Natureza natureza;
     char *valor;
 
-	char *valor_atri;
-
 	Code *code;
 	int temp;
 	int disp;

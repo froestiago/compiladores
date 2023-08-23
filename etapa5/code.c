@@ -59,6 +59,7 @@ Instruction* add_loadI(char *parameter_1, int parameter_2)
     return instruction;
 }
 
+// set as type:Instruction for readability
 Instruction* add_cbr(int temp, int label_1, int label_2)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
@@ -88,6 +89,7 @@ Instruction* add_cbr(int temp, int label_1, int label_2)
 
 }
 
+// set as type:Instruction for readability
 Instruction* add_jumpI(int label)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
@@ -116,6 +118,7 @@ Instruction* add_jumpI(int label)
     }
 }
 
+// set as type:Instruction for readability
 Instruction* add_label(int label)
 {
     Instruction* instruction = (Instruction*)malloc(sizeof(Instruction));
@@ -145,10 +148,8 @@ Instruction* add_label(int label)
 
 }
 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 void printCodeList() {
+    // code is the global variabel
     Code *current = code;
 
     while (current != NULL) {
@@ -184,17 +185,16 @@ void printCodeList() {
     }
 }
 
-
-
 void printListFromNode(Code *startNode) {;
     Code *current = startNode;
 
     while (current != NULL) {
-        printf("%s \t %s \t %s \t %s \n", current->instruction->oper,
-                                   current->instruction->parameter_1,
-                                   current->instruction->parameter_2,
-                                   current->instruction->result);
-        current = current->next_instruction;
+        printf("%s \t %s \t %s \t %s \n",
+                current->instruction->oper,
+                current->instruction->parameter_1,
+                current->instruction->parameter_2,
+                current->instruction->result);
+                current = current->next_instruction;
     }
 }
 

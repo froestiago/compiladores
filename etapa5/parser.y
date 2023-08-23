@@ -123,15 +123,11 @@ global_var: type {set_tipo_atual($1);} list_global_var ';' {$$ = NULL; };
 
 list_global_var: TK_IDENTIFICADOR ',' list_global_var{
                         $$ = NULL;
-                        // isInTable(tabela_global, create_node($1));
-                        // addVarSymbol(&tabela_global, create_node($1));
                         adicionarSymbol(nodo_atual, create_node($1));
                         }
 
                 | TK_IDENTIFICADOR {
                         $$ = NULL;
-                        // isInTable(tabela_global, create_node($1));
-                        // addVarSymbol(&tabela_global, create_node($1));
                         adicionarSymbol(nodo_atual, create_node($1));
                         }
 
@@ -139,19 +135,15 @@ list_global_var: TK_IDENTIFICADOR ',' list_global_var{
 
 
 function: new_node TK_IDENTIFICADOR '(' ')' function_type command_block_func {
-                $$ = create_node($2);                                   //$$ = create_node($1);
-                if($5 != NULL){add_children($$, $6);}                   //if($5 != NULL){add_children($$, $5);}
-                // isInTable(tabela_global, create_node($1));
-                adicionarSymbol_DefFunc(nodo_atual, create_node($2));   //adicionarSymbol_DefFunc(nodo_atual, create_node($1));
-                // displayTable(tabela_global);
+                $$ = create_node($2);
+                if($5 != NULL){add_children($$, $6);}
+                adicionarSymbol_DefFunc(nodo_atual, create_node($2));
                 }
         
         | new_node TK_IDENTIFICADOR '(' parameter_list ')' function_type command_block_func {
-                $$ = create_node($2);                                   //$$ = create_node($1); 
-                if($6 != NULL) {add_children($$, $7);}                  //if($6 != NULL) {add_children($$, $6);}
-                // isInTable(nodo_atual, create_node($1));
-                adicionarSymbol_DefFunc(nodo_atual, create_node($2));   //adicionarSymbol_DefFunc(nodo_atual, create_node($1));
-                // displayTable(tabela_atual);
+                $$ = create_node($2);
+                if($6 != NULL) {add_children($$, $7);}
+                adicionarSymbol_DefFunc(nodo_atual, create_node($2));
                 };
 
 new_node: {adicionarNodo();};
@@ -163,8 +155,6 @@ parameter_list: parameter {$$ = NULL;}
 
 parameter: type_aux TK_IDENTIFICADOR {
                 $$ = NULL;
-                // isInTable(tabela_atual, create_node($2));
-                // addVarSymbol(&tabela_atual, create_node($2));
                 adicionarSymbol(nodo_atual, create_node($2));
                 };
 
@@ -203,25 +193,14 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 add_children($$, create_node($1)); 
                 add_children($$, $3);
                 add_children($$, $5);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
-
-                // Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
-                // $$->valor_lexico.code = addInstruction(instruction_load);
-                // int disp = find_disp(nodo_atual, $1.valor);
-                // Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
-                // $$->valor_lexico.code = addInstruction(instruction_store);
                 }
  
         | TK_IDENTIFICADOR TK_OC_LE literal {
                 $$ = create_node($2);
                 add_children($$, create_node($1));
                 add_children($$, $3);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
-                // printf("\nUAU UAU UAU UAU");
                 Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
                 $$->valor_lexico.code = addInstruction(instruction_load);
                 int disp = find_disp(nodo_atual, $1.valor);
@@ -231,19 +210,12 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
                 }
 
         | TK_IDENTIFICADOR ',' var_in_func {
-                $$ = $3; //$$ = $1
-                // free_lexical_value($1);
-                // free_lexical_value($2);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
+                $$ = $3;
                 adicionarSymbol(nodo_atual, create_node($1)); //$3
                 }
  
         | TK_IDENTIFICADOR {
                 $$ = NULL;
-                // free_lexical_value($1);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node($1));
                 };
 
@@ -251,19 +223,15 @@ assignment: TK_IDENTIFICADOR '=' expression {
                 $$ = create_node($2);
                 add_children($$, create_node($1));
                 add_children($$, $3);
-                // printf("aushuashasuhaushuashush");
-                // verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);
                 char *base = find_base(nodo_atual, $1.valor);
                 int disp = find_disp(nodo_atual, $1.valor);
                 Instruction *instruction = add_storeAI($3->valor_lexico.temp, base, disp);
-                // printf("\t base - %s", instruction->parameter_2);
                 $$->valor_lexico.code = addInstruction(instruction);
                 };
 
 function_call: TK_IDENTIFICADOR '(' args ')' {
                 $$ = create_node($1);
                 add_children($$, $3);
-                // verifyCorrectUsage(tabela_global, $$, DEF_FUNCAO);
                 };
 
 args: %empty {$$ = NULL;}
@@ -276,28 +244,26 @@ flow_control: conditional {$$ = $1;}
             | iterative {$$ = $1;};
 
 add_label_to_code: {
-            add_label(current_label);
-            current_label+=1;
-        }
+    add_label(current_label); current_label+=1;
+    }
 
 add_cbr: {
-            add_cbr(cbr_temp, current_label, current_label+1);
-        }
+    add_cbr(cbr_temp, current_label, current_label+1);
+    }
 
 add_cbr_while: {
     add_cbr(cbr_temp, current_label, current_label+1);
-}
+    }
 
+/* this jumpI goes at the end of the command_block of the if statement, in case the if statement is true it won't go throught the else ;) */
+/* not +2 since it already has a add_label_to_code before it, which gives it the +1  */
 add_jumpI_else: {
-            /* this jumpI goes at the end of the command_block of the if statement*/
-            /* in case the if statement is true it won't go throught the else ;) */
-            add_jumpI(current_label+1);
-            /* not +2 since it already has a add_label_to_code before it, which gives it the +1  */
-        }
+    add_jumpI(current_label+1);
+    }
 
-add_jumpI_while_2: {
-            add_jumpI(current_label-2);
-        }
+add_jumpI_end_while_block: {
+    add_jumpI(current_label-2);
+    }
 
 conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_jumpI_else TK_PR_ELSE add_label_to_code command_block add_label_to_code{
                 $$ = create_node($1); 
@@ -311,16 +277,10 @@ conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block
                 add_children($$, $7);
                 };
 
-iterative: TK_PR_WHILE add_label_to_code '(' expression ')' add_cbr_while add_label_to_code command_block add_jumpI_while_2 add_label_to_code {
+iterative: TK_PR_WHILE add_label_to_code '(' expression ')' add_cbr_while add_label_to_code command_block add_jumpI_end_while_block add_label_to_code {
                 $$ = create_node($1);
                 add_children($$, $4);
                 add_children($$, $8);
-                /* nao ta funcionando pois... */
-                    /* 1 - nos exemplos (17 & 18) o valor salvo no temporario para comparacao no cbr é falso //10>5 = true  */
-                        /* para o cbr ir para a segunda label o valor no registrador deve ser false (da para inverter...) */
-                    /* 2 - as expressoes dentro do command_block do escopo do while nao ta buscando na tabela o temporario*/
-                        /* cria um novo e acaba não usando ele no cbr, assim o temp usado no cbr nunca é atualizado */
-                        /* sempre da o mesmo resultado e acaba sendo um loop infinito*/
                 };
 
 /* Expressions */
@@ -430,8 +390,6 @@ expression_4: expression_4 '+' expression_3 {
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("sub", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
-                        // printf("%s", $$->valor_lexico.code.instruction.oper);
-                        // printListFromNode($$->valor_lexico.code);
                         }
 
 
@@ -445,9 +403,6 @@ expression_3: expression_3 '*' expression_2 {
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("mult", $1->valor_lexico.temp, $3->valor_lexico.temp, $$->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction);
-                        // printListFromNode($$->valor_lexico.code);
-                        // printf("\n\t\t%u\n", $$->valor_lexico.code);
-                        // printf("\n\n1 - %s\n\n", $$->valor_lexico.code->next_instruction->instruction->oper);
                         
                         }
             
@@ -473,7 +428,6 @@ expression_2: '-' expression_1 {$$ = create_node($1); add_children($$, $2);}
 expression_1: TK_IDENTIFICADOR {
                         Node *node = create_node($1);
                         $$ = node;
-                        // printf(" - %s", $$->valor_lexico.linha);
                         $$->valor_lexico.temp = current_temp;
                         cbr_temp = current_temp;
                         current_temp++;
@@ -484,8 +438,6 @@ expression_1: TK_IDENTIFICADOR {
                         $$->valor_lexico.code = addInstruction(instruction);
                         }
             | literal {$$ = $1;
-                        // printf("um dois tres quatro cinco");
-                        // printf("\n\t\tpra cima - %d\n",$$->valor_lexico.temp);
                         Instruction *instruction_load = add_loadI($1->valor_lexico.valor,$1->valor_lexico.temp);
                         $$->valor_lexico.code = addInstruction(instruction_load);
                         

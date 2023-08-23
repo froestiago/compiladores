@@ -8,7 +8,6 @@
 
 extern Tipo tipo_atual;
 extern int list_index;
-// extern List *list;
 
 extern List *nodo_inicial;
 extern List *nodo_atual;
@@ -22,7 +21,6 @@ void addVarSymbol(Symbol **table, Node *node) {
         printf("Memory allocation failed!\n");
         return;
     }
-    // printf(" - %s\n", node->valor_lexico.valor);
     newSymbol->chave = node->valor_lexico.valor;
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
@@ -39,7 +37,6 @@ void addDefFuncSymbol(Symbol **table, Node *node) {
         printf("Memory allocation failed!\n");
         return;
     }
-    // printf(" - %s\n", node->valor_lexico.valor);
     newSymbol->chave = node->valor_lexico.valor;
     newSymbol->linha =  node->valor_lexico.linha;
     newSymbol->tipo = tipo_atual;
@@ -61,7 +58,6 @@ void displayTable(struct Symbol* table) {
         printf("chave: %s - tipo: %d - natureza: %d\n", current-> chave, current->tipo, current->natureza);
         current = current->next;
     }
-    // printf("\tTable index - %d | current - %p", list->index, list->current);
 }
 
 void isInTable(struct Symbol* table, Node *node) {
@@ -79,7 +75,6 @@ void notInTable(struct Symbol* table, Node *node) {
     int flag = 0;
     struct Symbol* current = table;
     while (current != NULL) {
-        // printf("\tchave: %s - valor: %s\n", current->chave, node->valor_lexico.valor);
         if (strcmp(current->chave, node->valor_lexico.valor) == 0){
             flag = 1;
         }
@@ -129,7 +124,7 @@ void clearTable(Symbol **table) {
 
     *table = NULL;
 }
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 void inicializarLista() {
     nodo_inicial = (List *)malloc(sizeof(List));
     nodo_inicial->next = NULL;
@@ -191,7 +186,6 @@ void adicionarSymbol(List *lista, Node *node) {
     }
 }
 
-
 void adicionarSymbol_DefFunc(List *lista, Node *node) {
     Symbol *newSymbol = (Symbol *)malloc(sizeof(Symbol));
     newSymbol->chave = node->valor_lexico.valor;
@@ -247,56 +241,35 @@ void retrocederNodo() {
 int find_disp(struct List *startNode, char *key) {
     if (startNode == NULL) {
         printf("Start node is NULL.\n");
-        // return NULL;
     }
     
     struct List *currentNode = startNode;
     
     while (currentNode != NULL) {
-        // Process the current node's Symbol data if needed
         struct Symbol *currentSymbol = currentNode->current;
         while(currentSymbol != NULL){
-        // Do something with currentSymbol
         if(!(strcmp(key,currentSymbol->chave))){
             return currentSymbol->disp;
         }
         currentSymbol = currentSymbol->next;
         }
-        // Move to the next node
         currentNode = currentNode->prev;
     }
-    // return NULL;
 }
 
 char *find_base(struct List *startNode, char *key) {
-            // printf("LEROLEROLERO");
     if (startNode == NULL) {
-        // printf("Start node is NULL.\n");
-        // return NULL;
     }
-    // printf("\nna busca");
     struct List *currentNode = startNode;
     
     while (currentNode != NULL) {
-        // Process the current node's Symbol data if needed
         struct Symbol *currentSymbol = currentNode->current;
-        // printf("\nindex; %d", currentNode->index);
         while(currentSymbol != NULL){
-        // printf("\n\tsymbol : %s - key: %s", currentSymbol->chave, key);
-        // printf("\n\tcurrentSymbol: %s", currentSymbol->base);
         if(!strcmp(key,currentSymbol->chave)){
-            // printf("\nentrou");
-            // printf("\n%s\n", currentSymbol->base);
             return currentSymbol->base;
         }
         currentSymbol = currentSymbol->next;
         }
-        // Move to the next node
         currentNode = currentNode->prev;
     }
-    // return NULL;
 }
-
-
-
-

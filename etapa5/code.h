@@ -26,7 +26,6 @@ Instruction* add_cbr (int temp, int label_1, int label_2);
 Instruction* add_label(int label);
 Instruction* add_jumpI(int label);
 
-
 Code *addInstruction(Instruction *newInstruction);
 void printCodeList();
 void printListFromNode(Code *startNode);
