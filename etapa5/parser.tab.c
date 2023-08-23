@@ -198,7 +198,7 @@ enum yysymbol_kind_t
   YYSYMBOL_add_cbr = 68,                   /* add_cbr  */
   YYSYMBOL_add_cbr_while = 69,             /* add_cbr_while  */
   YYSYMBOL_add_jumpI_else = 70,            /* add_jumpI_else  */
-  YYSYMBOL_add_jumpI_while_2 = 71,         /* add_jumpI_while_2  */
+  YYSYMBOL_add_jumpI_end_while_block = 71, /* add_jumpI_end_while_block  */
   YYSYMBOL_conditional = 72,               /* conditional  */
   YYSYMBOL_iterative = 73,                 /* iterative  */
   YYSYMBOL_expression = 74,                /* expression  */
@@ -599,15 +599,15 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,   103,   103,   103,   105,   106,   115,   116,   117,   118,
-     122,   122,   124,   131,   141,   149,   157,   159,   161,   162,
-     164,   171,   173,   174,   176,   177,   179,   180,   182,   183,
-     186,   187,   189,   190,   191,   192,   193,   194,   198,   201,
-     217,   233,   242,   250,   263,   269,   270,   271,   273,   275,
-     276,   278,   283,   287,   291,   298,   302,   308,   314,   328,
-     337,   339,   348,   350,   359,   368,   370,   379,   390,   401,
-     411,   413,   425,   438,   440,   454,   464,   467,   469,   470,
-     471,   473,   486,   494,   495,   500,   506,   507,   508,   512,
-     513,   514
+     122,   122,   124,   129,   137,   143,   149,   151,   153,   154,
+     156,   161,   163,   164,   166,   167,   169,   170,   172,   173,
+     176,   177,   179,   180,   181,   182,   183,   184,   188,   191,
+     199,   212,   217,   222,   232,   237,   238,   239,   241,   243,
+     244,   246,   250,   254,   260,   264,   268,   274,   280,   288,
+     297,   299,   308,   310,   319,   328,   330,   339,   350,   361,
+     371,   373,   385,   396,   398,   409,   419,   422,   424,   425,
+     426,   428,   440,   446,   447,   452,   458,   459,   460,   464,
+     465,   466
 };
 #endif
 
@@ -636,8 +636,8 @@ static const char *const yytname[] =
   "abre_escopo_func", "fecha_escopo_func", "command_list", "command",
   "var_declaration", "var_in_func", "assignment", "function_call", "args",
   "op_return", "flow_control", "add_label_to_code", "add_cbr",
-  "add_cbr_while", "add_jumpI_else", "add_jumpI_while_2", "conditional",
-  "iterative", "expression", "expression_7", "expression_6",
+  "add_cbr_while", "add_jumpI_else", "add_jumpI_end_while_block",
+  "conditional", "iterative", "expression", "expression_7", "expression_6",
   "expression_5", "expression_4", "expression_3", "expression_2",
   "expression_1", "literal", "type", YY_NULLPTR
 };
@@ -1610,222 +1610,201 @@ yyreduce:
 #line 124 "parser.y"
                                                      {
                         (yyval.node) = NULL;
-                        // isInTable(tabela_global, create_node($1));
-                        // addVarSymbol(&tabela_global, create_node($1));
                         adicionarSymbol(nodo_atual, create_node((yyvsp[-2].valor_lexico)));
                         }
-#line 1618 "parser.tab.c"
+#line 1616 "parser.tab.c"
     break;
 
   case 13: /* list_global_var: TK_IDENTIFICADOR  */
-#line 131 "parser.y"
+#line 129 "parser.y"
                                    {
                         (yyval.node) = NULL;
-                        // isInTable(tabela_global, create_node($1));
-                        // addVarSymbol(&tabela_global, create_node($1));
                         adicionarSymbol(nodo_atual, create_node((yyvsp[0].valor_lexico)));
                         }
-#line 1629 "parser.tab.c"
+#line 1625 "parser.tab.c"
     break;
 
   case 14: /* function: new_node TK_IDENTIFICADOR '(' ')' function_type command_block_func  */
-#line 141 "parser.y"
+#line 137 "parser.y"
                                                                              {
-                (yyval.node) = create_node((yyvsp[-4].valor_lexico));                                   //$$ = create_node($1);
-                if((yyvsp[-1].node) != NULL){add_children((yyval.node), (yyvsp[0].node));}                   //if($5 != NULL){add_children($$, $5);}
-                // isInTable(tabela_global, create_node($1));
-                adicionarSymbol_DefFunc(nodo_atual, create_node((yyvsp[-4].valor_lexico)));   //adicionarSymbol_DefFunc(nodo_atual, create_node($1));
-                // displayTable(tabela_global);
+                (yyval.node) = create_node((yyvsp[-4].valor_lexico));
+                if((yyvsp[-1].node) != NULL){add_children((yyval.node), (yyvsp[0].node));}
+                adicionarSymbol_DefFunc(nodo_atual, create_node((yyvsp[-4].valor_lexico)));
                 }
-#line 1641 "parser.tab.c"
+#line 1635 "parser.tab.c"
     break;
 
   case 15: /* function: new_node TK_IDENTIFICADOR '(' parameter_list ')' function_type command_block_func  */
-#line 149 "parser.y"
+#line 143 "parser.y"
                                                                                             {
-                (yyval.node) = create_node((yyvsp[-5].valor_lexico));                                   //$$ = create_node($1); 
-                if((yyvsp[-1].node) != NULL) {add_children((yyval.node), (yyvsp[0].node));}                  //if($6 != NULL) {add_children($$, $6);}
-                // isInTable(nodo_atual, create_node($1));
-                adicionarSymbol_DefFunc(nodo_atual, create_node((yyvsp[-5].valor_lexico)));   //adicionarSymbol_DefFunc(nodo_atual, create_node($1));
-                // displayTable(tabela_atual);
+                (yyval.node) = create_node((yyvsp[-5].valor_lexico));
+                if((yyvsp[-1].node) != NULL) {add_children((yyval.node), (yyvsp[0].node));}
+                adicionarSymbol_DefFunc(nodo_atual, create_node((yyvsp[-5].valor_lexico)));
                 }
-#line 1653 "parser.tab.c"
+#line 1645 "parser.tab.c"
     break;
 
   case 16: /* new_node: %empty  */
-#line 157 "parser.y"
+#line 149 "parser.y"
           {adicionarNodo();}
-#line 1659 "parser.tab.c"
+#line 1651 "parser.tab.c"
     break;
 
   case 17: /* function_type: TK_OC_MAP type  */
-#line 159 "parser.y"
+#line 151 "parser.y"
                              {set_tipo_atual((yyvsp[0].valor_lexico));}
-#line 1665 "parser.tab.c"
+#line 1657 "parser.tab.c"
     break;
 
   case 18: /* parameter_list: parameter  */
-#line 161 "parser.y"
+#line 153 "parser.y"
                           {(yyval.node) = NULL;}
-#line 1671 "parser.tab.c"
+#line 1663 "parser.tab.c"
     break;
 
   case 19: /* parameter_list: parameter ',' parameter_list  */
-#line 162 "parser.y"
+#line 154 "parser.y"
                                                {(yyval.node) = NULL;}
-#line 1677 "parser.tab.c"
+#line 1669 "parser.tab.c"
     break;
 
   case 20: /* parameter: type_aux TK_IDENTIFICADOR  */
-#line 164 "parser.y"
+#line 156 "parser.y"
                                      {
                 (yyval.node) = NULL;
-                // isInTable(tabela_atual, create_node($2));
-                // addVarSymbol(&tabela_atual, create_node($2));
                 adicionarSymbol(nodo_atual, create_node((yyvsp[0].valor_lexico)));
                 }
-#line 1688 "parser.tab.c"
+#line 1678 "parser.tab.c"
     break;
 
   case 21: /* type_aux: type  */
-#line 171 "parser.y"
+#line 161 "parser.y"
                {set_tipo_atual((yyvsp[0].valor_lexico));}
-#line 1694 "parser.tab.c"
+#line 1684 "parser.tab.c"
     break;
 
   case 22: /* command_block: '{' '}'  */
-#line 173 "parser.y"
+#line 163 "parser.y"
                        {(yyval.node) = NULL;}
-#line 1700 "parser.tab.c"
+#line 1690 "parser.tab.c"
     break;
 
   case 23: /* command_block: abre_escopo command_list fecha_escopo  */
-#line 174 "parser.y"
+#line 164 "parser.y"
                                                         {(yyval.node) = (yyvsp[-1].node);}
-#line 1706 "parser.tab.c"
+#line 1696 "parser.tab.c"
     break;
 
   case 24: /* abre_escopo: '{'  */
-#line 176 "parser.y"
+#line 166 "parser.y"
                      {adicionarNodo();}
-#line 1712 "parser.tab.c"
+#line 1702 "parser.tab.c"
     break;
 
   case 25: /* fecha_escopo: '}'  */
-#line 177 "parser.y"
+#line 167 "parser.y"
                     {retrocederNodo();}
-#line 1718 "parser.tab.c"
+#line 1708 "parser.tab.c"
     break;
 
   case 26: /* command_block_func: '{' '}'  */
-#line 179 "parser.y"
+#line 169 "parser.y"
                             {(yyval.node) = NULL;}
-#line 1724 "parser.tab.c"
+#line 1714 "parser.tab.c"
     break;
 
   case 27: /* command_block_func: abre_escopo_func command_list fecha_escopo_func  */
-#line 180 "parser.y"
+#line 170 "parser.y"
                                                                   {(yyval.node) = (yyvsp[-1].node);}
-#line 1730 "parser.tab.c"
+#line 1720 "parser.tab.c"
     break;
 
   case 28: /* abre_escopo_func: '{'  */
-#line 182 "parser.y"
+#line 172 "parser.y"
                       {}
-#line 1736 "parser.tab.c"
+#line 1726 "parser.tab.c"
     break;
 
   case 29: /* fecha_escopo_func: '}'  */
-#line 183 "parser.y"
+#line 173 "parser.y"
                        {nodo_atual = nodo_inicial;}
-#line 1742 "parser.tab.c"
+#line 1732 "parser.tab.c"
     break;
 
   case 30: /* command_list: command ';' command_list  */
-#line 186 "parser.y"
+#line 176 "parser.y"
                                        {if((yyvsp[-2].node) == NULL) {(yyval.node) = (yyvsp[0].node);}else{add_children((yyvsp[-2].node), (yyvsp[0].node)); (yyval.node) = (yyvsp[-2].node);}}
-#line 1748 "parser.tab.c"
+#line 1738 "parser.tab.c"
     break;
 
   case 31: /* command_list: command ';'  */
-#line 187 "parser.y"
+#line 177 "parser.y"
                           { (yyval.node) = (yyvsp[-1].node);}
-#line 1754 "parser.tab.c"
+#line 1744 "parser.tab.c"
     break;
 
   case 32: /* command: var_declaration  */
-#line 189 "parser.y"
+#line 179 "parser.y"
                          {(yyval.node) = (yyvsp[0].node);}
-#line 1760 "parser.tab.c"
+#line 1750 "parser.tab.c"
     break;
 
   case 33: /* command: assignment  */
-#line 190 "parser.y"
+#line 180 "parser.y"
                      {(yyval.node) = (yyvsp[0].node);}
-#line 1766 "parser.tab.c"
+#line 1756 "parser.tab.c"
     break;
 
   case 34: /* command: flow_control  */
-#line 191 "parser.y"
+#line 181 "parser.y"
                         {(yyval.node) = (yyvsp[0].node);}
-#line 1772 "parser.tab.c"
+#line 1762 "parser.tab.c"
     break;
 
   case 35: /* command: op_return  */
-#line 192 "parser.y"
+#line 182 "parser.y"
                      {(yyval.node) = (yyvsp[0].node);}
-#line 1778 "parser.tab.c"
+#line 1768 "parser.tab.c"
     break;
 
   case 36: /* command: command_block  */
-#line 193 "parser.y"
+#line 183 "parser.y"
                         {(yyval.node) = (yyvsp[0].node);}
-#line 1784 "parser.tab.c"
+#line 1774 "parser.tab.c"
     break;
 
   case 37: /* command: function_call  */
-#line 194 "parser.y"
+#line 184 "parser.y"
                         {(yyval.node) = (yyvsp[0].node);}
-#line 1790 "parser.tab.c"
+#line 1780 "parser.tab.c"
     break;
 
   case 38: /* var_declaration: type_aux var_in_func  */
-#line 198 "parser.y"
+#line 188 "parser.y"
                                       {
                 (yyval.node) = (yyvsp[0].node);}
-#line 1797 "parser.tab.c"
+#line 1787 "parser.tab.c"
     break;
 
   case 39: /* var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func  */
-#line 201 "parser.y"
+#line 191 "parser.y"
                                                                {
                 (yyval.node) = create_node((yyvsp[-3].valor_lexico));
                 add_children((yyval.node), create_node((yyvsp[-4].valor_lexico))); 
                 add_children((yyval.node), (yyvsp[-2].node));
                 add_children((yyval.node), (yyvsp[0].node));
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node((yyvsp[-4].valor_lexico)));
-
-                // Instruction *instruction_load = add_loadI($3->valor_lexico.valor,$3->valor_lexico.temp);
-                // $$->valor_lexico.code = addInstruction(instruction_load);
-                // int disp = find_disp(nodo_atual, $1.valor);
-                // Instruction *instruction_store = add_storeAI($3->valor_lexico.temp, "rfp", disp);
-                // $$->valor_lexico.code = addInstruction(instruction_store);
                 }
-#line 1817 "parser.tab.c"
+#line 1799 "parser.tab.c"
     break;
 
   case 40: /* var_in_func: TK_IDENTIFICADOR TK_OC_LE literal  */
-#line 217 "parser.y"
+#line 199 "parser.y"
                                             {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));
                 add_children((yyval.node), create_node((yyvsp[-2].valor_lexico)));
                 add_children((yyval.node), (yyvsp[0].node));
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node((yyvsp[-2].valor_lexico)));
-                // printf("\nUAU UAU UAU UAU");
                 Instruction *instruction_load = add_loadI((yyvsp[0].node)->valor_lexico.valor,(yyvsp[0].node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction_load);
                 int disp = find_disp(nodo_atual, (yyvsp[-2].valor_lexico).valor);
@@ -1833,180 +1812,159 @@ yyreduce:
                 Instruction *instruction_store = add_storeAI((yyvsp[0].node)->valor_lexico.temp, base, disp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction_store);
                 }
-#line 1837 "parser.tab.c"
+#line 1816 "parser.tab.c"
     break;
 
   case 41: /* var_in_func: TK_IDENTIFICADOR ',' var_in_func  */
-#line 233 "parser.y"
+#line 212 "parser.y"
                                            {
-                (yyval.node) = (yyvsp[0].node); //$$ = $1
-                // free_lexical_value($1);
-                // free_lexical_value($2);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
+                (yyval.node) = (yyvsp[0].node);
                 adicionarSymbol(nodo_atual, create_node((yyvsp[-2].valor_lexico))); //$3
                 }
-#line 1850 "parser.tab.c"
+#line 1825 "parser.tab.c"
     break;
 
   case 42: /* var_in_func: TK_IDENTIFICADOR  */
-#line 242 "parser.y"
+#line 217 "parser.y"
                            {
                 (yyval.node) = NULL;
-                // free_lexical_value($1);
-                // isInTable(tabela_atual, create_node($1));
-                // addVarSymbol(&tabela_atual, create_node($1));
                 adicionarSymbol(nodo_atual, create_node((yyvsp[0].valor_lexico)));
                 }
-#line 1862 "parser.tab.c"
+#line 1834 "parser.tab.c"
     break;
 
   case 43: /* assignment: TK_IDENTIFICADOR '=' expression  */
-#line 250 "parser.y"
+#line 222 "parser.y"
                                             {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));
                 add_children((yyval.node), create_node((yyvsp[-2].valor_lexico)));
                 add_children((yyval.node), (yyvsp[0].node));
-                // printf("aushuashasuhaushuashush");
-                // verifyCorrectUsage(tabela_atual, create_node($1), VARIAVEL);
                 char *base = find_base(nodo_atual, (yyvsp[-2].valor_lexico).valor);
                 int disp = find_disp(nodo_atual, (yyvsp[-2].valor_lexico).valor);
                 Instruction *instruction = add_storeAI((yyvsp[0].node)->valor_lexico.temp, base, disp);
-                // printf("\t base - %s", instruction->parameter_2);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 1879 "parser.tab.c"
+#line 1848 "parser.tab.c"
     break;
 
   case 44: /* function_call: TK_IDENTIFICADOR '(' args ')'  */
-#line 263 "parser.y"
+#line 232 "parser.y"
                                              {
                 (yyval.node) = create_node((yyvsp[-3].valor_lexico));
                 add_children((yyval.node), (yyvsp[-1].node));
-                // verifyCorrectUsage(tabela_global, $$, DEF_FUNCAO);
                 }
-#line 1889 "parser.tab.c"
+#line 1857 "parser.tab.c"
     break;
 
   case 45: /* args: %empty  */
-#line 269 "parser.y"
+#line 237 "parser.y"
              {(yyval.node) = NULL;}
-#line 1895 "parser.tab.c"
+#line 1863 "parser.tab.c"
     break;
 
   case 46: /* args: expression ',' args  */
-#line 270 "parser.y"
+#line 238 "parser.y"
                               {(yyval.node) = (yyvsp[-2].node); add_children((yyval.node), (yyvsp[0].node));}
-#line 1901 "parser.tab.c"
+#line 1869 "parser.tab.c"
     break;
 
   case 47: /* args: expression  */
-#line 271 "parser.y"
+#line 239 "parser.y"
                      {(yyval.node) = (yyvsp[0].node);}
-#line 1907 "parser.tab.c"
+#line 1875 "parser.tab.c"
     break;
 
   case 48: /* op_return: TK_PR_RETURN expression  */
-#line 273 "parser.y"
+#line 241 "parser.y"
                                    {(yyval.node) = create_node((yyvsp[-1].valor_lexico)); add_children((yyval.node), (yyvsp[0].node));}
-#line 1913 "parser.tab.c"
+#line 1881 "parser.tab.c"
     break;
 
   case 49: /* flow_control: conditional  */
-#line 275 "parser.y"
+#line 243 "parser.y"
                           {(yyval.node) = (yyvsp[0].node);}
-#line 1919 "parser.tab.c"
+#line 1887 "parser.tab.c"
     break;
 
   case 50: /* flow_control: iterative  */
-#line 276 "parser.y"
+#line 244 "parser.y"
                         {(yyval.node) = (yyvsp[0].node);}
-#line 1925 "parser.tab.c"
+#line 1893 "parser.tab.c"
     break;
 
   case 51: /* add_label_to_code: %empty  */
-#line 278 "parser.y"
+#line 246 "parser.y"
                    {
-            add_label(current_label);
-            current_label+=1;
-        }
-#line 1934 "parser.tab.c"
+    add_label(current_label); current_label+=1;
+    }
+#line 1901 "parser.tab.c"
     break;
 
   case 52: /* add_cbr: %empty  */
-#line 283 "parser.y"
+#line 250 "parser.y"
          {
-            add_cbr(cbr_temp, current_label, current_label+1);
-        }
-#line 1942 "parser.tab.c"
+    add_cbr(cbr_temp, current_label, current_label+1);
+    }
+#line 1909 "parser.tab.c"
     break;
 
   case 53: /* add_cbr_while: %empty  */
-#line 287 "parser.y"
+#line 254 "parser.y"
                {
     add_cbr(cbr_temp, current_label, current_label+1);
-}
-#line 1950 "parser.tab.c"
+    }
+#line 1917 "parser.tab.c"
     break;
 
   case 54: /* add_jumpI_else: %empty  */
-#line 291 "parser.y"
+#line 260 "parser.y"
                 {
-            /* this jumpI goes at the end of the command_block of the if statement*/
-            /* in case the if statement is true it won't go throught the else ;) */
-            add_jumpI(current_label+1);
-            /* not +2 since it already has a add_label_to_code before it, which gives it the +1  */
-        }
-#line 1961 "parser.tab.c"
+    add_jumpI(current_label+1);
+    }
+#line 1925 "parser.tab.c"
     break;
 
-  case 55: /* add_jumpI_while_2: %empty  */
-#line 298 "parser.y"
-                   {
-            add_jumpI(current_label-2);
-        }
-#line 1969 "parser.tab.c"
+  case 55: /* add_jumpI_end_while_block: %empty  */
+#line 264 "parser.y"
+                           {
+    add_jumpI(current_label-2);
+    }
+#line 1933 "parser.tab.c"
     break;
 
   case 56: /* conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_jumpI_else TK_PR_ELSE add_label_to_code command_block add_label_to_code  */
-#line 302 "parser.y"
+#line 268 "parser.y"
                                                                                                                                                             {
                 (yyval.node) = create_node((yyvsp[-11].valor_lexico)); 
                 add_children((yyval.node), (yyvsp[-9].node));
                 add_children((yyval.node), (yyvsp[-5].node));
                 add_children((yyval.node), (yyvsp[-1].node));
                 }
-#line 1980 "parser.tab.c"
+#line 1944 "parser.tab.c"
     break;
 
   case 57: /* conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_label_to_code  */
-#line 308 "parser.y"
+#line 274 "parser.y"
                                                                                                     {
                 (yyval.node) = create_node((yyvsp[-7].valor_lexico));
                 add_children((yyval.node), (yyvsp[-5].node));
                 add_children((yyval.node), (yyvsp[-1].node));
                 }
-#line 1990 "parser.tab.c"
+#line 1954 "parser.tab.c"
     break;
 
-  case 58: /* iterative: TK_PR_WHILE add_label_to_code '(' expression ')' add_cbr_while add_label_to_code command_block add_jumpI_while_2 add_label_to_code  */
-#line 314 "parser.y"
-                                                                                                                                              {
+  case 58: /* iterative: TK_PR_WHILE add_label_to_code '(' expression ')' add_cbr_while add_label_to_code command_block add_jumpI_end_while_block add_label_to_code  */
+#line 280 "parser.y"
+                                                                                                                                                      {
                 (yyval.node) = create_node((yyvsp[-9].valor_lexico));
                 add_children((yyval.node), (yyvsp[-6].node));
                 add_children((yyval.node), (yyvsp[-2].node));
-                /* nao ta funcionando pois... */
-                    /* 1 - nos exemplos (17 & 18) o valor salvo no temporario para comparacao no cbr é falso //10>5 = true  */
-                        /* para o cbr ir para a segunda label o valor no registrador deve ser false (da para inverter...) */
-                    /* 2 - as expressoes dentro do command_block do escopo do while nao ta buscando na tabela o temporario*/
-                        /* cria um novo e acaba não usando ele no cbr, assim o temp usado no cbr nunca é atualizado */
-                        /* sempre da o mesmo resultado e acaba sendo um loop infinito*/
                 }
-#line 2006 "parser.tab.c"
+#line 1964 "parser.tab.c"
     break;
 
   case 59: /* expression: expression TK_OC_OR expression_7  */
-#line 328 "parser.y"
+#line 288 "parser.y"
                                              {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2016,17 +1974,17 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("or", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2020 "parser.tab.c"
+#line 1978 "parser.tab.c"
     break;
 
   case 60: /* expression: expression_7  */
-#line 337 "parser.y"
+#line 297 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2026 "parser.tab.c"
+#line 1984 "parser.tab.c"
     break;
 
   case 61: /* expression_7: expression_7 TK_OC_AND expression_6  */
-#line 339 "parser.y"
+#line 299 "parser.y"
                                                   {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2036,17 +1994,17 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("and", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2040 "parser.tab.c"
+#line 1998 "parser.tab.c"
     break;
 
   case 62: /* expression_7: expression_6  */
-#line 348 "parser.y"
+#line 308 "parser.y"
                             {(yyval.node) = (yyvsp[0].node);}
-#line 2046 "parser.tab.c"
+#line 2004 "parser.tab.c"
     break;
 
   case 63: /* expression_6: expression_6 TK_OC_EQ expression_5  */
-#line 350 "parser.y"
+#line 310 "parser.y"
                                                  {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2056,11 +2014,11 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_EQ", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2060 "parser.tab.c"
+#line 2018 "parser.tab.c"
     break;
 
   case 64: /* expression_6: expression_6 TK_OC_NE expression_5  */
-#line 359 "parser.y"
+#line 319 "parser.y"
                                                  {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2070,17 +2028,17 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_NE", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2074 "parser.tab.c"
+#line 2032 "parser.tab.c"
     break;
 
   case 65: /* expression_6: expression_5  */
-#line 368 "parser.y"
+#line 328 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2080 "parser.tab.c"
+#line 2038 "parser.tab.c"
     break;
 
   case 66: /* expression_5: expression_5 '<' expression_4  */
-#line 370 "parser.y"
+#line 330 "parser.y"
                                             {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2090,11 +2048,11 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_LT", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2094 "parser.tab.c"
+#line 2052 "parser.tab.c"
     break;
 
   case 67: /* expression_5: expression_5 '>' expression_4  */
-#line 379 "parser.y"
+#line 339 "parser.y"
                                             {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2104,11 +2062,11 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_GT", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2108 "parser.tab.c"
+#line 2066 "parser.tab.c"
     break;
 
   case 68: /* expression_5: expression_5 TK_OC_LE expression_4  */
-#line 390 "parser.y"
+#line 350 "parser.y"
                                                  {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2118,11 +2076,11 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_LE", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2122 "parser.tab.c"
+#line 2080 "parser.tab.c"
     break;
 
   case 69: /* expression_5: expression_5 TK_OC_GE expression_4  */
-#line 401 "parser.y"
+#line 361 "parser.y"
                                                  {
                 (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                 
@@ -2132,17 +2090,17 @@ yyreduce:
                 Instruction *instruction = add_custom_instruction("cmp_GE", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                 (yyval.node)->valor_lexico.code = addInstruction(instruction);
                 }
-#line 2136 "parser.tab.c"
+#line 2094 "parser.tab.c"
     break;
 
   case 70: /* expression_5: expression_4  */
-#line 411 "parser.y"
+#line 371 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2142 "parser.tab.c"
+#line 2100 "parser.tab.c"
     break;
 
   case 71: /* expression_4: expression_4 '+' expression_3  */
-#line 413 "parser.y"
+#line 373 "parser.y"
                                             {
                         // add node
                         (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
@@ -2154,11 +2112,11 @@ yyreduce:
                         Instruction *instruction = add_custom_instruction("add", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction);
                         }
-#line 2158 "parser.tab.c"
+#line 2116 "parser.tab.c"
     break;
 
   case 72: /* expression_4: expression_4 '-' expression_3  */
-#line 425 "parser.y"
+#line 385 "parser.y"
                                             {
                         (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                         
@@ -2167,20 +2125,18 @@ yyreduce:
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("sub", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction);
-                        // printf("%s", $$->valor_lexico.code.instruction.oper);
-                        // printListFromNode($$->valor_lexico.code);
                         }
-#line 2174 "parser.tab.c"
+#line 2130 "parser.tab.c"
     break;
 
   case 73: /* expression_4: expression_3  */
-#line 438 "parser.y"
+#line 396 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2180 "parser.tab.c"
+#line 2136 "parser.tab.c"
     break;
 
   case 74: /* expression_3: expression_3 '*' expression_2  */
-#line 440 "parser.y"
+#line 398 "parser.y"
                                             {
                         (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                         
@@ -2189,16 +2145,13 @@ yyreduce:
                         current_temp++;
                         Instruction *instruction = add_custom_instruction("mult", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction);
-                        // printListFromNode($$->valor_lexico.code);
-                        // printf("\n\t\t%u\n", $$->valor_lexico.code);
-                        // printf("\n\n1 - %s\n\n", $$->valor_lexico.code->next_instruction->instruction->oper);
                         
                         }
-#line 2198 "parser.tab.c"
+#line 2151 "parser.tab.c"
     break;
 
   case 75: /* expression_3: expression_3 '/' expression_2  */
-#line 454 "parser.y"
+#line 409 "parser.y"
                                             {
                         (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                         
@@ -2208,47 +2161,46 @@ yyreduce:
                         Instruction *instruction = add_custom_instruction("div", (yyvsp[-2].node)->valor_lexico.temp, (yyvsp[0].node)->valor_lexico.temp, (yyval.node)->valor_lexico.temp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction);
                         }
-#line 2212 "parser.tab.c"
+#line 2165 "parser.tab.c"
     break;
 
   case 76: /* expression_3: expression_3 '%' expression_2  */
-#line 464 "parser.y"
+#line 419 "parser.y"
                                             {
                         (yyval.node) = create_node((yyvsp[-1].valor_lexico));add_children((yyval.node), (yyvsp[-2].node));add_children((yyval.node), (yyvsp[0].node));
                         }
-#line 2220 "parser.tab.c"
+#line 2173 "parser.tab.c"
     break;
 
   case 77: /* expression_3: expression_2  */
-#line 467 "parser.y"
+#line 422 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2226 "parser.tab.c"
+#line 2179 "parser.tab.c"
     break;
 
   case 78: /* expression_2: '-' expression_1  */
-#line 469 "parser.y"
+#line 424 "parser.y"
                                {(yyval.node) = create_node((yyvsp[-1].valor_lexico)); add_children((yyval.node), (yyvsp[0].node));}
-#line 2232 "parser.tab.c"
+#line 2185 "parser.tab.c"
     break;
 
   case 79: /* expression_2: '!' expression_1  */
-#line 470 "parser.y"
+#line 425 "parser.y"
                               {(yyval.node) = create_node((yyvsp[-1].valor_lexico)); add_children((yyval.node), (yyvsp[0].node));}
-#line 2238 "parser.tab.c"
+#line 2191 "parser.tab.c"
     break;
 
   case 80: /* expression_2: expression_1  */
-#line 471 "parser.y"
+#line 426 "parser.y"
                            {(yyval.node) = (yyvsp[0].node);}
-#line 2244 "parser.tab.c"
+#line 2197 "parser.tab.c"
     break;
 
   case 81: /* expression_1: TK_IDENTIFICADOR  */
-#line 473 "parser.y"
+#line 428 "parser.y"
                                {
                         Node *node = create_node((yyvsp[0].valor_lexico));
                         (yyval.node) = node;
-                        // printf(" - %s", $$->valor_lexico.linha);
                         (yyval.node)->valor_lexico.temp = current_temp;
                         cbr_temp = current_temp;
                         current_temp++;
@@ -2258,83 +2210,81 @@ yyreduce:
                         Instruction *instruction = add_loadAI((yyval.node)->valor_lexico.temp, base, disp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction);
                         }
-#line 2262 "parser.tab.c"
+#line 2214 "parser.tab.c"
     break;
 
   case 82: /* expression_1: literal  */
-#line 486 "parser.y"
+#line 440 "parser.y"
                       {(yyval.node) = (yyvsp[0].node);
-                        // printf("um dois tres quatro cinco");
-                        // printf("\n\t\tpra cima - %d\n",$$->valor_lexico.temp);
                         Instruction *instruction_load = add_loadI((yyvsp[0].node)->valor_lexico.valor,(yyvsp[0].node)->valor_lexico.temp);
                         (yyval.node)->valor_lexico.code = addInstruction(instruction_load);
                         
                         
             }
-#line 2275 "parser.tab.c"
+#line 2225 "parser.tab.c"
     break;
 
   case 83: /* expression_1: function_call  */
-#line 494 "parser.y"
+#line 446 "parser.y"
                             {(yyval.node) = (yyvsp[0].node);}
-#line 2281 "parser.tab.c"
+#line 2231 "parser.tab.c"
     break;
 
   case 84: /* expression_1: '(' expression ')'  */
-#line 495 "parser.y"
+#line 447 "parser.y"
                                  { (yyval.node) = (yyvsp[-1].node); }
-#line 2287 "parser.tab.c"
+#line 2237 "parser.tab.c"
     break;
 
   case 85: /* literal: TK_LIT_INT  */
-#line 500 "parser.y"
+#line 452 "parser.y"
                        {(yyval.node) = create_node((yyvsp[0].valor_lexico));
                         (yyval.node)->valor_lexico.temp = current_temp;
                         cbr_temp = current_temp;
                         current_temp = current_temp + 1;
                         
                         }
-#line 2298 "parser.tab.c"
+#line 2248 "parser.tab.c"
     break;
 
   case 86: /* literal: TK_LIT_FLOAT  */
-#line 506 "parser.y"
+#line 458 "parser.y"
                        {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
-#line 2304 "parser.tab.c"
+#line 2254 "parser.tab.c"
     break;
 
   case 87: /* literal: TK_LIT_TRUE  */
-#line 507 "parser.y"
+#line 459 "parser.y"
                        {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
-#line 2310 "parser.tab.c"
+#line 2260 "parser.tab.c"
     break;
 
   case 88: /* literal: TK_LIT_FALSE  */
-#line 508 "parser.y"
+#line 460 "parser.y"
                        {(yyval.node) = create_node((yyvsp[0].valor_lexico));}
-#line 2316 "parser.tab.c"
+#line 2266 "parser.tab.c"
     break;
 
   case 89: /* type: TK_PR_INT  */
-#line 512 "parser.y"
+#line 464 "parser.y"
                         { (yyval.valor_lexico) = (yyvsp[0].valor_lexico); }
-#line 2322 "parser.tab.c"
+#line 2272 "parser.tab.c"
     break;
 
   case 90: /* type: TK_PR_FLOAT  */
-#line 513 "parser.y"
+#line 465 "parser.y"
                         { (yyval.valor_lexico) = (yyvsp[0].valor_lexico); }
-#line 2328 "parser.tab.c"
+#line 2278 "parser.tab.c"
     break;
 
   case 91: /* type: TK_PR_BOOL  */
-#line 514 "parser.y"
+#line 466 "parser.y"
                         { (yyval.valor_lexico) = (yyvsp[0].valor_lexico); }
-#line 2334 "parser.tab.c"
+#line 2284 "parser.tab.c"
     break;
 
 
-#line 2338 "parser.tab.c"
+#line 2288 "parser.tab.c"
 
       default: break;
     }
@@ -2558,7 +2508,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 516 "parser.y"
+#line 468 "parser.y"
 
 
 void yyerror (char const *s){
