@@ -16,5 +16,5 @@ clean:
 entrega:
 	tar cvzf etapa5.tgz ast.c ast.h main.c Makefile parser.y scanner.l table.c table.h code.c code.h utils.c utils.h
 
-qual:
+which:
 	which gcc

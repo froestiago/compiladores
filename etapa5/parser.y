@@ -284,6 +284,10 @@ add_cbr: {
             add_cbr(cbr_temp, current_label, current_label+1);
         }
 
+add_cbr_while: {
+    add_cbr(cbr_temp, current_label, current_label+1);
+}
+
 add_jumpI_else: {
             /* this jumpI goes at the end of the command_block of the if statement*/
             /* in case the if statement is true it won't go throught the else ;) */
@@ -292,7 +296,7 @@ add_jumpI_else: {
         }
 
 add_jumpI_while_2: {
-            add_jumpI(current_label-3);
+            add_jumpI(current_label-2);
         }
 
 conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block add_jumpI_else TK_PR_ELSE add_label_to_code command_block add_label_to_code{
@@ -307,10 +311,10 @@ conditional: TK_PR_IF '(' expression ')' add_cbr add_label_to_code command_block
                 add_children($$, $7);
                 };
 
-iterative: TK_PR_WHILE '(' expression ')' add_label_to_code add_cbr add_label_to_code add_jumpI_else add_label_to_code command_block add_jumpI_while_2 add_label_to_code {
+iterative: TK_PR_WHILE add_label_to_code '(' expression ')' add_cbr_while add_label_to_code command_block add_jumpI_while_2 add_label_to_code {
                 $$ = create_node($1);
-                add_children($$, $3);
-                add_children($$, $10);
+                add_children($$, $4);
+                add_children($$, $8);
                 /* nao ta funcionando pois... */
                     /* 1 - nos exemplos (17 & 18) o valor salvo no temporario para comparacao no cbr é falso //10>5 = true  */
                         /* para o cbr ir para a segunda label o valor no registrador deve ser false (da para inverter...) */
