@@ -1,8 +1,10 @@
 main() -> int {
-int a, c;
+int a;
 int b;
+int c;
 a = 1;
 b = 6;
+c = 10;
 c = a + b;
 b = a * c;
 return 0;

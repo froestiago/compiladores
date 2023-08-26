@@ -2,15 +2,17 @@ loadI 1 => r1
 storeAI r1 => rfp, 8
 loadI 6 => r2
 storeAI r2 => rfp, 12
-loadAI rfp, 8 => r3
-loadAI rfp, 12 => r4
-add r3, r4 => r5
-storeAI r5 => rfp, 4
-loadAI rfp, 8 => r6
-loadAI rfp, 4 => r7
-mult r6, r7 => r8
-storeAI r8 => rfp, 12
-loadI 0 => r9
+loadI 10 => r3
+storeAI r3 => rfp, 16
+loadAI rfp, 8 => r4
+loadAI rfp, 12 => r5
+add r4, r5 => r6
+storeAI r6 => rfp, 16
+loadAI rfp, 8 => r7
+loadAI rfp, 16 => r8
+mult r7, r8 => r9
+storeAI r9 => rfp, 12
+loadI 0 => r10
 
 ----------------
 loadI 1 => r1
@@ -21,21 +23,25 @@ loadI 6 => r2
  - movl	$6, %eax
 storeAI r2 => rfp, 12
  - movl	%eax, -12(%rbp)
-loadAI rfp, 8 => r3
-loadAI rfp, 12 => r4
-add r3, r4 => r5
+loadI 10 => r3
+ - movl	$10, %eax
+storeAI r3 => rfp, 16
+ - movl	%eax, -16(%rbp)
+loadAI rfp, 8 => r4
+loadAI rfp, 12 => r5
+add r4, r5 => r6
  - movl	-8(%rbp), %edx
  - movl	-12(%rbp), %eax
  - add	%eax, %edx
- - movl	%edx, -4(%rfp)
-loadAI rfp, 8 => r6
-loadAI rfp, 4 => r7
-mult r6, r7 => r8
+ - movl	%edx, -16(%rfp)
+loadAI rfp, 8 => r7
+loadAI rfp, 16 => r8
+mult r7, r8 => r9
  - movl	-8(%rbp), %edx
- - movl	-(null)(%(null)), %eax
+ - movl	-16(%rbp), %eax
  - mult	%eax, %edx
  - movl	%edx, -12(%rfp)
-loadI 0 => r9
+loadI 0 => r10
  - movl	$0, %eax
 
  - - - - - - - - - - - - - - - - -
@@ -43,17 +49,23 @@ Node:
 Base: rfp
 Disp: 8
 Value: 1
-Temp: r6
+Temp: r7
 --------
 Node:
 Base: rfp
 Disp: 12
 Value: 6
-Temp: r4
+Temp: r5
+--------
+Node:
+Base: rfp
+Disp: 16
+Value: 10
+Temp: r8
 --------
 Node:
 Base: (null)
 Disp: (null)
 Value: 0
-Temp: r9
+Temp: r10
 --------
