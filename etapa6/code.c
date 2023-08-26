@@ -11,6 +11,7 @@
 
 extern AssemblySymbol *ass_table;
 extern Code *code;
+extern int new_node_disp;
 
 Instruction* add_custom_instruction(char *oper, int parameter_1, int parameter_2, int result)
 {
@@ -191,16 +192,31 @@ void printCodeList() {
 void printAssemblyCode() {
     // code is the global variabel
     Code *current = code;
+    Code *next_store = NULL;
 
     while (current != NULL) {
         char *oper = current->instruction->oper;
+        if(current->next_instruction!=NULL){
+            next_store = current->next_instruction;
+        } else {
+            next_store = NULL;
+        }
         if (strcmp(oper, "loadAI") == 0){
             printf("%s %s, %s => %s\n", oper, current->instruction->parameter_2, current->instruction->result, current->instruction->parameter_1);
+            updateTemp(current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+        
         } else if (strcmp(oper, "storeAI") == 0){
             printf("%s %s => %s, %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
-            createNodeWithBaseDisp(current->instruction->parameter_2, current->instruction->result);
+            updateBaseDisp(current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+            char *base = getBase(current->instruction->parameter_1);
+            char *disp = getDisp(current->instruction->parameter_1);
+            printf(" - movl\t%%eax, -%s(%%%s)\n", disp, base);
+        
         } else if (strcmp(oper, "loadI") == 0){
             printf("%s %s => %s\n", current->instruction->oper, current->instruction->parameter_1, current->instruction->parameter_2);
+            createNodeWithValueTemp(current->instruction->parameter_1, current->instruction->parameter_2);
+            printf(" - movl\t$%s, %%eax\n", current->instruction->parameter_1);
+        
         } else if (strcmp(oper, "div") == 0 ||
                   strcmp(oper, "mult") == 0 ||
                   strcmp(oper, "sub") == 0 ||
@@ -215,10 +231,36 @@ void printAssemblyCode() {
                   strcmp(oper, "or") == 0 )
             {
             printf("%s %s, %s => %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
+            // algo
+                // move both values to registers
+                // add with destination eax
+                // movl eax to original memory address
+            // get memory address
+            // address memory current->instruction->parameter_1
+            char *base_1 = getBase(current->instruction->parameter_1);
+            char *disp_1 = getDisp(current->instruction->parameter_1);
+            printf(" - movl\t-%s(%%%s), %%edx\n", disp_1, base_1);
+
+            // address memory current->instruction->parameter_2
+            char *base_2 = getBase(current->instruction->parameter_2);
+            char *disp_2 = getDisp(current->instruction->parameter_2);
+            printf(" - movl\t-%s(%%%s), %%eax\n", disp_2, base_2);
+            printf(" - %s\t%%eax, %%edx\n", oper);
+            printf(" - movl\t%%edx, -%s(%%%s)\n", next_store->instruction->result, next_store->instruction->parameter_2);
+            // createFullNode(current->instruction->parameter_1, //value
+            //                current->instruction->parameter_2, //temp
+            //                current->instruction->parameter_2, //base
+            //                current->instruction->parameter_2, //disp
+            //                );
+            current = current->next_instruction;
+            // updateTemp(current->instruction->result, disp_1, base_1);
+        
         } else if (strcmp(oper, "label") == 0){
             printf("%s\n", current->instruction->result);
+        
         } else if (strcmp(oper, "cbr") == 0){
             printf("%s %s => %s, %s\n", oper, current->instruction->result, current->instruction->parameter_1, current->instruction->parameter_2);
+        
         } else if (strcmp(oper, "jumpI") == 0){
             printf("%s => %s\n", oper, current->instruction->result);
         }

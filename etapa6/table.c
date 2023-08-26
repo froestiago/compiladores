@@ -300,6 +300,18 @@ AssemblySymbol *createNodeWithBaseDisp(char *base, char *disp) {
     return newSymbol;
 }
 
+AssemblySymbol *createFullNode(char *value, char *temp, char *base, char *disp) {
+    AssemblySymbol *newSymbol = (AssemblySymbol *)malloc(sizeof(AssemblySymbol));
+    newSymbol->value = NULL;
+    newSymbol->temp = NULL;
+    newSymbol->base = base;
+    newSymbol->disp = disp;
+    newSymbol->next = NULL;
+    addToAssemblyTable(newSymbol);
+    
+    return newSymbol;
+}
+
 void addToAssemblyTable(AssemblySymbol *newSymbol) {
     if (ass_table == NULL) {
         ass_table = newSymbol;
@@ -312,18 +324,52 @@ void addToAssemblyTable(AssemblySymbol *newSymbol) {
     }
 }
 
-// void printGlobalList() {
-//     AssemblySymbol *current = ass_table;
-//     while (current != NULL) {
-//         printf("Node:\n");
-//         printf("Base: %s\n", current->data.base);
-//         printf("Disp: %s\n", current->data.disp);
-//         printf("Value: %s\n", current->data.value);
-//         printf("Temp: %s\n", current->data.temp);
-//         printf("--------\n");
-//         current = current->next;
-//     }
-// }
+void updateBaseDisp(char *targetTemp, char *updateBase, char *updateDisp) {
+    AssemblySymbol *current = ass_table;
+    while (current != NULL) {
+        if (strcmp(current->temp, targetTemp) == 0) {
+            // printf("Node with temp \"%s\n", targetTemp);
+            current->base = updateBase;
+            current->disp = updateDisp;
+        }
+        current = current->next;
+    }
+}
+
+void updateTemp(char *updateTemp, char *targetBase, char *targetDisp) {
+    AssemblySymbol *current = ass_table;
+    while (current != NULL) {
+        if (strcmp(current->base, targetBase) == 0 && strcmp(current->disp, targetDisp) == 0) {
+            // printf("Node with disp \"%s\n", targetDisp);
+            current->temp = updateTemp;
+        }
+        current = current->next;
+    }
+}
+
+char * getBase(char *targetTemp) {
+    AssemblySymbol *current = ass_table;
+    while (current != NULL) {
+        if (strcmp(current->temp, targetTemp) == 0) {
+            if (strcmp(current->base, "rfp") == 0) {
+                return "rbp";
+            } else {
+                return "rsp";
+            }
+        }
+        current = current->next;
+    }
+}
+
+char * getDisp(char *targetTemp) {
+    AssemblySymbol *current = ass_table;
+    while (current != NULL) {
+        if (strcmp(current->temp, targetTemp) == 0) {
+            return current->disp;
+        }
+        current = current->next;
+    }
+}
 
 void print_code_list_assembly() {
     AssemblySymbol *current = ass_table;

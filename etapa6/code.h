@@ -30,6 +30,7 @@ Code *addInstruction(Instruction *newInstruction);
 void printCodeList();
 void printListFromNode(Code *startNode);
 void print_code_list_assembly();
+void printAssemblyCode();
 
 
 

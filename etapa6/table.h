@@ -88,3 +88,8 @@ AssemblySymbol *createNodeWithValueTemp(char *value, char *temp);
 AssemblySymbol *createNodeWithBaseDisp(char *base, char *disp);
 void addToAssemblyTable(AssemblySymbol *newSymbol);
 void print_code_list_assembly();
+void updateBaseDisp(char *targetTemp, char *updateBase, char *updateDisp);
+void updateTemp(char *updateTemp, char *targetBase, char *targetDisp);
+
+char * getBase(char *targetTemp);
+char * getDisp(char *targetTemp);

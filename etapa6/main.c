@@ -22,6 +22,8 @@ int cbr_temp = 0;
 int disp_rfp = 4;
 int disp_rbss = 4;
 
+int new_node_disp = 1024;
+
 AssemblySymbol *ass_table = NULL;
 
 // List *list = NULL;
