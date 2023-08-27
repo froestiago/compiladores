@@ -50,22 +50,19 @@ Base: rfp
 Disp: 8
 Value: 1
 Temp: r7
+Var: a
 --------
 Node:
 Base: rfp
 Disp: 12
 Value: 6
 Temp: r5
+Var: b
 --------
 Node:
 Base: rfp
 Disp: 16
 Value: 10
 Temp: r8
---------
-Node:
-Base: (null)
-Disp: (null)
-Value: 0
-Temp: r10
+Var: c
 --------

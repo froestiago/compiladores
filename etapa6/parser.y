@@ -18,6 +18,7 @@ extern List *nodo_inicial;
 extern List *nodo_atual;
 
 extern int current_temp;
+extern int current_temp_dec;
 extern int current_label;
 extern int cbr_temp;
 
@@ -25,6 +26,7 @@ extern int disp_rfp;
 extern int disp_rbss;
 
 extern Code *code;
+extern AssemblySymbol *ass_table;
 
 // O codigo é gerado em um passagem só
 
@@ -212,12 +214,18 @@ var_in_func: TK_IDENTIFICADOR TK_OC_LE literal ',' var_in_func {
 
         | TK_IDENTIFICADOR ',' var_in_func {
                 $$ = $3;
-                adicionarSymbol(nodo_atual, create_node($1)); //$3
+                adicionarSymbol(nodo_atual, create_node($1));
                 }
  
         | TK_IDENTIFICADOR {
                 $$ = NULL;
                 adicionarSymbol(nodo_atual, create_node($1));
+                createFullNode("NULL", //value
+                               "NULL", //temp
+                               "NULL", //base
+                               "NULL", //disp
+                               $1.valor);  //var
+
                 };
 
 assignment: TK_IDENTIFICADOR '=' expression {

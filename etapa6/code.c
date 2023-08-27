@@ -233,27 +233,18 @@ void printAssemblyCode() {
             printf("%s %s, %s => %s\n", oper, current->instruction->parameter_1, current->instruction->parameter_2, current->instruction->result);
             // algo
                 // move both values to registers
-                // add with destination eax
-                // movl eax to original memory address
-            // get memory address
-            // address memory current->instruction->parameter_1
+                // add with destination edx
+                // movl edx to original memory address
             char *base_1 = getBase(current->instruction->parameter_1);
             char *disp_1 = getDisp(current->instruction->parameter_1);
             printf(" - movl\t-%s(%%%s), %%edx\n", disp_1, base_1);
 
-            // address memory current->instruction->parameter_2
             char *base_2 = getBase(current->instruction->parameter_2);
             char *disp_2 = getDisp(current->instruction->parameter_2);
             printf(" - movl\t-%s(%%%s), %%eax\n", disp_2, base_2);
             printf(" - %s\t%%eax, %%edx\n", oper);
             printf(" - movl\t%%edx, -%s(%%%s)\n", next_store->instruction->result, next_store->instruction->parameter_2);
-            // createFullNode(current->instruction->parameter_1, //value
-            //                current->instruction->parameter_2, //temp
-            //                current->instruction->parameter_2, //base
-            //                current->instruction->parameter_2, //disp
-            //                );
             current = current->next_instruction;
-            // updateTemp(current->instruction->result, disp_1, base_1);
         
         } else if (strcmp(oper, "label") == 0){
             printf("%s\n", current->instruction->result);

@@ -278,12 +278,20 @@ char *find_base(struct List *startNode, char *key) {
 
 AssemblySymbol *createNodeWithValueTemp(char *value, char *temp) {
     AssemblySymbol *newSymbol = (AssemblySymbol *)malloc(sizeof(AssemblySymbol));
-    newSymbol->value = value;
-    newSymbol->temp = temp;
-    newSymbol->base = NULL;
-    newSymbol->disp = NULL;
-    newSymbol->next = NULL;
-    addToAssemblyTable(newSymbol);
+    AssemblySymbol *current = ass_table;
+    while (current != NULL) {
+        if (strcmp(current->value, "NULL") == 0 && strcmp(current->temp, "NULL") == 0) {
+                // printf("\t\t\t oi oi oi");
+                current->value = value;
+                current->temp = temp;
+                current->base = NULL;
+                current->disp = NULL;
+                // current->next = NULL;
+                break;
+        }
+        current = current->next;
+    }
+    // addToAssemblyTable(newSymbol);
     
     return newSymbol;
 }
@@ -294,18 +302,21 @@ AssemblySymbol *createNodeWithBaseDisp(char *base, char *disp) {
     newSymbol->temp = NULL;
     newSymbol->base = base;
     newSymbol->disp = disp;
+    newSymbol->var = NULL;
     newSymbol->next = NULL;
     addToAssemblyTable(newSymbol);
     
     return newSymbol;
 }
 
-AssemblySymbol *createFullNode(char *value, char *temp, char *base, char *disp) {
+
+AssemblySymbol *createFullNode(char *value, char *temp, char *base, char *disp, char *var) {
     AssemblySymbol *newSymbol = (AssemblySymbol *)malloc(sizeof(AssemblySymbol));
-    newSymbol->value = NULL;
-    newSymbol->temp = NULL;
-    newSymbol->base = base;
-    newSymbol->disp = disp;
+    newSymbol->value = "NULL";
+    newSymbol->temp = "NULL";
+    newSymbol->base = "NULL";
+    newSymbol->disp = "NULL";
+    newSymbol->var = var;
     newSymbol->next = NULL;
     addToAssemblyTable(newSymbol);
     
@@ -379,6 +390,7 @@ void print_code_list_assembly() {
         printf("Disp: %s\n", current->disp);
         printf("Value: %s\n", current->value);
         printf("Temp: %s\n", current->temp);
+        printf("Var: %s\n", current->var);
         printf("--------\n");
         current = current->next;
     }

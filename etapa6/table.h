@@ -42,6 +42,7 @@ typedef struct AssemblySymbol{
     char *disp;
     char *value;
     char *temp;
+    char *var;
     struct AssemblySymbol *next; // Pointer to the next node
 } AssemblySymbol;
 
@@ -86,6 +87,7 @@ char * find_base(struct List *startNode, char *key);
 
 AssemblySymbol *createNodeWithValueTemp(char *value, char *temp);
 AssemblySymbol *createNodeWithBaseDisp(char *base, char *disp);
+AssemblySymbol *createFullNode(char *value, char *temp, char *base, char *disp, char *var);
 void addToAssemblyTable(AssemblySymbol *newSymbol);
 void print_code_list_assembly();
 void updateBaseDisp(char *targetTemp, char *updateBase, char *updateDisp);
