@@ -1,5 +1,5 @@
-# compiladores INF01147
-## projeto de compiladores
+# compiladores - UFRGS - INF01147
+### projeto de compiladores
 ### Prof Lucas Schnnor
 
 repositório para o traballho da cadeira de compiladores 2023/1 :)
