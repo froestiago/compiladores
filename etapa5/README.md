@@ -1,6 +1,4 @@
 # 👁👄👁
-usando [este trabalho](https://github.com/AndreiKoenich/Projeto-Compiladores/tree/main) como referência
-
 - todos as variáveis são **int** ou seja, todas as variáveis terão tamanho 4bytes, isso facilitara o calculo dos deslocamentos
 - não precisa implementar chamada de função
 - professor falou que todas as entradas estarão corretas, então não precisamos das verificaçøes de erro.

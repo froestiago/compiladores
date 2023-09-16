@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 loadI 1 => r1
 storeAI r1 => rfp, 8
 loadI 6 => r2
@@ -66,3 +67,5 @@ Value: 10
 Temp: r8
 Var: c
 --------
+=======
+>>>>>>> etapa6_pre_var

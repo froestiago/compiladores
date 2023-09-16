@@ -11,7 +11,7 @@ parser.tab.c parser.tab.h: parser.y
 	bison -d parser.y --report-file=FILE
 
 clean:
-	rm -rf lex.yy.* parser.tab.* main.o ast.o table.o code.o etapa5
+	rm -rf lex.yy.* parser.tab.* main.o ast.o table.o code.o utils.o etapa5
 
 entrega:
 	tar cvzf etapa5.tgz ast.c ast.h main.c Makefile parser.y scanner.l table.c table.h code.c code.h utils.c utils.h
